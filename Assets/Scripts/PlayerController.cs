@@ -5,28 +5,25 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public new Rigidbody2D rigidbody;
     public float jumpForce;
     public float moveSpeed;
     public float initialSpeed;
 
+    private PlayerSensor _groundSensor;
+    private Rigidbody2D _rigidbody;
     private Vector2 _velocity;
-    private bool _canJump = true;
     private int _move;
 
     private void Start()
     {
+        
+        _groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
+        _rigidbody = GetComponent<Rigidbody2D>();
+        
         moveSpeed /= 100;
         initialSpeed /= 100;
     }
     
-    public void OnTriggerStay2D(Collider2D other)
-    {
-        if (other.gameObject.name.Substring(0, 8) == "Platform")
-        {
-            _canJump = true;
-        }
-    }
 
     void Update()
     {
@@ -42,10 +39,9 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (_canJump)
+            if (_groundSensor.Sense())
             {
-                rigidbody.AddForce(new Vector2(0, jumpForce));
-                _canJump = false;
+                _rigidbody.AddForce(new Vector2(0, jumpForce));
             }
         }
     }
