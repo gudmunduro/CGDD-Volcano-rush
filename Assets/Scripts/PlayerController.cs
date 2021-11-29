@@ -33,11 +33,11 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Translate(0.01f, 0, 0);
+            transform.Translate(0.03f, 0, 0);
         }
         else if (Input.GetKey(KeyCode.A))
         {
-            transform.Translate(-0.01f, 0, 0);
+            transform.Translate(-0.03f, 0, 0);
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
