@@ -10,7 +10,7 @@ public class EnemyVisionColliderController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name == "character")
+        if (other.gameObject.name == "Player")
         {
             PlayerInVision = other.gameObject;
         }
@@ -18,7 +18,7 @@ public class EnemyVisionColliderController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.name == "character")
+        if (other.gameObject.name == "Player")
         {
             PlayerInVision = null;
         }
