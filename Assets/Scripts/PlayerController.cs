@@ -57,8 +57,8 @@ public class PlayerController : MonoBehaviour
         {
             _velocity = _velocity.normalized * moveSpeed;
         }
-
-        transform.position += (Vector3)_velocity;
+        
+        _rigidbody.position += _velocity;
         /* Movement */
     }
 }
