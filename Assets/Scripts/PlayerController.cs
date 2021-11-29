@@ -1,48 +1,64 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Animator characterAnimator;
-    public Rigidbody2D rigidbody;
+    public float jumpForce;
+    public float moveSpeed;
+    public float initialSpeed;
 
-    // Start is called before the first frame update
-    void Start()
+    private PlayerSensor _groundSensor;
+    private Rigidbody2D _rigidbody;
+    private Vector2 _velocity;
+    private int _move;
+
+    private void Start()
     {
-        characterAnimator.enabled = false;
+        
+        _groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
+        _rigidbody = GetComponent<Rigidbody2D>();
+        
+        moveSpeed /= 100;
+        initialSpeed /= 100;
     }
+    
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
-        {
-            if (!characterAnimator.enabled)
-            {
-                characterAnimator.enabled = true;
-            }
-        }
-        else
-        {
-            if (characterAnimator.enabled)
-            {
-                characterAnimator.enabled = false;
-            }
-        }
-
+        _move = 0;
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Translate(0.03f, 0, 0);
+            _move = 1;
         }
         else if (Input.GetKey(KeyCode.A))
         {
-            transform.Translate(-0.03f, 0, 0);
+            _move = -1;
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            rigidbody.AddForce(new Vector2(0, 260.0f));
+            if (_groundSensor.Sense())
+            {
+                _rigidbody.AddForce(new Vector2(0, jumpForce));
+            }
         }
+    }
+
+    private void FixedUpdate()
+    {
+        /* Movement */
+        _velocity *= 0.80f;
+        
+        _velocity.x += initialSpeed * _move;
+
+        if (_velocity.magnitude > moveSpeed)
+        {
+            _velocity = _velocity.normalized * moveSpeed;
+        }
+
+        transform.position += (Vector3)_velocity;
+        /* Movement */
     }
 }
