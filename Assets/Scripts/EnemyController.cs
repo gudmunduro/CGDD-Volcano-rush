@@ -30,6 +30,7 @@ public class EnemyController : MonoBehaviour
     private int _move = 0;
     private Animator _animator;
     private Collider2D _collider;
+    private EnemyTrigger _enemyTrigger;
     private static readonly int IsWalking = Animator.StringToHash("IsWalking");
     private static readonly int IsAttacking = Animator.StringToHash("IsAttacking");
 
@@ -51,14 +52,25 @@ public class EnemyController : MonoBehaviour
     {
         _groundSensor = GetComponentInChildren<EnemyGroundSensor>();
         _enemyVisionColliderController = GetComponentInChildren<EnemyVisionColliderController>();
+        _enemyTrigger = GetComponentInChildren<EnemyTrigger>();
+
+        _enemyTrigger.onTriggerEnter += OnEnemyTriggerEnter2D;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
         // Allow enemies to walk through each other
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy") && _enemyState != EnemyState.Attacking)
         {
             Physics2D.IgnoreCollision(other.gameObject.GetComponent<Collider2D>(), _collider);
+        }
+    }
+
+    private void OnEnemyTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Enemy") && _enemyState == EnemyState.Attacking)
+        {
+            Physics2D.IgnoreCollision(other.gameObject.GetComponent<Collider2D>(), _collider, false);
         }
     }
 
