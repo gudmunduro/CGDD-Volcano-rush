@@ -10,7 +10,8 @@ public class AnimateObject : MonoBehaviour
 	public bool destroyOnKill;
 	Animator _animator;
 	public bool dead;
-
+	public bool player = false;
+	
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +23,7 @@ public class AnimateObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		if(dead && !Alive())
+	    if(!Alive())
 			Destroy(gameObject);
 	}
 
@@ -39,10 +40,26 @@ public class AnimateObject : MonoBehaviour
 	public void Attack(float damage)
 	{
 		health -= damage;
-		Debug.Log(health);
-		if(Alive())
-			_animator.Play("GarpurEnemyHit");
+		
+		if (player)
+		{
+			Debug.Log(health);
+			if (Alive())
+			{
+				_animator.SetTrigger("Hurt");
+			}
+			else
+			{
+				_animator.SetBool("noBlood", false);
+				_animator.SetTrigger("Death");
+			}
+		}
 		else
-			_animator.Play("GarpurEnemyDead");
+		{
+			if(Alive())
+				_animator.Play("GarpurEnemyHit");
+			else
+				_animator.Play("GarpurEnemyDead");
+		}
 	}
 }

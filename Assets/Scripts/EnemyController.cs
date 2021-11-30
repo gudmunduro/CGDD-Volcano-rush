@@ -23,7 +23,9 @@ public class EnemyController : MonoBehaviour
 {
     public float moveSpeed;
     public float runMultiplier;
-
+    public float damage = 2;
+    public float attackRate = 2f;
+    
     private GameObject _ground;
     private EnemyVisionColliderController _enemyVisionColliderController;
     private EnemyGroundSensor _groundSensor;
@@ -36,7 +38,8 @@ public class EnemyController : MonoBehaviour
     private Collider2D _collider;
     private GameObject _playerToAttack;
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
-
+    private float _currentTimeAttack;
+    
     public Direction CurrentWalkingDirection => _enemyState switch
     {
         EnemyState.PatrolLeft => Direction.Left,
@@ -95,7 +98,6 @@ public class EnemyController : MonoBehaviour
         if (_enemyVisionColliderController.IsPlayerInVision)
         {
             _enemyState = EnemyState.Attacking;
-            _setAnimationState(EnemyAnimationState.Attack);
         }
 
         switch (_enemyState)
@@ -130,11 +132,9 @@ public class EnemyController : MonoBehaviour
         {
             transform.Translate(_move * moveSpeed, 0, 0);
         }
-
-        if (_playerToAttack != null)
-        {
-            _playerToAttack.GetComponent<AnimateObject>().Attack(0.01f);
-        }
+        
+        _currentTimeAttack += Time.deltaTime;
+        
     }
 
     private void _patrolUpdate(Direction direction)
@@ -157,13 +157,29 @@ public class EnemyController : MonoBehaviour
         _move = 1;
     }
 
+
+    private void _attackingPlayer()
+    {
+        _playerToAttack = _enemyAttackRange.PlayerInAttackRange;
+        _playerToAttack.GetComponent<AnimateObject>().Attack(damage);
+    }
+    
     private void _attackPlayer()
     {
         // Attack player
         if (_enemyAttackRange.IsPlayerInAttackRange)
         {
-            _setAnimationState(EnemyAnimationState.Attack);
-            _playerToAttack = _enemyAttackRange.PlayerInAttackRange;
+            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttack") &&
+                _currentTimeAttack >= attackRate)
+            {
+                _setAnimationState(EnemyAnimationState.Idle);
+                Debug.Log("asdada");
+                _animator.SetTrigger("Attack");
+                
+                Invoke(nameof(_attackingPlayer), 0.35f);
+                
+                _currentTimeAttack = 0;
+            }
         }
         // Follow player
         else
