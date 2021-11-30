@@ -1,44 +1,58 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 internal enum EnemyState
 {
-    WalkLeft,
-    WalkRight,
+    PatrolLeft,
+    PatrolRight,
     Attacking
 }
 
-internal enum Direction
+internal enum EnemyAnimationState
 {
-    Left,
-    Right
+    Idle = 0,
+    Walk = 1,
+    Attack = 2
 }
 
 public class EnemyController : MonoBehaviour
 {
     public float moveSpeed;
     public float runMultiplier;
+
     private GameObject _ground;
     private EnemyVisionColliderController _enemyVisionColliderController;
     private EnemyGroundSensor _groundSensor;
+    private EnemyAttackRange _enemyAttackRange;
     private float _platformStartX;
     private float _platformEndX;
     private EnemyState _enemyState;
     private int _move = 0;
     private Animator _animator;
     private Collider2D _collider;
-    private EnemyTrigger _enemyTrigger;
-    private static readonly int IsWalking = Animator.StringToHash("IsWalking");
-    private static readonly int IsAttacking = Animator.StringToHash("IsAttacking");
+    private GameObject _playerToAttack;
+    private static readonly int AnimatorStateKey = Animator.StringToHash("State");
+
+    public Direction CurrentWalkingDirection => _enemyState switch
+    {
+        EnemyState.PatrolLeft => Direction.Left,
+        EnemyState.PatrolRight => Direction.Right,
+        EnemyState.Attacking => _getDirectionPlayerIsIn()
+    };
 
     private float DistanceToPlatformLeft => Math.Abs(transform.position.x - _platformStartX);
     private float DistanceToPlatformRight => Math.Abs(transform.position.x - _platformEndX);
 
     private float DistanceToPlayerInVision =>
         Vector2.Distance(_enemyVisionColliderController.PlayerInVision.transform.position, transform.position);
+
+    private bool IsPlayerInVisionJumping =>
+        _enemyVisionColliderController.PlayerInVision.transform.position.y - transform.position.y > 1.0f;
+
 
     private void Awake()
     {
@@ -52,86 +66,54 @@ public class EnemyController : MonoBehaviour
     {
         _groundSensor = GetComponentInChildren<EnemyGroundSensor>();
         _enemyVisionColliderController = GetComponentInChildren<EnemyVisionColliderController>();
-        _enemyTrigger = GetComponentInChildren<EnemyTrigger>();
-
-        _enemyTrigger.onTriggerEnter += OnEnemyTriggerEnter2D;
-    }
-
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        // Allow enemies to walk through each other
-        if (other.gameObject.CompareTag("Enemy") && _enemyState != EnemyState.Attacking)
-        {
-            Physics2D.IgnoreCollision(other.gameObject.GetComponent<Collider2D>(), _collider);
-        }
-    }
-
-    private void OnEnemyTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Enemy") && _enemyState == EnemyState.Attacking)
-        {
-            Physics2D.IgnoreCollision(other.gameObject.GetComponent<Collider2D>(), _collider, false);
-        }
+        _enemyAttackRange = GetComponentInChildren<EnemyAttackRange>();
     }
 
     private void Update()
     {
+        _move = 0;
+
+        // Setup for default platform (if the enemy is not falling)
         if (_ground == null)
         {
             if (!_groundSensor.IsTouchingGround)
             {
                 return;
             }
-            
+
             _configureForGround(_groundSensor.Ground);
             _startDefaultWalk();
         }
 
+        // If the enemy has ended on another platform, configure it for that platform instead
         if (_groundSensor.IsTouchingGround && _groundSensor.Ground.name != _ground.name)
         {
             _configureForGround(_groundSensor.Ground);
         }
-        
-        _move = 0;
 
+        // Attack player if it is in vision
         if (_enemyVisionColliderController.IsPlayerInVision)
         {
             _enemyState = EnemyState.Attacking;
-            _animator.SetBool(IsWalking, false);
-            _animator.SetBool(IsAttacking, true);
+            _setAnimationState(EnemyAnimationState.Attack);
         }
 
         switch (_enemyState)
         {
-            case EnemyState.WalkLeft:
+            case EnemyState.PatrolLeft:
             {
-                if (DistanceToPlatformLeft < 1.0f)
-                {
-                    _enemyState = EnemyState.WalkRight;
-                    _animator.SetBool(IsWalking, true);
-                    _setEnemyDirection(_getDirectionForState(_enemyState));
-                }
-
-                _move = 1;
+                _patrolUpdate(Direction.Left);
                 break;
             }
-            case EnemyState.WalkRight:
+            case EnemyState.PatrolRight:
             {
-                if (DistanceToPlatformRight < 1.8f)
-                {
-                    _enemyState = EnemyState.WalkLeft;
-                    _animator.SetBool(IsWalking, true);
-                    _setEnemyDirection(_getDirectionForState(_enemyState));
-                }
-
-                _move = 1;
+                _patrolUpdate(Direction.Right);
                 break;
             }
             case EnemyState.Attacking:
             {
                 if (!_enemyVisionColliderController.IsPlayerInVision)
                 {
-                    _animator.SetBool(IsAttacking, false);
                     _startDefaultWalk();
                     break;
                 }
@@ -148,33 +130,76 @@ public class EnemyController : MonoBehaviour
         {
             transform.Translate(_move * moveSpeed, 0, 0);
         }
+
+        if (_playerToAttack != null)
+        {
+            _playerToAttack.GetComponent<AnimateObject>().Attack(0.01f);
+        }
+    }
+
+    private void _patrolUpdate(Direction direction)
+    {
+        if (direction == Direction.Left && DistanceToPlatformLeft < 1.0f ||
+            direction == Direction.Right && DistanceToPlatformRight < 1.0f)
+        {
+            _enemyState = direction == Direction.Left ? EnemyState.PatrolRight : EnemyState.PatrolLeft;
+            _setAnimationState(EnemyAnimationState.Walk);
+            _setEnemyDirection(_getDirectionForState(_enemyState));
+        }
+
+        // Switch to the direction that makes more sense if enemies are colliding with each other
+        if (_enemyAttackRange.AreEnemiesInAttackRange && _enemyAttackRange.EnemiesInAttackRange.Any(e =>
+            e.GetComponent<EnemyController>().CurrentWalkingDirection != CurrentWalkingDirection))
+        {
+            _startDefaultWalk();
+        }
+
+        _move = 1;
     }
 
     private void _attackPlayer()
     {
-        if (DistanceToPlayerInVision < 1)
+        // Attack player
+        if (_enemyAttackRange.IsPlayerInAttackRange)
         {
-            _animator.SetBool(IsAttacking, true);
+            _setAnimationState(EnemyAnimationState.Attack);
+            _playerToAttack = _enemyAttackRange.PlayerInAttackRange;
         }
+        // Follow player
         else
         {
-            _animator.SetBool(IsAttacking, false);
-            _animator.SetBool(IsWalking, true);
-            _move = (int) runMultiplier;
-            _setEnemyDirection(_getDirectionPlayerIsIn());
+            _playerToAttack = null;
+
+            if (IsPlayerInVisionJumping)
+            {
+                var distanceToPlayerX = Math.Abs(transform.position.x -
+                                                 _enemyVisionColliderController.PlayerInVision.transform.position.x);
+
+                if (distanceToPlayerX < 2.0f)
+                {
+                    _setAnimationState(EnemyAnimationState.Idle);
+                    _move = 0;
+                }
+            }
+            else
+            {
+                _setAnimationState(EnemyAnimationState.Walk);
+                _move = (int)runMultiplier;
+                _setEnemyDirection(_getDirectionPlayerIsIn());
+            }
         }
     }
 
     private void _configureForGround(GameObject ground)
     {
         _ground = ground;
-        
+
         var localScale = ground.transform.localScale;
         var localPosition = ground.transform.localPosition;
 
         _platformStartX = localPosition.x - localScale.x / 2;
         _platformEndX = localPosition.x + localScale.x / 2;
-        
+
         _startDefaultWalk();
     }
 
@@ -195,9 +220,9 @@ public class EnemyController : MonoBehaviour
     {
         _enemyState =
             DistanceToPlatformLeft > DistanceToPlatformRight
-                ? EnemyState.WalkLeft
-                : EnemyState.WalkRight;
-        _animator.SetBool(IsWalking, true);
+                ? EnemyState.PatrolLeft
+                : EnemyState.PatrolRight;
+        _setAnimationState(EnemyAnimationState.Walk);
         _setEnemyDirection(_getDirectionForState(_enemyState));
     }
 
@@ -212,9 +237,14 @@ public class EnemyController : MonoBehaviour
     {
         return state switch
         {
-            EnemyState.WalkLeft => Direction.Left,
-            EnemyState.WalkRight => Direction.Right,
+            EnemyState.PatrolLeft => Direction.Left,
+            EnemyState.PatrolRight => Direction.Right,
             _ => Direction.Right
         };
+    }
+
+    private void _setAnimationState(EnemyAnimationState state)
+    {
+        _animator.SetInteger(AnimatorStateKey, (int)state);
     }
 }
