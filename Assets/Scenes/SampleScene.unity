@@ -1036,15 +1036,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6519986604754101551}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e3fab4f60695b14c9a85e1b2c51ecaf, type: 3}
+  m_Script: {fileID: 11500000, guid: 814f981127fd66040ad0b9d1adf84e75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_sourceColors:
-  - {r: 0.015686275, g: 0.14901961, b: 0.3372549, a: 1}
-  - {r: 0.16862746, g: 0.28235295, b: 0.5529412, a: 1}
-  m_newColors:
-  - {r: 0.5372549, g: 0.36862746, b: 0.14117648, a: 1}
-  - {r: 0.8078432, g: 0.6313726, b: 0.1764706, a: 1}
+  m_sourceColors: []
+  m_newColors: []
 --- !u!95 &2982446484727136648
 Animator:
   serializedVersion: 3
@@ -1111,7 +1107,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6519986604754101551}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fdf1cd4e3c21394eb88471a43e0a95b, type: 3}
+  m_Script: {fileID: 11500000, guid: 1cfc63bf1a6804c41a1757dd76522a9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_speed: 4

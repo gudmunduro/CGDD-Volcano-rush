@@ -14,7 +14,7 @@ public class PlayerSensor : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name.StartsWith("Platform"))
+        if (other.gameObject.CompareTag("Ground"))
         {
             _collision = true;    
         }
@@ -22,7 +22,7 @@ public class PlayerSensor : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.name.StartsWith("Platform"))
+        if (other.gameObject.CompareTag("Ground"))
         {
             _collision = false;    
         }
