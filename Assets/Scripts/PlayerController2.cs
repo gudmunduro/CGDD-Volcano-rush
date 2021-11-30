@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
+using UnityEditor.Experimental.GraphView;
 
 public class PlayerController2 : MonoBehaviour {
 
     [SerializeField] float      m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
     [SerializeField] float      m_rollForce = 6.0f;
+
+    public GameObject           enemies;
 
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
@@ -18,7 +22,7 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_delayToIdle = 0.0f;
     private float               m_rollDuration = 8.0f / 14.0f;
     private float               m_rollCurrentTime;
-
+    private Collider2D          m_collider;
 
     // Use this for initialization
     void Start ()
@@ -26,8 +30,9 @@ public class PlayerController2 : MonoBehaviour {
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
+        m_collider = GetComponent<Collider2D>();
     }
-
+    
     // Update is called once per frame
     void Update ()
     {
@@ -35,13 +40,27 @@ public class PlayerController2 : MonoBehaviour {
         m_timeSinceAttack += Time.deltaTime;
 
         // Increase timer that checks roll duration
-        if(m_rolling)
+        if (m_rolling)
+        {
             m_rollCurrentTime += Time.deltaTime;
+            gameObject.layer = LayerMask.NameToLayer("Default");
+        }
 
         // Disable rolling if timer extends duration
-        if(m_rollCurrentTime > m_rollDuration)
+        if (m_rollCurrentTime > m_rollDuration)
+        {
             m_rolling = false;
-
+            m_rollCurrentTime = 0f;
+            
+            foreach (Transform enemy in enemies.transform)
+            {
+                var cuntCollider = enemy.GetComponent<Collider2D>();
+                
+                Physics2D.IgnoreCollision(m_collider, cuntCollider, false);
+            }
+            
+        }
+        
         //Check if character just landed on the ground
         if (!m_grounded && m_groundSensor.Sense())
         {
@@ -57,7 +76,7 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         // -- Handle input and movement --
-        float inputX = Input.GetAxis("Horizontal");
+        var inputX = Input.GetAxis("Horizontal");
 
         // Swap direction of sprite depending on walk direction
         if (inputX > 0)
@@ -73,7 +92,7 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         // Move
-        if (!m_rolling )
+        if (!m_rolling)
             m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
 
         //Set AirSpeed in animator
@@ -111,14 +130,21 @@ public class PlayerController2 : MonoBehaviour {
             m_animator.SetBool("IdleBlock", false);
 
         // Roll
-        else if (Input.GetKeyDown("left shift") && !m_rolling)
+        else if (Input.GetKeyDown("left shift") && !m_rolling && inputX != 0)
         {
             m_rolling = true;
             m_animator.SetTrigger("Roll");
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
-        }
-            
 
+            foreach (Transform enemy in enemies.transform)
+            {
+                var cuntCollider = enemy.GetComponent<Collider2D>();
+                
+                Physics2D.IgnoreCollision(m_collider, cuntCollider, true);
+            }
+            
+        }
+        
         //Jump
         else if (Input.GetKeyDown("space") && m_grounded && !m_rolling)
         {
@@ -142,8 +168,8 @@ public class PlayerController2 : MonoBehaviour {
         {
             // Prevents flickering transitions to idle
             m_delayToIdle -= Time.deltaTime;
-                if(m_delayToIdle < 0)
-                    m_animator.SetInteger("AnimState", 0);
+            if(m_delayToIdle < 0)
+                m_animator.SetInteger("AnimState", 0);
         }
     }
 }

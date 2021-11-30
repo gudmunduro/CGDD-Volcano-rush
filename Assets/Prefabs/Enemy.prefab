@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5806719597693883817}
   - component: {fileID: 7901322744904875179}
   - component: {fileID: 8469187274238618821}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CollisionTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 7468525166700109270}
   - component: {fileID: 7468525166700109271}
   - component: {fileID: 7468525166700109272}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GroundSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 7468525167605376374}
   - component: {fileID: 7468525167605376376}
   - component: {fileID: 7468525167605376375}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -290,7 +290,7 @@ GameObject:
   - component: {fileID: 7468525167859926801}
   - component: {fileID: 7468525167859926802}
   - component: {fileID: 7468525167859926803}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: VisionCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
