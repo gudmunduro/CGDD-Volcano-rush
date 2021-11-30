@@ -14,11 +14,17 @@ public class PlayerSensor : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        _collision = true;
+        if (other.gameObject.name.StartsWith("Platform"))
+        {
+            _collision = true;    
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        _collision = false;
+        if (other.gameObject.name.StartsWith("Platform"))
+        {
+            _collision = false;    
+        }
     }
 }

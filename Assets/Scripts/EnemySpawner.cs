@@ -7,6 +7,7 @@ public class EnemySpawner : MonoBehaviour
     public GameObject player;
     public Transform enemyPrefab;
     public int enemyCount;
+    public Transform spawnPoint;
     private bool _enemiesSpawned = false;
 
     private float DistanceToPlayer => Vector2.Distance(transform.position, player.transform.position);
@@ -17,7 +18,7 @@ public class EnemySpawner : MonoBehaviour
         {
             for (var i = 0; i < enemyCount; i++)
             {
-                Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+                Instantiate(enemyPrefab, transform.position, Quaternion.identity, spawnPoint);
             }
 
             _enemiesSpawned = true;
