@@ -8,17 +8,22 @@ public class AnimateObject : MonoBehaviour
 	public float maxHealth;
 	float health;
 	public bool destroyOnKill;
+	Animator _animator;
+	public bool dead;
 
     // Start is called before the first frame update
     void Start()
     {
         health = maxHealth;
+		_animator = GetComponent<Animator>();
+		dead = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+		if(dead && !Alive())
+			Destroy(gameObject);
 	}
 
 	public float HealthPct()
@@ -34,10 +39,10 @@ public class AnimateObject : MonoBehaviour
 	public void Attack(float damage)
 	{
 		health -= damage;
-		Color _tmp = GetComponent<SpriteRenderer>().color;
-		_tmp.a = HealthPct();
-		GetComponent<SpriteRenderer>().color = _tmp;
-		if(destroyOnKill && !Alive())
-			Destroy(gameObject);
+		Debug.Log(health);
+		if(Alive())
+			_animator.Play("GarpurEnemyHit");
+		else
+			_animator.Play("GarpurEnemyDead");
 	}
 }
