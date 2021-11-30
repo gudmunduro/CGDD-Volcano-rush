@@ -22,7 +22,8 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_delayToIdle = 0.0f;
     private float               m_rollDuration = 8.0f / 14.0f;
     private float               m_rollCurrentTime;
-    private Collider2D          m_collider;
+    private CapsuleCollider2D   m_standardCollider;
+    private CircleCollider2D    m_rollingCollider;
 
     // Use this for initialization
     void Start ()
@@ -30,7 +31,8 @@ public class PlayerController2 : MonoBehaviour {
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
-        m_collider = GetComponent<Collider2D>();
+        m_standardCollider = GetComponent<CapsuleCollider2D>();
+        m_rollingCollider = GetComponent<CircleCollider2D>();
     }
     
     // Update is called once per frame
@@ -43,7 +45,6 @@ public class PlayerController2 : MonoBehaviour {
         if (m_rolling)
         {
             m_rollCurrentTime += Time.deltaTime;
-            gameObject.layer = LayerMask.NameToLayer("Default");
         }
 
         // Disable rolling if timer extends duration
@@ -51,14 +52,8 @@ public class PlayerController2 : MonoBehaviour {
         {
             m_rolling = false;
             m_rollCurrentTime = 0f;
-            
-            foreach (Transform enemy in enemies.transform)
-            {
-                var cuntCollider = enemy.GetComponent<Collider2D>();
-                
-                Physics2D.IgnoreCollision(m_collider, cuntCollider, false);
-            }
-            
+            m_rollingCollider.enabled = false;
+            m_standardCollider.enabled = true;
         }
         
         //Check if character just landed on the ground
@@ -135,13 +130,16 @@ public class PlayerController2 : MonoBehaviour {
             m_rolling = true;
             m_animator.SetTrigger("Roll");
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
-
+            m_rollingCollider.enabled = true;
+            m_standardCollider.enabled = false;
+            
             foreach (Transform enemy in enemies.transform)
             {
                 var cuntCollider = enemy.GetComponent<Collider2D>();
                 
-                Physics2D.IgnoreCollision(m_collider, cuntCollider, true);
+                Physics2D.IgnoreCollision(m_rollingCollider, cuntCollider, true);
             }
+            
             
         }
         
