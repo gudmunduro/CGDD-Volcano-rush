@@ -69,33 +69,18 @@ public class PlayerController2 : MonoBehaviour {
             m_grounded = false;
             m_animator.SetBool("Grounded", m_grounded);
         }
-
-        // -- Handle input and movement --
-        var inputX = Input.GetAxis("Horizontal");
-
-        // Swap direction of sprite depending on walk direction
-        if (inputX > 0)
-        {
-            GetComponent<SpriteRenderer>().flipX = false;
-            m_facingDirection = 1;
-        }
-            
-        else if (inputX < 0)
-        {
-            GetComponent<SpriteRenderer>().flipX = true;
-            m_facingDirection = -1;
-        }
-
-        // Move
-        if (!m_rolling)
-            m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
-
+        
         //Set AirSpeed in animator
         m_animator.SetFloat("AirSpeedY", m_body2d.velocity.y);
 
+        // -- Handle input and movement --
+        var inputX = Input.GetAxis("Horizontal");
+        
         // -- Handle Animations --
         //Attack
-        if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling)
+        if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling && 
+           !(m_animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") ||
+            m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall")))
         {
             m_currentAttack++;
 
@@ -139,8 +124,6 @@ public class PlayerController2 : MonoBehaviour {
                 
                 Physics2D.IgnoreCollision(m_rollingCollider, cuntCollider, true);
             }
-            
-            
         }
         
         //Jump
@@ -169,5 +152,27 @@ public class PlayerController2 : MonoBehaviour {
             if(m_delayToIdle < 0)
                 m_animator.SetInteger("AnimState", 0);
         }
+        
+        // Swap direction of sprite depending on walk direction
+        if (inputX > 0)
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+            m_facingDirection = 1;
+        }
+            
+        else if (inputX < 0)
+        {
+            GetComponent<SpriteRenderer>().flipX = true;
+            m_facingDirection = -1;
+        }
+
+        // Move
+        var legalAnimation = m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") ||
+                             m_animator.GetCurrentAnimatorStateInfo(0).IsName("Run") ||
+                             m_animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") ||
+                             m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall");
+        if (!m_rolling && legalAnimation)
+            m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
+        
     }
 }
