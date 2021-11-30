@@ -21,6 +21,7 @@ public class EnemyController : MonoBehaviour
 {
     public float moveSpeed;
     public float runMultiplier;
+    
     private GameObject _ground;
     private EnemyVisionColliderController _enemyVisionColliderController;
     private EnemyGroundSensor _groundSensor;
