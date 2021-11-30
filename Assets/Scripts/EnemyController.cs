@@ -160,6 +160,7 @@ public class EnemyController : MonoBehaviour
 
     private void _attackingPlayer()
     {
+        //if (!_playerToAttack) return;
         _playerToAttack = _enemyAttackRange.PlayerInAttackRange;
         _playerToAttack.GetComponent<AnimateObject>().Attack(damage);
     }
@@ -173,7 +174,6 @@ public class EnemyController : MonoBehaviour
                 _currentTimeAttack >= attackRate)
             {
                 _setAnimationState(EnemyAnimationState.Idle);
-                Debug.Log("asdada");
                 _animator.SetTrigger("Attack");
                 
                 Invoke(nameof(_attackingPlayer), 0.35f);

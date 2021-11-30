@@ -34,6 +34,11 @@ public class PlayerController2 : MonoBehaviour {
         m_standardCollider = GetComponent<CapsuleCollider2D>();
         m_rollingCollider = GetComponent<CircleCollider2D>();
     }
+
+    public bool IsRolling()
+    {
+        return m_rolling;
+    }
     
     // Update is called once per frame
     void Update ()

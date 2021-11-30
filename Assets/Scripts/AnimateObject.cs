@@ -11,12 +11,17 @@ public class AnimateObject : MonoBehaviour
 	Animator _animator;
 	public bool dead;
 	public bool player = false;
+	private PlayerController2 _playerController;
 	
     // Start is called before the first frame update
     void Start()
     {
         health = maxHealth;
 		_animator = GetComponent<Animator>();
+		if (player)
+		{ 
+			_playerController = GetComponent<PlayerController2>();
+		}
 		dead = false;
     }
 
@@ -39,23 +44,30 @@ public class AnimateObject : MonoBehaviour
 
 	public void Attack(float damage)
 	{
-		health -= damage;
+		
 		
 		if (player)
 		{
-			Debug.Log(health);
-			if (Alive())
+			if (!_playerController.IsRolling())
 			{
-				_animator.SetTrigger("Hurt");
-			}
-			else
-			{
-				_animator.SetBool("noBlood", false);
-				_animator.SetTrigger("Death");
+				health -= damage;
+			
+				Debug.Log(health);
+				if (Alive())
+				{
+					_animator.SetTrigger("Hurt");
+				}
+				else
+				{
+					_animator.SetBool("noBlood", false);
+					_animator.SetTrigger("Death");
+				}	
 			}
 		}
 		else
 		{
+			health -= damage;
+			
 			if(Alive())
 				_animator.Play("GarpurEnemyHit");
 			else
