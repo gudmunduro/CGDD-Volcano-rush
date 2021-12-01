@@ -139,7 +139,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2897072917571347692}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bb46e48046fef549a7096d9cdb2e71c, type: 3}
+  m_Script: {fileID: 11500000, guid: b0cb30dd3412d2e4e80f7e5405c9fc14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_sourceColors: []
@@ -153,12 +153,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2897072917571347692}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e89cfb63e965974baddf461b7d682b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 177eda177c0e38043a9979b6b3b67d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_speed: 4
   m_jumpForce: 7.5
-  m_rollForce: 6
+  m_rollForce: 8
   enemies: {fileID: 0}
 --- !u!70 &2897072917571347699
 CapsuleCollider2D:
