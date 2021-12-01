@@ -12,11 +12,14 @@ public class AnimateObject : MonoBehaviour
 	public bool dead;
 	public bool player = false;
 	private PlayerController2 _playerController;
+
+	public StatusBar statusBar;
 	
     // Start is called before the first frame update
     void Start()
     {
         health = maxHealth;
+		statusBar.SetMax(maxHealth);
 		_animator = GetComponent<Animator>();
 		if (player)
 		{ 
@@ -49,6 +52,7 @@ public class AnimateObject : MonoBehaviour
 			if (!_playerController.IsRolling())
 			{
 				health -= damage;
+				statusBar.Set(health);
 			
 				Debug.Log(health);
 				if (Alive())
@@ -71,5 +75,11 @@ public class AnimateObject : MonoBehaviour
 			else
 				_animator.Play("EnemyDead");
 		}
+	}
+
+	public void OverheatingDamage()
+	{
+		health -= 0.1f;
+		statusBar.Set(health);
 	}
 }
