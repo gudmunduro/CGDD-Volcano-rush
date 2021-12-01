@@ -25,19 +25,20 @@ public class EnemyController : MonoBehaviour
     public float runMultiplier;
     public float damage = 2;
     public float attackRate = 2f;
-    
+
     private GameObject _ground;
     private EnemyVisionColliderController _enemyVisionColliderController;
     private EnemyGroundSensor _groundSensor;
     private EnemyAttackRange _enemyAttackRange;
-    private float _platformStartX;
-    private float _platformEndX;
+    private GroundFrontSensor _groundFrontSensor;
+    private float _platformStartX = float.NegativeInfinity;
+    private float _platformEndX = float.PositiveInfinity;
     private EnemyState _enemyState;
     private int _move = 0;
     private Animator _animator;
     private Collider2D _collider;
-    private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private float _currentTimeAttack;
+    private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackAnimId = Animator.StringToHash("Attack");
 
     public Direction CurrentWalkingDirection => _enemyState switch
@@ -70,6 +71,7 @@ public class EnemyController : MonoBehaviour
         _groundSensor = GetComponentInChildren<EnemyGroundSensor>();
         _enemyVisionColliderController = GetComponentInChildren<EnemyVisionColliderController>();
         _enemyAttackRange = GetComponentInChildren<EnemyAttackRange>();
+        _groundFrontSensor = GetComponentInChildren<GroundFrontSensor>();
     }
 
     private void Update()
@@ -84,14 +86,16 @@ public class EnemyController : MonoBehaviour
                 return;
             }
 
-            _configureForGround(_groundSensor.Ground);
+            _ground = _groundSensor.Ground;
+            
             _startDefaultWalk();
         }
 
         // If the enemy has ended on another platform, configure it for that platform instead
         if (_groundSensor.IsTouchingGround && _groundSensor.Ground.name != _ground.name)
         {
-            _configureForGround(_groundSensor.Ground);
+            _platformStartX = float.NegativeInfinity;
+            _platformEndX = float.PositiveInfinity;
         }
 
         // Attack player if it is in vision
@@ -132,24 +136,35 @@ public class EnemyController : MonoBehaviour
         {
             transform.Translate(_move * moveSpeed, 0, 0);
         }
-        
+
         _currentTimeAttack += Time.deltaTime;
-        
     }
 
     private void _patrolUpdate(Direction direction)
     {
-        if (direction == Direction.Left && DistanceToPlatformLeft < 1.0f ||
-            direction == Direction.Right && DistanceToPlatformRight < 1.0f)
+        if (direction == Direction.Left && !float.IsPositiveInfinity(_platformStartX) && DistanceToPlatformLeft < 1.0f ||
+            direction == Direction.Right && !float.IsNegativeInfinity(_platformEndX) && DistanceToPlatformRight < 1.0f)
         {
-            _enemyState = direction == Direction.Left ? EnemyState.PatrolRight : EnemyState.PatrolLeft;
-            _setAnimationState(EnemyAnimationState.Walk);
-            _setEnemyDirection(_getDirectionForState(_enemyState));
+            _switchPatrolDirection(direction);
+        }
+
+        if (!_groundFrontSensor.IsGroundInFront || _enemyAttackRange.IsWallInAttackRange)
+        {
+            Debug.Log("Found end");
+            switch (direction)
+            {
+                case Direction.Left when float.IsNegativeInfinity(_platformStartX):
+                    _platformStartX = transform.position.x;
+                    break;
+                case Direction.Right when float.IsPositiveInfinity(_platformEndX):
+                    _platformEndX = transform.position.x;
+                    break;
+            }
         }
 
         // Switch to the direction that makes more sense if enemies are colliding with each other
-        if (_enemyAttackRange.AreEnemiesInAttackRange && _enemyAttackRange.EnemiesInAttackRange.Any(e =>
-            e.GetComponent<EnemyController>().CurrentWalkingDirection != CurrentWalkingDirection))
+        if (_enemyAttackRange.AreEnemiesInAttackRange && _enemyAttackRange.EnemiesInAttackRange
+            .Any(e => e.GetComponent<EnemyController>().CurrentWalkingDirection != CurrentWalkingDirection))
         {
             _startDefaultWalk();
         }
@@ -157,14 +172,20 @@ public class EnemyController : MonoBehaviour
         _move = 1;
     }
 
-
-    private IEnumerable _attackPlayer(GameObject player)
+    private void _switchPatrolDirection(Direction currentDirection)
     {
-        yield return new WaitForSeconds(3);
-        //if (!_playerToAttack) return;
+        _enemyState = currentDirection == Direction.Left ? EnemyState.PatrolRight : EnemyState.PatrolLeft;
+        _setAnimationState(EnemyAnimationState.Walk);
+        _setEnemyDirection(_getDirectionForState(_enemyState));
+    }
+
+
+    private IEnumerator _attackPlayer(GameObject player)
+    {
+        yield return new WaitForSeconds(0.35f);
         player.GetComponent<AnimateObject>().Attack(damage);
     }
-    
+
     private void _attackPlayerUpdate()
     {
         // Attack player
@@ -176,15 +197,14 @@ public class EnemyController : MonoBehaviour
                 _setAnimationState(EnemyAnimationState.Idle);
                 _animator.SetTrigger(AttackAnimId);
 
-                StartCoroutine(nameof(_attackPlayer), _enemyAttackRange.PlayerInAttackRange);
-                
+                StartCoroutine(_attackPlayer(_enemyAttackRange.PlayerInAttackRange));
+
                 _currentTimeAttack = 0;
             }
         }
         // Follow player
         else
         {
-
             if (IsPlayerInVisionJumping)
             {
                 var distanceToPlayerX = Math.Abs(transform.position.x -
@@ -203,19 +223,6 @@ public class EnemyController : MonoBehaviour
                 _setEnemyDirection(_getDirectionPlayerIsIn());
             }
         }
-    }
-
-    private void _configureForGround(GameObject ground)
-    {
-        _ground = ground;
-
-        var localScale = ground.transform.localScale;
-        var localPosition = ground.transform.localPosition;
-
-        _platformStartX = localPosition.x - localScale.x / 2;
-        _platformEndX = localPosition.x + localScale.x / 2;
-
-        _startDefaultWalk();
     }
 
     private void _setEnemyDirection(Direction direction)
