@@ -324,7 +324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 3
   runMultiplier: 2
-  damage: 2
+  damage: 25
   attackRate: 2
 --- !u!70 &7468525167605376376
 CapsuleCollider2D:

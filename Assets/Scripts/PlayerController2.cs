@@ -27,7 +27,7 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_rollCurrentTime;
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
-
+    private AnimateObject       m_animateObject;
     private PlayerAttackRange   _playerAttackRange;
     public float                damage;
 
@@ -39,7 +39,7 @@ public class PlayerController2 : MonoBehaviour {
         m_groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
         m_standardCollider = GetComponent<CapsuleCollider2D>();
         m_rollingCollider = GetComponent<CircleCollider2D>();
-
+        m_animateObject = GetComponent<AnimateObject>();
         _playerAttackRange = GetComponentInChildren<PlayerAttackRange>();
     }
 
@@ -51,6 +51,10 @@ public class PlayerController2 : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
+        if (!m_animateObject.Alive())
+        {
+            return;
+        }
         // Increase timer that controls attack combo
         m_timeSinceAttack += Time.deltaTime;
 
