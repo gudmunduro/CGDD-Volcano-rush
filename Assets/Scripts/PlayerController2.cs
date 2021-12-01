@@ -10,12 +10,14 @@ public class PlayerController2 : MonoBehaviour {
     [SerializeField] float      m_rollForce = 6.0f;
 
     public GameObject           enemies;
-
+    public PhysicsMaterial2D    noFriction;
+    
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
     private PlayerSensor        m_groundSensor;
     private bool                m_grounded = false;
     private bool                m_rolling = false;
+    private bool                m_blocking = false;
     private int                 m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
@@ -71,6 +73,7 @@ public class PlayerController2 : MonoBehaviour {
         {
             m_grounded = true;
             m_animator.SetBool("Grounded", m_grounded);
+            m_standardCollider.sharedMaterial = default;
         }
 
         //Check if character just started falling
@@ -78,6 +81,7 @@ public class PlayerController2 : MonoBehaviour {
         {
             m_grounded = false;
             m_animator.SetBool("Grounded", m_grounded);
+            m_standardCollider.sharedMaterial = noFriction;
         }
         
         //Set AirSpeed in animator
@@ -111,14 +115,21 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         // Block
-        else if (Input.GetMouseButtonDown(1) && !m_rolling)
+        else if (Input.GetMouseButton(1) && !m_rolling)
         {
-            m_animator.SetTrigger("Block");
-            m_animator.SetBool("IdleBlock", true);
+            if (!m_blocking)
+            {
+                m_animator.SetTrigger("Block");
+                m_animator.SetBool("IdleBlock", true);
+                m_blocking = true;
+            }
         }
 
         else if (Input.GetMouseButtonUp(1))
+        {
             m_animator.SetBool("IdleBlock", false);
+            m_blocking = false;
+        }
 
         // Roll
         else if (Input.GetKeyDown("left shift") && !m_rolling && inputX != 0)
