@@ -145,6 +145,8 @@ GameObject:
   - component: {fileID: 7468525167605376376}
   - component: {fileID: 7468525167605376375}
   - component: {fileID: 5907042623794894222}
+  - component: {fileID: 2420965811635653496}
+  - component: {fileID: 3585359200033163056}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -253,6 +255,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 3
   runMultiplier: 2
+  damage: 2
+  attackRate: 2
 --- !u!70 &7468525167605376376
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -266,8 +270,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.007350743}
-  m_Size: {x: 0.4, y: 0.6052985}
+  m_Offset: {x: 0.0017871112, y: -0.16897462}
+  m_Size: {x: 0.28205076, y: 0.28205076}
   m_Direction: 0
 --- !u!50 &7468525167605376375
 Rigidbody2D:
@@ -305,6 +309,61 @@ MonoBehaviour:
   maxHealth: 10
   destroyOnKill: 1
   dead: 0
+  player: 0
+--- !u!60 &2420965811635653496
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7468525167605376370}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 9c497a4ce1f356b448c0dd3eca091d35, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.3519948, y: 0.3241099}
+    oldSize: {x: 1.28, y: 0.96}
+    newSize: {x: 1.28, y: 0.96}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.0005533565, y: 0.3074191}
+      - {x: -0.09420574, y: 0.16601285}
+      - {x: 0.095872425, y: 0.16422576}
+--- !u!61 &3585359200033163056
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7468525167605376370}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 9c497a4ce1f356b448c0dd3eca091d35, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.0018000379, y: 0.0455439}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.3519948, y: 0.3241099}
+    oldSize: {x: 1.28, y: 0.96}
+    newSize: {x: 1.28, y: 0.96}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.18986286, y: 0.24515595}
+  m_EdgeRadius: 0
 --- !u!1 &7468525167859926800
 GameObject:
   m_ObjectHideFlags: 0
