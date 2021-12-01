@@ -178,18 +178,6 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 851928515}
-    - target: {fileID: 7631880147290923505, guid: 4e14a264ae8a147418e42317f3248de8, type: 3}
-      propertyPath: m_BackGroundColor.b
-      value: 0.16260235
-      objectReference: {fileID: 0}
-    - target: {fileID: 7631880147290923505, guid: 4e14a264ae8a147418e42317f3248de8, type: 3}
-      propertyPath: m_BackGroundColor.g
-      value: 0.32163155
-      objectReference: {fileID: 0}
-    - target: {fileID: 7631880147290923505, guid: 4e14a264ae8a147418e42317f3248de8, type: 3}
-      propertyPath: m_BackGroundColor.r
-      value: 0.5471698
-      objectReference: {fileID: 0}
     - target: {fileID: 7631880147290923506, guid: 4e14a264ae8a147418e42317f3248de8, type: 3}
       propertyPath: m_Name
       value: Main Camera
@@ -10803,14 +10791,6 @@ PrefabInstance:
       propertyPath: enemies
       value: 
       objectReference: {fileID: 2057103313}
-    - target: {fileID: 2897072917571347699, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
-      propertyPath: m_Size.y
-      value: 1.2650071
-      objectReference: {fileID: 0}
-    - target: {fileID: 2897072917571347699, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
-      propertyPath: m_Offset.y
-      value: 0.71067625
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
 --- !u!1 &1675153914
