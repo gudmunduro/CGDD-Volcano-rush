@@ -52,6 +52,11 @@ public class EnemyController : MonoBehaviour
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackAnimId = Animator.StringToHash("Attack");
 
+    public AudioSource swipePlayer;
+    public AudioSource hitPlayer;
+    public AudioClip[] swipeSounds;
+    public AudioClip[] hitSounds;
+
     public Direction CurrentWalkingDirection => _enemyState switch
     {
         EnemyState.PatrolLeft => Direction.Left,
@@ -235,6 +240,8 @@ public class EnemyController : MonoBehaviour
     private IEnumerator _attackPlayer(GameObject player)
     {
         yield return new WaitForSeconds(0.35f);
+        hitPlayer.clip = hitSounds[(int)UnityEngine.Random.Range(0, hitSounds.Length)];
+        hitPlayer.Play();
         player.GetComponent<AnimateObject>().Attack(damage);
     }
 
@@ -248,6 +255,9 @@ public class EnemyController : MonoBehaviour
             {
                 _setAnimationState(EnemyAnimationState.Idle);
                 _animator.SetTrigger(AttackAnimId);
+
+                swipePlayer.clip = swipeSounds[(int)UnityEngine.Random.Range(0, swipeSounds.Length)];
+                swipePlayer.Play();
 
                 StartCoroutine(_attackPlayer(_enemyAttackRange.PlayerInAttackRange));
 

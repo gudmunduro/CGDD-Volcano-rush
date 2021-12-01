@@ -29,4 +29,14 @@ public class PlayerAttackRange : MonoBehaviour
             EnemiesInAttackRange.Remove(other.gameObject);
         }
     }
+
+    void Update()
+    {
+        float _temp = transform.localPosition.x;
+        if (GetComponentInParent<PlayerController2>().m_facingDirection < transform.localPosition.x && transform.localPosition.x > 0)
+            _temp *= -1;
+        else if(GetComponentInParent<PlayerController2>().m_facingDirection > transform.localPosition.x && transform.localPosition.x < 0)
+            _temp *= -1;
+        transform.localPosition = new Vector2(_temp, transform.localPosition.y);
+    }
 }
