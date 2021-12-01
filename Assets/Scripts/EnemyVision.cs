@@ -3,16 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyVisionColliderController : MonoBehaviour
+public class EnemyVision : MonoBehaviour
 {
+    public List<GameObject> EnemiesInVision { get; private set; }
     public GameObject PlayerInVision { get; private set; }
     public bool IsPlayerInVision => PlayerInVision != null;
+
+    private void Awake()
+    {
+        EnemiesInVision = new List<GameObject>();
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.name == "Player")
         {
             PlayerInVision = other.gameObject;
+        }
+        else if (other.gameObject.CompareTag("Enemy"))
+        {
+            EnemiesInVision.Add(other.gameObject);
         }
     }
 
@@ -21,6 +31,10 @@ public class EnemyVisionColliderController : MonoBehaviour
         if (other.gameObject.name == "Player")
         {
             PlayerInVision = null;
+        }
+        else if (other.gameObject.CompareTag("Enemy"))
+        {
+            EnemiesInVision.Remove(other.gameObject);
         }
     }
 }

@@ -19,6 +19,12 @@ internal enum EnemyAnimationState
     Attack = 2
 }
 
+public enum EnemyMessage
+{
+    FoundPlatformStart,
+    FoundPlatformEnd
+}
+
 public class EnemyController : MonoBehaviour
 {
     public float moveSpeed;
@@ -27,7 +33,7 @@ public class EnemyController : MonoBehaviour
     public float attackRate = 2f;
 
     private GameObject _ground;
-    private EnemyVisionColliderController _enemyVisionColliderController;
+    private EnemyVision _enemyVision;
     private EnemyGroundSensor _groundSensor;
     private EnemyAttackRange _enemyAttackRange;
     private GroundFrontSensor _groundFrontSensor;
@@ -45,17 +51,18 @@ public class EnemyController : MonoBehaviour
     {
         EnemyState.PatrolLeft => Direction.Left,
         EnemyState.PatrolRight => Direction.Right,
-        EnemyState.Attacking => _getDirectionPlayerIsIn()
+        EnemyState.Attacking => _getDirectionPlayerIsIn(),
+        _ => Direction.Right
     };
 
     private float DistanceToPlatformLeft => Math.Abs(transform.position.x - _platformStartX);
     private float DistanceToPlatformRight => Math.Abs(transform.position.x - _platformEndX);
 
     private float DistanceToPlayerInVision =>
-        Vector2.Distance(_enemyVisionColliderController.PlayerInVision.transform.position, transform.position);
+        Vector2.Distance(_enemyVision.PlayerInVision.transform.position, transform.position);
 
     private bool IsPlayerInVisionJumping =>
-        _enemyVisionColliderController.PlayerInVision.transform.position.y - transform.position.y > 0.2f;
+        _enemyVision.PlayerInVision.transform.position.y - transform.position.y > 0.2f;
 
 
     private void Awake()
@@ -69,7 +76,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         _groundSensor = GetComponentInChildren<EnemyGroundSensor>();
-        _enemyVisionColliderController = GetComponentInChildren<EnemyVisionColliderController>();
+        _enemyVision = GetComponentInChildren<EnemyVision>();
         _enemyAttackRange = GetComponentInChildren<EnemyAttackRange>();
         _groundFrontSensor = GetComponentInChildren<GroundFrontSensor>();
     }
@@ -87,7 +94,7 @@ public class EnemyController : MonoBehaviour
             }
 
             _ground = _groundSensor.Ground;
-            
+
             _startDefaultWalk();
         }
 
@@ -99,7 +106,7 @@ public class EnemyController : MonoBehaviour
         }
 
         // Attack player if it is in vision
-        if (_enemyVisionColliderController.IsPlayerInVision)
+        if (_enemyVision.IsPlayerInVision)
         {
             _enemyState = EnemyState.Attacking;
         }
@@ -118,7 +125,7 @@ public class EnemyController : MonoBehaviour
             }
             case EnemyState.Attacking:
             {
-                if (!_enemyVisionColliderController.IsPlayerInVision)
+                if (!_enemyVision.IsPlayerInVision)
                 {
                     _startDefaultWalk();
                     break;
@@ -140,24 +147,43 @@ public class EnemyController : MonoBehaviour
         _currentTimeAttack += Time.deltaTime;
     }
 
+    public void SendMessageToEnemy(EnemyMessage message, object content)
+    {
+        switch (message)
+        {
+            case EnemyMessage.FoundPlatformStart:
+                _platformStartX = (float)content;
+                _switchPatrolDirection(_getDirectionForState(_enemyState));
+                break;
+            case EnemyMessage.FoundPlatformEnd:
+                _switchPatrolDirection(_getDirectionForState(_enemyState));
+                _platformEndX = (float)content;
+                break;
+        }
+    }
+
     private void _patrolUpdate(Direction direction)
     {
-        if (direction == Direction.Left && !float.IsPositiveInfinity(_platformStartX) && DistanceToPlatformLeft < 1.0f ||
-            direction == Direction.Right && !float.IsNegativeInfinity(_platformEndX) && DistanceToPlatformRight < 1.0f)
+        if (direction == Direction.Left &&
+            DistanceToPlatformLeft < 3.0f ||
+            direction == Direction.Right && DistanceToPlatformRight < 3.0f)
         {
             _switchPatrolDirection(direction);
         }
 
-        if (!_groundFrontSensor.IsGroundInFront || _enemyAttackRange.IsWallInAttackRange)
+        if (!_groundFrontSensor.IsGroundInFront)
         {
-            Debug.Log("Found end");
             switch (direction)
             {
                 case Direction.Left when float.IsNegativeInfinity(_platformStartX):
                     _platformStartX = transform.position.x;
+                    _sendMessageToAllEnemiesInVision(EnemyMessage.FoundPlatformStart, _platformStartX);
+                    _switchPatrolDirection(direction);
                     break;
                 case Direction.Right when float.IsPositiveInfinity(_platformEndX):
                     _platformEndX = transform.position.x;
+                    _sendMessageToAllEnemiesInVision(EnemyMessage.FoundPlatformEnd, _platformEndX);
+                    _switchPatrolDirection(direction);
                     break;
             }
         }
@@ -208,7 +234,7 @@ public class EnemyController : MonoBehaviour
             if (IsPlayerInVisionJumping)
             {
                 var distanceToPlayerX = Math.Abs(transform.position.x -
-                                                 _enemyVisionColliderController.PlayerInVision.transform.position.x);
+                                                 _enemyVision.PlayerInVision.transform.position.x);
 
                 if (distanceToPlayerX < 2.0f)
                 {
@@ -248,9 +274,17 @@ public class EnemyController : MonoBehaviour
         _setEnemyDirection(_getDirectionForState(_enemyState));
     }
 
+    private void _sendMessageToAllEnemiesInVision(EnemyMessage message, object content)
+    {
+        foreach (var enemy in _enemyVision.EnemiesInVision)
+        {
+            enemy.GetComponent<EnemyController>().SendMessageToEnemy(message, content);
+        }
+    }
+
     private Direction _getDirectionPlayerIsIn()
     {
-        return _enemyVisionColliderController.PlayerInVision.transform.position.x < transform.position.x
+        return _enemyVision.PlayerInVision.transform.position.x < transform.position.x
             ? Direction.Left
             : Direction.Right;
     }
