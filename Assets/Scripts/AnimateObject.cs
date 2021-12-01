@@ -6,7 +6,7 @@ public class AnimateObject : MonoBehaviour
 {
 
 	public float maxHealth;
-	float health;
+	public float health;
 	public bool destroyOnKill;
 	Animator _animator;
 	public bool dead;
