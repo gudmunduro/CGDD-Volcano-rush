@@ -11,6 +11,8 @@ public class Overheating : MonoBehaviour
 
     public bool incoolzone;
 
+    public StatusBar statusBar;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,17 +26,19 @@ public class Overheating : MonoBehaviour
         if (overheat < 100 & !incoolzone)
         {
             overheat += 0.1f;
+            statusBar.Set(overheat);
         }
         else if (incoolzone)
         {
             if (overheat > 0)
             {
                 overheat -= 1;
+                statusBar.Set(overheat);
             }
         }
         else
         {
-            _animateObject.health -= 0.1f;
+            _animateObject.OverheatingDamage();
         }
     }
 }
