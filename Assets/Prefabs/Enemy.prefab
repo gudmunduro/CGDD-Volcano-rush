@@ -326,7 +326,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 3
   runMultiplier: 2
-  damage: 2
+  damage: 25
   attackRate: 2
   swipePlayer: {fileID: 7863832966579018577}
   hitPlayer: {fileID: 5548482194928777752}
