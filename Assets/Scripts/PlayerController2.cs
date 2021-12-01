@@ -18,7 +18,7 @@ public class PlayerController2 : MonoBehaviour {
     private PlayerSensor        m_groundSensor;
     private bool                m_grounded = false;
     private bool                m_rolling = false;
-    private bool                m_blocking = false;
+    public bool                 m_blocking = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
@@ -27,7 +27,11 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_rollCurrentTime;
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
-
+    public AudioSource          m_swipePlayer;
+    public AudioSource          m_hitPlayer;
+    public AudioClip[]          swipeSounds;
+    public AudioClip[]          hitSounds;
+    private AnimateObject       m_animateObject;
     private PlayerAttackRange   _playerAttackRange;
     public float                damage;
 
@@ -39,7 +43,7 @@ public class PlayerController2 : MonoBehaviour {
         m_groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
         m_standardCollider = GetComponent<CapsuleCollider2D>();
         m_rollingCollider = GetComponent<CircleCollider2D>();
-
+        m_animateObject = GetComponent<AnimateObject>();
         _playerAttackRange = GetComponentInChildren<PlayerAttackRange>();
     }
 
@@ -51,6 +55,10 @@ public class PlayerController2 : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
+        if (!m_animateObject.Alive())
+        {
+            return;
+        }
         // Increase timer that controls attack combo
         m_timeSinceAttack += Time.deltaTime;
 
@@ -177,13 +185,13 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         // Swap direction of sprite depending on walk direction
-        if (inputX > 0)
+        if (inputX > 0 && !m_blocking)
         {
             GetComponent<SpriteRenderer>().flipX = false;
             m_facingDirection = 1;
         }
             
-        else if (inputX < 0)
+        else if (inputX < 0 && !m_blocking)
         {
             GetComponent<SpriteRenderer>().flipX = true;
             m_facingDirection = -1;
@@ -204,8 +212,9 @@ public class PlayerController2 : MonoBehaviour {
         yield return new WaitForSeconds(0.2f);
         if (enemy)
         {
+            m_hitPlayer.clip = hitSounds[(int)UnityEngine.Random.Range(0, hitSounds.Length)];
+            m_hitPlayer.Play();
             enemy.GetComponent<AnimateObject>().Attack(damage);
-            Debug.Log("hit");
         }
     }
 
@@ -215,6 +224,8 @@ public class PlayerController2 : MonoBehaviour {
         {
             if (m_currentAttack > 0)
             {
+                m_swipePlayer.clip = swipeSounds[(int)UnityEngine.Random.Range(0, swipeSounds.Length)];
+                m_swipePlayer.Play();
                 foreach (var enemy in _playerAttackRange.EnemiesInAttackRange)
                 {
                     StartCoroutine(_attackEnemy(enemy));

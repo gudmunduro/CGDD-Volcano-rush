@@ -45,9 +45,14 @@ public class AnimateObject : MonoBehaviour
 		return health > 0;
 	}
 
+	private void PlayerDied()
+	{
+		GameManager.instance.YouDied();
+	}
+	
 	public void Attack(float damage)
 	{
-		if (player)
+		if (player && !GetComponent<PlayerController2>().m_blocking)
 		{
 			if (!_playerController.IsRolling())
 			{
@@ -63,6 +68,9 @@ public class AnimateObject : MonoBehaviour
 				{
 					_animator.SetBool("noBlood", false);
 					_animator.SetTrigger("Death");
+					
+					Invoke(nameof(PlayerDied), 2);
+					
 				}	
 			}
 		}
