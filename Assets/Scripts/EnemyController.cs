@@ -24,7 +24,8 @@ internal enum EnemyAnimationState
 public enum EnemyMessage
 {
     FoundPlatformStart,
-    FoundPlatformEnd
+    FoundPlatformEnd,
+    SetDirection
 }
 
 public class EnemyController : MonoBehaviour
@@ -47,6 +48,7 @@ public class EnemyController : MonoBehaviour
     private Collider2D _collider;
     private float _currentTimeAttack;
     private float _lastDirectionSwitchTime;
+    private float _touchGroundTime;
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackAnimId = Animator.StringToHash("Attack");
 
@@ -112,6 +114,7 @@ public class EnemyController : MonoBehaviour
                 return;
             }
 
+            _touchGroundTime = Time.realtimeSinceStartup;
             _ground = _groundSensor.Ground;
 
             _startDefaultWalk();
@@ -122,6 +125,9 @@ public class EnemyController : MonoBehaviour
         {
             _platformStartX = float.NegativeInfinity;
             _platformEndX = float.PositiveInfinity;
+
+            _touchGroundTime = Time.realtimeSinceStartup;
+            _ground = _groundSensor.Ground;
         }
 
         // Attack player if it is in vision
@@ -176,37 +182,39 @@ public class EnemyController : MonoBehaviour
             case EnemyMessage.FoundPlatformEnd:
                 _platformEndX = (float)content;
                 break;
+            case EnemyMessage.SetDirection:
+                _setPatrolDirection((Direction)content);
+                _lastDirectionSwitchTime = Time.realtimeSinceStartup;
+                break;
         }
     }
 
     private void _patrolUpdate(Direction direction)
     {
         if ((direction == Direction.Left &&
-             DistanceToPlatformLeft < 3.0f ||
-             direction == Direction.Right && DistanceToPlatformRight < 3.0f) &&
-            _lastDirectionSwitchTime + 2.0f > Time.fixedTime)
+             DistanceToPlatformLeft < 1.0f ||
+             direction == Direction.Right && DistanceToPlatformRight < 1.0f) &&
+            _lastDirectionSwitchTime + 0.5f < Time.realtimeSinceStartup)
         {
-            Debug.Log("Switching directions");
-            _switchPatrolDirection(direction);
-            _lastDirectionSwitchTime = Time.fixedTime;
+            _setPatrolDirection(direction == Direction.Left ? Direction.Right : Direction.Left);
+            _lastDirectionSwitchTime = Time.realtimeSinceStartup;
+
+            _sendMessageToAllEnemiesInVision(EnemyMessage.SetDirection, _getDirectionForState(_enemyState));
         }
 
-        if (!_groundFrontSensor.IsGroundInFront)
+        if ((!_groundFrontSensor.IsGroundInFront ||
+             _enemyAttackRange.IsWallInAttackRange) && _lastDirectionSwitchTime + 0.5f < Time.realtimeSinceStartup
+                                                    && _touchGroundTime + 0.2f < Time.realtimeSinceStartup)
         {
             switch (direction)
             {
                 case Direction.Left when float.IsNegativeInfinity(_platformStartX):
                     _platformStartX = transform.position.x;
                     _sendMessageToAllEnemiesInVision(EnemyMessage.FoundPlatformStart, _platformStartX);
-                    _switchPatrolDirection(direction);
-                    _lastDirectionSwitchTime = Time.fixedTime;
                     break;
                 case Direction.Right when float.IsPositiveInfinity(_platformEndX):
-                    Debug.Log("Found right end");
                     _platformEndX = transform.position.x;
                     _sendMessageToAllEnemiesInVision(EnemyMessage.FoundPlatformEnd, _platformEndX);
-                    _switchPatrolDirection(direction);
-                    _lastDirectionSwitchTime = Time.fixedTime;
                     break;
             }
         }
@@ -215,15 +223,15 @@ public class EnemyController : MonoBehaviour
         if (_enemyAttackRange.AreEnemiesInAttackRange && _enemyAttackRange.EnemiesInAttackRange
             .Any(e => e.GetComponent<EnemyController>().CurrentWalkingDirection != CurrentWalkingDirection))
         {
-            _startDefaultWalk();
+            _setPatrolDirection(Direction.Right);
         }
 
         _move = 1;
     }
 
-    private void _switchPatrolDirection(Direction currentDirection)
+    private void _setPatrolDirection(Direction direction)
     {
-        _enemyState = currentDirection == Direction.Left ? EnemyState.PatrolRight : EnemyState.PatrolLeft;
+        _enemyState = direction == Direction.Right ? EnemyState.PatrolRight : EnemyState.PatrolLeft;
         _setAnimationState(EnemyAnimationState.Walk);
         _setEnemyDirection(_getDirectionForState(_enemyState));
     }
@@ -264,7 +272,7 @@ public class EnemyController : MonoBehaviour
                 var distanceToPlayerX = Math.Abs(transform.position.x -
                                                  _enemyVision.PlayerInVision.transform.position.x);
 
-                if (distanceToPlayerX < 2.0f)
+                if (distanceToPlayerX < 1.0f)
                 {
                     _setAnimationState(EnemyAnimationState.Idle);
                     _move = 0;
