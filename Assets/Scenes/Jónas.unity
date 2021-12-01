@@ -178,6 +178,18 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 851928515}
+    - target: {fileID: 7631880147290923505, guid: 4e14a264ae8a147418e42317f3248de8, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0.16260235
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631880147290923505, guid: 4e14a264ae8a147418e42317f3248de8, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0.32163155
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631880147290923505, guid: 4e14a264ae8a147418e42317f3248de8, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0.5471698
+      objectReference: {fileID: 0}
     - target: {fileID: 7631880147290923506, guid: 4e14a264ae8a147418e42317f3248de8, type: 3}
       propertyPath: m_Name
       value: Main Camera
@@ -10673,6 +10685,8 @@ Tilemap:
     m_Data: {fileID: 11400000, guid: 650d44b8632e7ee41adf6398c257a924, type: 2}
   - m_RefCount: 340
     m_Data: {fileID: 11400000, guid: ceb9f9580103d9d459b85b4e87322d56, type: 2}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   m_TileSpriteArray:
   - m_RefCount: 160
     m_Data: {fileID: -8817842205769996835, guid: 29bd10a8eb7dc064abea981ad583f323, type: 3}
@@ -10686,6 +10700,8 @@ Tilemap:
     m_Data: {fileID: -1590263010727647343, guid: 8102133d9f828764d9d9f5e104a1dee2, type: 3}
   - m_RefCount: 340
     m_Data: {fileID: 4219511862731173744, guid: 9eebddcf03a60824d92985a72b5a827b, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   m_TileMatrixArray:
   - m_RefCount: 1029
     m_Data:
@@ -10791,6 +10807,18 @@ PrefabInstance:
       propertyPath: enemies
       value: 
       objectReference: {fileID: 2057103313}
+    - target: {fileID: 2897072917571347698, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: noFriction
+      value: 
+      objectReference: {fileID: 6200000, guid: 9c497a4ce1f356b448c0dd3eca091d35, type: 2}
+    - target: {fileID: 2897072917571347699, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: m_Size.y
+      value: 1.2650071
+      objectReference: {fileID: 0}
+    - target: {fileID: 2897072917571347699, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.71067625
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
 --- !u!1 &1675153914
@@ -10911,7 +10939,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2918931521097558160, guid: 9956f74c83c5d164191b032469e5f916, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2918931521097558160, guid: 9956f74c83c5d164191b032469e5f916, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10999,5 +11027,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

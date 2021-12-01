@@ -28,7 +28,7 @@ public class AnimateObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-	    if(!Alive())
+	    if(!Alive() && dead)
 			Destroy(gameObject);
 	}
 
@@ -44,8 +44,6 @@ public class AnimateObject : MonoBehaviour
 
 	public void Attack(float damage)
 	{
-		
-		
 		if (player)
 		{
 			if (!_playerController.IsRolling())
@@ -69,9 +67,9 @@ public class AnimateObject : MonoBehaviour
 			health -= damage;
 			
 			if(Alive())
-				_animator.Play("GarpurEnemyHit");
+				_animator.Play("EnemyHit");
 			else
-				_animator.Play("GarpurEnemyDead");
+				_animator.Play("EnemyDead");
 		}
 	}
 }

@@ -10,13 +10,15 @@ public class PlayerController2 : MonoBehaviour {
     [SerializeField] float      m_rollForce = 6.0f;
 
     public GameObject           enemies;
-
+    public PhysicsMaterial2D    noFriction;
+    
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
     private PlayerSensor        m_groundSensor;
     private bool                m_grounded = false;
     private bool                m_rolling = false;
-    private int                 m_facingDirection = 1;
+    private bool                m_blocking = false;
+    public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
     private float               m_delayToIdle = 0.0f;
@@ -24,6 +26,9 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_rollCurrentTime;
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
+
+    private PlayerAttackRange   _playerAttackRange;
+    public float                damage;
 
     // Use this for initialization
     void Start ()
@@ -33,6 +38,8 @@ public class PlayerController2 : MonoBehaviour {
         m_groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
         m_standardCollider = GetComponent<CapsuleCollider2D>();
         m_rollingCollider = GetComponent<CircleCollider2D>();
+
+        _playerAttackRange = GetComponentInChildren<PlayerAttackRange>();
     }
 
     public bool IsRolling()
@@ -66,6 +73,7 @@ public class PlayerController2 : MonoBehaviour {
         {
             m_grounded = true;
             m_animator.SetBool("Grounded", m_grounded);
+            m_standardCollider.sharedMaterial = default;
         }
 
         //Check if character just started falling
@@ -73,6 +81,7 @@ public class PlayerController2 : MonoBehaviour {
         {
             m_grounded = false;
             m_animator.SetBool("Grounded", m_grounded);
+            m_standardCollider.sharedMaterial = noFriction;
         }
         
         //Set AirSpeed in animator
@@ -88,6 +97,7 @@ public class PlayerController2 : MonoBehaviour {
             m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall")))
         {
             m_currentAttack++;
+            _attackEnemyUpdate();
 
             // Loop back to one after third attack
             if (m_currentAttack > 3)
@@ -105,14 +115,21 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         // Block
-        else if (Input.GetMouseButtonDown(1) && !m_rolling)
+        else if (Input.GetMouseButton(1) && !m_rolling)
         {
-            m_animator.SetTrigger("Block");
-            m_animator.SetBool("IdleBlock", true);
+            if (!m_blocking)
+            {
+                m_animator.SetTrigger("Block");
+                m_animator.SetBool("IdleBlock", true);
+                m_blocking = true;
+            }
         }
 
         else if (Input.GetMouseButtonUp(1))
+        {
             m_animator.SetBool("IdleBlock", false);
+            m_blocking = false;
+        }
 
         // Roll
         else if (Input.GetKeyDown("left shift") && !m_rolling && inputX != 0)
@@ -179,5 +196,26 @@ public class PlayerController2 : MonoBehaviour {
         if (!m_rolling && legalAnimation)
             m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
         
+    }
+
+    private IEnumerator _attackEnemy(GameObject enemy)
+    {
+        yield return new WaitForSeconds(0.2f);
+        enemy.GetComponent<AnimateObject>().Attack(damage);
+        Debug.Log("hit");
+    }
+
+    private void _attackEnemyUpdate()
+    {
+        if (_playerAttackRange.IsEnemyInAttackRange)
+        {
+            if (m_currentAttack > 0)
+            {
+                foreach (var enemy in _playerAttackRange.EnemiesInAttackRange)
+                {
+                    StartCoroutine(_attackEnemy(enemy));
+                }
+            }
+        }
     }
 }
