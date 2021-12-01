@@ -49,7 +49,7 @@ public class AnimateObject : MonoBehaviour
 	
 	public void Attack(float damage)
 	{
-		if (player)
+		if (player && !GetComponent<PlayerController2>().m_blocking)
 		{
 			if (!_playerController.IsRolling())
 			{
