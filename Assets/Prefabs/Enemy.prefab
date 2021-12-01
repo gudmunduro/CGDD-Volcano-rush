@@ -67,7 +67,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 742849083231492275}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f5dd499023897b4bb91333ed3f4c5d8, type: 3}
+  m_Script: {fileID: 11500000, guid: 00a4184616fc5ec3787bbacab51a5d54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7468525166700109269
@@ -253,6 +253,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 3
   runMultiplier: 2
+  damage: 2
+  attackRate: 2
 --- !u!70 &7468525167605376376
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -305,6 +307,7 @@ MonoBehaviour:
   maxHealth: 10
   destroyOnKill: 1
   dead: 0
+  player: 0
 --- !u!1 &7468525167859926800
 GameObject:
   m_ObjectHideFlags: 0
