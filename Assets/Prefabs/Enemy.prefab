@@ -67,7 +67,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 742849083231492275}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0633edd05c93c1749b49034e171e0081, type: 3}
+  m_Script: {fileID: 11500000, guid: 5117bbdb4ca3e5c4c8ef73c730aaf0e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &3466710272001973804
@@ -137,7 +137,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3466710272001973804}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 556cc958f9a1ab344a059d93cdb568e2, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b15e80fad77e6442b4b2b55a7d5634f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7468525166700109269
@@ -376,6 +376,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
+  health: 0
   destroyOnKill: 1
   dead: 0
   player: 0
@@ -436,6 +437,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 7468525167859926800}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0452927205ca5b49953b6f78d878b47, type: 3}
+  m_Script: {fileID: 11500000, guid: 9226e6065afa7a54fb4afe44f863e038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

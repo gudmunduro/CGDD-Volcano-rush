@@ -10788,15 +10788,14 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 2897072917571347698, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: damage
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2897072917571347698, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: enemies
       value: 
       objectReference: {fileID: 2057103313}
-    - target: {fileID: 6114940828785738932, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
-      propertyPath: enemies
-      value: 
-      objectReference: {fileID: 2057103313}
-    m_RemovedComponents:
-    - {fileID: 2897072917571347698, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
 --- !u!1 &1675153914
 GameObject:

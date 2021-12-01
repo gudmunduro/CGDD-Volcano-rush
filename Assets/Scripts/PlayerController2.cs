@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.SearchService;
 
 public class PlayerController2 : MonoBehaviour {
 
@@ -201,8 +202,11 @@ public class PlayerController2 : MonoBehaviour {
     private IEnumerator _attackEnemy(GameObject enemy)
     {
         yield return new WaitForSeconds(0.2f);
-        enemy.GetComponent<AnimateObject>().Attack(damage);
-        Debug.Log("hit");
+        if (enemy)
+        {
+            enemy.GetComponent<AnimateObject>().Attack(damage);
+            Debug.Log("hit");
+        }
     }
 
     private void _attackEnemyUpdate()
