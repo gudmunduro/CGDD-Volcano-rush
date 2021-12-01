@@ -44,6 +44,7 @@ public class EnemyController : MonoBehaviour
     private Animator _animator;
     private Collider2D _collider;
     private float _currentTimeAttack;
+    private float _lastDirectionSwitchTime;
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackAnimId = Animator.StringToHash("Attack");
 
@@ -55,8 +56,13 @@ public class EnemyController : MonoBehaviour
         _ => Direction.Right
     };
 
-    private float DistanceToPlatformLeft => Math.Abs(transform.position.x - _platformStartX);
-    private float DistanceToPlatformRight => Math.Abs(transform.position.x - _platformEndX);
+    private float DistanceToPlatformLeft => !float.IsNegativeInfinity(_platformStartX)
+        ? Math.Abs(transform.position.x - _platformStartX)
+        : float.PositiveInfinity;
+
+    private float DistanceToPlatformRight => !float.IsPositiveInfinity(_platformStartX)
+        ? Math.Abs(transform.position.x - _platformEndX)
+        : float.PositiveInfinity;
 
     private float DistanceToPlayerInVision =>
         Vector2.Distance(_enemyVision.PlayerInVision.transform.position, transform.position);
@@ -153,10 +159,8 @@ public class EnemyController : MonoBehaviour
         {
             case EnemyMessage.FoundPlatformStart:
                 _platformStartX = (float)content;
-                _switchPatrolDirection(_getDirectionForState(_enemyState));
                 break;
             case EnemyMessage.FoundPlatformEnd:
-                _switchPatrolDirection(_getDirectionForState(_enemyState));
                 _platformEndX = (float)content;
                 break;
         }
@@ -164,11 +168,14 @@ public class EnemyController : MonoBehaviour
 
     private void _patrolUpdate(Direction direction)
     {
-        if (direction == Direction.Left &&
-            DistanceToPlatformLeft < 3.0f ||
-            direction == Direction.Right && DistanceToPlatformRight < 3.0f)
+        if ((direction == Direction.Left &&
+             DistanceToPlatformLeft < 3.0f ||
+             direction == Direction.Right && DistanceToPlatformRight < 3.0f) &&
+            _lastDirectionSwitchTime + 2.0f > Time.fixedTime)
         {
+            Debug.Log("Switching directions");
             _switchPatrolDirection(direction);
+            _lastDirectionSwitchTime = Time.fixedTime;
         }
 
         if (!_groundFrontSensor.IsGroundInFront)
@@ -179,11 +186,14 @@ public class EnemyController : MonoBehaviour
                     _platformStartX = transform.position.x;
                     _sendMessageToAllEnemiesInVision(EnemyMessage.FoundPlatformStart, _platformStartX);
                     _switchPatrolDirection(direction);
+                    _lastDirectionSwitchTime = Time.fixedTime;
                     break;
                 case Direction.Right when float.IsPositiveInfinity(_platformEndX):
+                    Debug.Log("Found right end");
                     _platformEndX = transform.position.x;
                     _sendMessageToAllEnemiesInVision(EnemyMessage.FoundPlatformEnd, _platformEndX);
                     _switchPatrolDirection(direction);
+                    _lastDirectionSwitchTime = Time.fixedTime;
                     break;
             }
         }
