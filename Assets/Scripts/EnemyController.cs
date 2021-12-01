@@ -36,10 +36,10 @@ public class EnemyController : MonoBehaviour
     private int _move = 0;
     private Animator _animator;
     private Collider2D _collider;
-    private GameObject _playerToAttack;
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private float _currentTimeAttack;
-    
+    private static readonly int AttackAnimId = Animator.StringToHash("Attack");
+
     public Direction CurrentWalkingDirection => _enemyState switch
     {
         EnemyState.PatrolLeft => Direction.Left,
@@ -120,7 +120,7 @@ public class EnemyController : MonoBehaviour
                     break;
                 }
 
-                _attackPlayer();
+                _attackPlayerUpdate();
                 break;
             }
         }
@@ -158,14 +158,14 @@ public class EnemyController : MonoBehaviour
     }
 
 
-    private void _attackingPlayer()
+    private IEnumerable _attackPlayer(GameObject player)
     {
+        yield return new WaitForSeconds(3);
         //if (!_playerToAttack) return;
-        _playerToAttack = _enemyAttackRange.PlayerInAttackRange;
-        _playerToAttack.GetComponent<AnimateObject>().Attack(damage);
+        player.GetComponent<AnimateObject>().Attack(damage);
     }
     
-    private void _attackPlayer()
+    private void _attackPlayerUpdate()
     {
         // Attack player
         if (_enemyAttackRange.IsPlayerInAttackRange)
@@ -174,9 +174,9 @@ public class EnemyController : MonoBehaviour
                 _currentTimeAttack >= attackRate)
             {
                 _setAnimationState(EnemyAnimationState.Idle);
-                _animator.SetTrigger("Attack");
-                
-                Invoke(nameof(_attackingPlayer), 0.35f);
+                _animator.SetTrigger(AttackAnimId);
+
+                StartCoroutine(nameof(_attackPlayer), _enemyAttackRange.PlayerInAttackRange);
                 
                 _currentTimeAttack = 0;
             }
@@ -184,7 +184,6 @@ public class EnemyController : MonoBehaviour
         // Follow player
         else
         {
-            _playerToAttack = null;
 
             if (IsPlayerInVisionJumping)
             {
