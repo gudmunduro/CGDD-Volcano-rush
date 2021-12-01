@@ -11,7 +11,7 @@ public class GroundFrontSensor : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ground"))
         {
-            IsGroundInFront = true;   
+            IsGroundInFront = true;
         }
     }
 
