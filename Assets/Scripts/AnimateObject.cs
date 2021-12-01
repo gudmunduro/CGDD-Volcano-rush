@@ -44,8 +44,6 @@ public class AnimateObject : MonoBehaviour
 
 	public void Attack(float damage)
 	{
-		
-		
 		if (player)
 		{
 			if (!_playerController.IsRolling())

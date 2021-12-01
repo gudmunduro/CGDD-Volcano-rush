@@ -25,6 +25,9 @@ public class PlayerController2 : MonoBehaviour {
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
 
+    private PlayerAttackRange   _playerAttackRange;
+    public float                damage;
+
     // Use this for initialization
     void Start ()
     {
@@ -33,6 +36,8 @@ public class PlayerController2 : MonoBehaviour {
         m_groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
         m_standardCollider = GetComponent<CapsuleCollider2D>();
         m_rollingCollider = GetComponent<CircleCollider2D>();
+
+        _playerAttackRange = GetComponentInChildren<PlayerAttackRange>();
     }
 
     public bool IsRolling()
@@ -88,6 +93,7 @@ public class PlayerController2 : MonoBehaviour {
             m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall")))
         {
             m_currentAttack++;
+            _attackEnemyUpdate();
 
             // Loop back to one after third attack
             if (m_currentAttack > 3)
@@ -179,5 +185,26 @@ public class PlayerController2 : MonoBehaviour {
         if (!m_rolling && legalAnimation)
             m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
         
+    }
+
+    private IEnumerator _attackEnemy(GameObject enemy)
+    {
+        yield return new WaitForSeconds(0.2f);
+        enemy.GetComponent<AnimateObject>().Attack(damage);
+        Debug.Log("hit");
+    }
+
+    private void _attackEnemyUpdate()
+    {
+        if (_playerAttackRange.IsEnemyInAttackRange)
+        {
+            if (m_currentAttack > 0)
+            {
+                foreach (var enemy in _playerAttackRange.EnemiesInAttackRange)
+                {
+                    StartCoroutine(_attackEnemy(enemy));
+                }
+            }
+        }
     }
 }
