@@ -9,14 +9,16 @@ internal enum EnemyState
 {
     PatrolLeft,
     PatrolRight,
-    Attacking
+    Attacking,
+    Dying,
 }
 
 internal enum EnemyAnimationState
 {
     Idle = 0,
     Walk = 1,
-    Attack = 2
+    Attack = 2,
+    Die = 3
 }
 
 public class EnemyController : MonoBehaviour
@@ -77,6 +79,12 @@ public class EnemyController : MonoBehaviour
     private void Update()
     {
         _move = 0;
+
+        if (!GetComponent<AnimateObject>().Alive())
+        {
+            _enemyState = EnemyState.Dying;
+            _setAnimationState(EnemyAnimationState.Die);
+        }
 
         // Setup for default platform (if the enemy is not falling)
         if (_ground == null)
