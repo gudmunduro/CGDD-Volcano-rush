@@ -216,7 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14be26f5a7974043294f526062d98eba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 10
   health: 0
   destroyOnKill: 0
   dead: 0
@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff802e004a2a8694fac11a717b86b8c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  overheat: 0
+  overheat: 100
   incoolzone: 0
   statusBar: {fileID: 0}
 --- !u!1 &5864403843007873122

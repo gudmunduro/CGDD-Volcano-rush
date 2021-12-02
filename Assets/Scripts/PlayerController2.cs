@@ -11,20 +11,22 @@ public class PlayerController2 : MonoBehaviour {
     [SerializeField] float      m_rollForce = 6.0f;
 
     public GameObject           enemies;
-    public PhysicsMaterial2D    noFriction;
-    
+
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
     private PlayerSensor        m_groundSensor;
     private bool                m_grounded = false;
     private bool                m_rolling = false;
     public bool                 m_blocking = false;
+    private bool                m_isFalling = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
     private float               m_delayToIdle = 0.0f;
     private float               m_rollDuration = 8.0f / 14.0f;
     private float               m_rollCurrentTime;
+    private float               m_fallingTime = 0.5f;
+    private float               m_currentFallingTime = 0f;
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
 
@@ -81,6 +83,11 @@ public class PlayerController2 : MonoBehaviour {
             m_rollCurrentTime += Time.deltaTime;
         }
 
+        if (m_isFalling)
+        {
+            m_currentFallingTime += Time.deltaTime;
+        }
+        
         // Disable rolling if timer extends duration
         if (m_rollCurrentTime > m_rollDuration)
         {
@@ -88,22 +95,31 @@ public class PlayerController2 : MonoBehaviour {
             m_rollCurrentTime = 0f;
             m_rollingCollider.enabled = false;
             m_standardCollider.enabled = true;
+            
+            foreach (Transform enemy in enemies.transform)
+            {
+                var enemyCollider = enemy.GetComponent<Collider2D>();
+                
+                Physics2D.IgnoreCollision(m_standardCollider, enemyCollider, true);
+            }
+            
         }
         
         //Check if character just landed on the ground
         if (!m_grounded && m_groundSensor.Sense())
         {
             m_grounded = true;
+            m_isFalling = true;
             m_animator.SetBool("Grounded", m_grounded);
-            m_standardCollider.sharedMaterial = default;
         }
 
         //Check if character just started falling
         if (m_grounded && !m_groundSensor.Sense())
         {
             m_grounded = false;
+            m_isFalling = true;
+            m_currentFallingTime = 0;
             m_animator.SetBool("Grounded", m_grounded);
-            m_standardCollider.sharedMaterial = noFriction;
         }
         
         //Set AirSpeed in animator
@@ -166,9 +182,9 @@ public class PlayerController2 : MonoBehaviour {
             
             foreach (Transform enemy in enemies.transform)
             {
-                var cuntCollider = enemy.GetComponent<Collider2D>();
+                var enemyCollider = enemy.GetComponent<Collider2D>();
                 
-                Physics2D.IgnoreCollision(m_rollingCollider, cuntCollider, true);
+                Physics2D.IgnoreCollision(m_rollingCollider, enemyCollider, true);
             }
         }
         
@@ -180,6 +196,7 @@ public class PlayerController2 : MonoBehaviour {
             m_animator.SetBool("Grounded", m_grounded);
             m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
             // m_groundSensor.Disable(0.2f);
+            
         }
 
         //Run
