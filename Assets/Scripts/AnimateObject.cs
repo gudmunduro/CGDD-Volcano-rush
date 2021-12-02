@@ -32,7 +32,7 @@ public class AnimateObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-	    if(!Alive() && dead)
+	    if(!Alive() && dead && !player)
 			Destroy(gameObject);
 	}
 
@@ -67,8 +67,7 @@ public class AnimateObject : MonoBehaviour
 			{
 				health -= damage;
 				statusBar.Set(health);
-			
-				Debug.Log(health);
+				
 				if (Alive())
 				{
 					_animator.SetTrigger("Hurt");
@@ -95,8 +94,9 @@ public class AnimateObject : MonoBehaviour
 		health -= 0.1f;
 		statusBar.Set(health);
 
-		if (!Alive())
+		if (!Alive() && !dead)
 		{
+			dead = true;
 			PlayerDeath();
 		}
 	}

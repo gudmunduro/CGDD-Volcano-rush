@@ -95,6 +95,8 @@ public class EnemyController : MonoBehaviour
         _enemyAttackRange = GetComponentInChildren<EnemyAttackRange>();
         _groundFrontSensor = GetComponentInChildren<GroundFrontSensor>();
         _playerAnimateObject = GameManager.instance.player.GetComponent<AnimateObject>();
+        
+        Physics2D.IgnoreCollision(GameManager.instance.player.GetComponent<CapsuleCollider2D>(), _collider, true);
     }
 
     private void Update()
