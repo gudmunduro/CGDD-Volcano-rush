@@ -15,6 +15,7 @@ public class PlayerController2 : MonoBehaviour {
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
     private PlayerSensor        m_groundSensor;
+    private PlayerSensor        m_rollingSensor;
     private bool                m_grounded = false;
     private bool                m_rolling = false;
     public bool                 m_blocking = false;
@@ -43,6 +44,7 @@ public class PlayerController2 : MonoBehaviour {
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
+        m_rollingSensor = transform.Find("RollingSensor").GetComponent<PlayerSensor>();
         m_standardCollider = GetComponent<CapsuleCollider2D>();
         m_rollingCollider = GetComponent<CircleCollider2D>();
         m_animateObject = GetComponent<AnimateObject>();
@@ -103,18 +105,30 @@ public class PlayerController2 : MonoBehaviour {
         // Disable rolling if timer extends duration
         if (m_rollCurrentTime > m_rollDuration)
         {
-            m_rolling = false;
             m_rollCurrentTime = 0f;
-            m_rollingCollider.enabled = false;
-            m_standardCollider.enabled = true;
             
-            foreach (Transform enemy in enemies.transform)
+            if (m_rollingSensor.Sense() && m_grounded)
             {
-                var enemyCollider = enemy.GetComponent<Collider2D>();
                 
-                Physics2D.IgnoreCollision(m_standardCollider, enemyCollider, true);
+                m_animator.SetTrigger("ContinueRoll");
+                m_soundManager.PlaySound(SoundType.Tumble);
+                m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
             }
-            
+            else
+            {
+                m_animator.SetTrigger("StandUp");
+
+                m_rolling = false;
+                m_rollingCollider.enabled = false;
+                m_standardCollider.enabled = true;
+
+                foreach (Transform enemy in enemies.transform)
+                {
+                    var enemyCollider = enemy.GetComponent<Collider2D>();
+                
+                    Physics2D.IgnoreCollision(m_standardCollider, enemyCollider, true);
+                }
+            }
         }
         
         //Check if character just landed on the ground
@@ -147,11 +161,17 @@ public class PlayerController2 : MonoBehaviour {
         // -- Handle input and movement --
         var inputX = Input.GetAxis("Horizontal");
         
+        var illegaAnimation = m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1") ||
+                              m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2") ||
+                              m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3");
+        
         // -- Handle Animations --
         //Attack
         if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling && 
            !(m_animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") ||
-            m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall")))
+            m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall") ||
+            m_animator.GetCurrentAnimatorStateInfo(0).IsName("Block") || 
+            m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle Block") ))
         {
             m_currentAttack++;
             _attackEnemyUpdate();
@@ -172,7 +192,7 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         // Block
-        else if (Input.GetMouseButton(1) && !m_rolling)
+        else if (Input.GetMouseButton(1) && !m_rolling && !illegaAnimation)
         {
             if (!m_blocking)
             {
@@ -193,10 +213,12 @@ public class PlayerController2 : MonoBehaviour {
         else if (Input.GetKeyDown("left shift") && !m_rolling && inputX != 0)
         {
             m_rolling = true;
+            m_animator.ResetTrigger("StandUp");
             m_animator.SetTrigger("Roll");
             if(m_grounded)
                 m_soundManager.PlaySound(SoundType.Tumble);
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
+            
             m_rollingCollider.enabled = true;
             m_standardCollider.enabled = false;
             

@@ -217,8 +217,9 @@ MonoBehaviour:
   enemies: {fileID: 0}
   m_blocking: 0
   m_facingDirection: 1
-  damage: 5
+  damage: 0
   m_baseFallDamage: 20
+  m_slipperyMaterial: {fileID: 6200000, guid: 9c497a4ce1f356b448c0dd3eca091d35, type: 2}
 --- !u!70 &2897072917571347699
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -263,7 +264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14be26f5a7974043294f526062d98eba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 100000
   health: 0
   destroyOnKill: 0
   dead: 0
@@ -281,7 +282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff802e004a2a8694fac11a717b86b8c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  overheat: 0
+  overheat: -10000
   incoolzone: 0
   statusBar: {fileID: 0}
 --- !u!1 &5864403843007873122
@@ -296,6 +297,7 @@ GameObject:
   - component: {fileID: 1050610126194354136}
   - component: {fileID: 2919048507010575179}
   - component: {fileID: 8998608422027624572}
+  - component: {fileID: 756849608}
   m_Layer: 0
   m_Name: AttackRange
   m_TagString: Untagged
@@ -330,7 +332,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.16933185, y: 0.15076347}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -341,7 +343,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.3386637, y: 0.6984731}
   m_EdgeRadius: 0
 --- !u!212 &2919048507010575179
 SpriteRenderer:
@@ -406,6 +408,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7829bd86d37e5b84eb9ed657c8c1093b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!61 &756849608
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5864403843007873122}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -2.1571462, y: 0.1542001}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 3.125, y: 1.71875}
+    newSize: {x: 3.125, y: 1.71875}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.338664, y: 0.6984731}
+  m_EdgeRadius: 0
 --- !u!1 &9113927624351916415
 GameObject:
   m_ObjectHideFlags: 0
