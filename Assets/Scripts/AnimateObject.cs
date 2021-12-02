@@ -58,6 +58,21 @@ public class AnimateObject : MonoBehaviour
 					
 		Invoke(nameof(PlayerDied), 2);
 	}
+
+	public void DamagePlayerHealth(float damage)
+	{
+		health -= damage;
+		statusBar.Set(health);
+				
+		if (Alive())
+		{
+			_animator.SetTrigger("Hurt");
+		}
+		else
+		{
+			PlayerDeath();
+		}	
+	}
 	
 	public void Attack(float damage)
 	{
@@ -65,17 +80,7 @@ public class AnimateObject : MonoBehaviour
 		{
 			if (!_playerController.IsRolling())
 			{
-				health -= damage;
-				statusBar.Set(health);
-				
-				if (Alive())
-				{
-					_animator.SetTrigger("Hurt");
-				}
-				else
-				{
-					PlayerDeath();
-				}	
+				DamagePlayerHealth(damage);
 			}
 		}
 		else
