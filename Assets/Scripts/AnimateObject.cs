@@ -76,7 +76,7 @@ public class AnimateObject : MonoBehaviour
 		}	
 	}
 
-	public void DamageEnemyHealth(float damage)
+	public void DamageEnemyHealth(float damage, bool player=false)
 	{
 		health -= damage;
 
@@ -85,7 +85,11 @@ public class AnimateObject : MonoBehaviour
 		else
 		{
 			_animator.Play("EnemyDead");
-			GameManager.instance.enemiesKilled++;
+
+			if (player)
+			{
+				GameManager.instance.enemiesKilled++;
+			}
 		}
 	}
 	
@@ -100,7 +104,7 @@ public class AnimateObject : MonoBehaviour
 		}
 		else
 		{
-			DamageEnemyHealth(damage);
+			DamageEnemyHealth(damage, true);
 		}
 	}
 

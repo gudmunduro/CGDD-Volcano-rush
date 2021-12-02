@@ -25,7 +25,7 @@ public class Overheating : MonoBehaviour
     {
         if (overheat < 100 && !incoolzone)
         {
-            overheat += 0.1f;
+            overheat += 0.05f;
             statusBar.Set(overheat);
         }
         else if (incoolzone)

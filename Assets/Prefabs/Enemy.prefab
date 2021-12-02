@@ -324,7 +324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 3
   runMultiplier: 2
-  damage: 2
+  damage: 10
   attackRate: 2
   soundManager: {fileID: 0}
 --- !u!70 &7468525167605376376
