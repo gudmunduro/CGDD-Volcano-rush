@@ -18,18 +18,20 @@ public class PlayerController2 : MonoBehaviour {
     private bool                m_grounded = false;
     private bool                m_rolling = false;
     public bool                 m_blocking = false;
+    private bool                m_isFalling = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
     private float               m_delayToIdle = 0.0f;
     private float               m_rollDuration = 8.0f / 14.0f;
     private float               m_rollCurrentTime;
+    private float               m_fallingTime = 0.5f;
+    private float               m_currentFallingTime = 0f;
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
-    public AudioSource          m_swipePlayer;
-    public AudioSource          m_hitPlayer;
-    public AudioClip[]          swipeSounds;
-    public AudioClip[]          hitSounds;
+
+    private SoundManager         m_soundManager; 
+
     private AnimateObject       m_animateObject;
     private PlayerAttackRange   _playerAttackRange;
     public float                damage;
@@ -44,6 +46,7 @@ public class PlayerController2 : MonoBehaviour {
         m_rollingCollider = GetComponent<CircleCollider2D>();
         m_animateObject = GetComponent<AnimateObject>();
         _playerAttackRange = GetComponentInChildren<PlayerAttackRange>();
+        m_soundManager = SoundManager.instance;
     }
 
     public bool IsRolling()
@@ -80,6 +83,11 @@ public class PlayerController2 : MonoBehaviour {
             m_rollCurrentTime += Time.deltaTime;
         }
 
+        if (m_isFalling)
+        {
+            m_currentFallingTime += Time.deltaTime;
+        }
+        
         // Disable rolling if timer extends duration
         if (m_rollCurrentTime > m_rollDuration)
         {
@@ -90,9 +98,9 @@ public class PlayerController2 : MonoBehaviour {
             
             foreach (Transform enemy in enemies.transform)
             {
-                var cuntCollider = enemy.GetComponent<Collider2D>();
+                var enemyCollider = enemy.GetComponent<Collider2D>();
                 
-                Physics2D.IgnoreCollision(m_standardCollider, cuntCollider, true);
+                Physics2D.IgnoreCollision(m_standardCollider, enemyCollider, true);
             }
             
         }
@@ -101,6 +109,7 @@ public class PlayerController2 : MonoBehaviour {
         if (!m_grounded && m_groundSensor.Sense())
         {
             m_grounded = true;
+            m_isFalling = true;
             m_animator.SetBool("Grounded", m_grounded);
         }
 
@@ -108,6 +117,8 @@ public class PlayerController2 : MonoBehaviour {
         if (m_grounded && !m_groundSensor.Sense())
         {
             m_grounded = false;
+            m_isFalling = true;
+            m_currentFallingTime = 0;
             m_animator.SetBool("Grounded", m_grounded);
         }
         
@@ -148,6 +159,7 @@ public class PlayerController2 : MonoBehaviour {
             {
                 m_animator.SetTrigger("Block");
                 m_animator.SetBool("IdleBlock", true);
+                m_soundManager.PlayGuard();
                 m_blocking = true;
             }
         }
@@ -163,15 +175,16 @@ public class PlayerController2 : MonoBehaviour {
         {
             m_rolling = true;
             m_animator.SetTrigger("Roll");
+            m_soundManager.PlaySound(SoundType.Tumble);
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
             m_rollingCollider.enabled = true;
             m_standardCollider.enabled = false;
             
             foreach (Transform enemy in enemies.transform)
             {
-                var cuntCollider = enemy.GetComponent<Collider2D>();
+                var enemyCollider = enemy.GetComponent<Collider2D>();
                 
-                Physics2D.IgnoreCollision(m_rollingCollider, cuntCollider, true);
+                Physics2D.IgnoreCollision(m_rollingCollider, enemyCollider, true);
             }
         }
         
@@ -226,13 +239,22 @@ public class PlayerController2 : MonoBehaviour {
         
     }
 
+    public void PlayGrunt()
+    {
+        m_soundManager.PlaySound(SoundType.Grunt);
+    }
+
+    public void PlayDeath()
+    {
+        m_soundManager.PlayDeath();
+    }
+
     private IEnumerator _attackEnemy(GameObject enemy)
     {
         yield return new WaitForSeconds(0.2f);
         if (enemy)
         {
-            m_hitPlayer.clip = hitSounds[(int)UnityEngine.Random.Range(0, hitSounds.Length)];
-            m_hitPlayer.Play();
+            m_soundManager.PlaySound(SoundType.Bone);
             enemy.GetComponent<AnimateObject>().Attack(damage);
         }
     }
@@ -243,8 +265,7 @@ public class PlayerController2 : MonoBehaviour {
         {
             if (m_currentAttack > 0)
             {
-                m_swipePlayer.clip = swipeSounds[(int)UnityEngine.Random.Range(0, swipeSounds.Length)];
-                m_swipePlayer.Play();
+                m_soundManager.PlaySound(SoundType.Swipe);
                 foreach (var enemy in _playerAttackRange.EnemiesInAttackRange)
                 {
                     StartCoroutine(_attackEnemy(enemy));
