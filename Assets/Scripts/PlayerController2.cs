@@ -90,9 +90,9 @@ public class PlayerController2 : MonoBehaviour {
             
             foreach (Transform enemy in enemies.transform)
             {
-                var cuntCollider = enemy.GetComponent<Collider2D>();
+                var enemyCollider = enemy.GetComponent<Collider2D>();
                 
-                Physics2D.IgnoreCollision(m_standardCollider, cuntCollider, true);
+                Physics2D.IgnoreCollision(m_standardCollider, enemyCollider, true);
             }
             
         }
@@ -169,9 +169,9 @@ public class PlayerController2 : MonoBehaviour {
             
             foreach (Transform enemy in enemies.transform)
             {
-                var cuntCollider = enemy.GetComponent<Collider2D>();
+                var enemyCollider = enemy.GetComponent<Collider2D>();
                 
-                Physics2D.IgnoreCollision(m_rollingCollider, cuntCollider, true);
+                Physics2D.IgnoreCollision(m_rollingCollider, enemyCollider, true);
             }
         }
         
