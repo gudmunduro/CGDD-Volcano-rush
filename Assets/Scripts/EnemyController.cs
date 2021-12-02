@@ -48,7 +48,9 @@ public class EnemyController : MonoBehaviour
     private float _currentTimeAttack;
     private float _lastDirectionSwitchTime;
     private float _touchGroundTime;
+    private AnimateObject _enemyAnimateObject;
     private AnimateObject _playerAnimateObject;
+    private EnemyAnimationState _currentAnimationState;
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackAnimId = Animator.StringToHash("Attack");
 
@@ -81,6 +83,7 @@ public class EnemyController : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _collider = GetComponent<Collider2D>();
+        _enemyAnimateObject = GetComponent<AnimateObject>();
 
         moveSpeed /= 100;
     }
@@ -101,7 +104,7 @@ public class EnemyController : MonoBehaviour
     {
         _move = 0;
 
-        if (!GetComponent<AnimateObject>().Alive())
+        if (!_enemyAnimateObject.Alive())
         {
             _enemyState = EnemyState.Dying;
             _setAnimationState(EnemyAnimationState.Die);
@@ -344,6 +347,8 @@ public class EnemyController : MonoBehaviour
 
     private Direction _getDirectionPlayerIsIn()
     {
+        if (!_enemyVision.IsPlayerInVision) return Direction.Right;
+        
         return _enemyVision.PlayerInVision.transform.position.x < transform.position.x
             ? Direction.Left
             : Direction.Right;
@@ -361,6 +366,9 @@ public class EnemyController : MonoBehaviour
 
     private void _setAnimationState(EnemyAnimationState state)
     {
+        if (state == _currentAnimationState) return;
+
         _animator.SetInteger(AnimatorStateKey, (int)state);
+        _currentAnimationState = state;
     }
 }
