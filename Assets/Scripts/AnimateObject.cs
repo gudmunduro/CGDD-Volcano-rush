@@ -8,21 +8,22 @@ public class AnimateObject : MonoBehaviour
 	public float maxHealth;
 	public float health;
 	public bool destroyOnKill;
-	Animator _animator;
+	
 	public bool dead;
 	public bool player = false;
 	private PlayerController2 _playerController;
-
+	private Animator _animator;
 	public StatusBar statusBar;
 	
     // Start is called before the first frame update
     void Start()
     {
         health = maxHealth;
-		//statusBar.SetMax(maxHealth);
+		
 		_animator = GetComponent<Animator>();
 		if (player)
 		{ 
+			statusBar.SetMax(maxHealth);
 			_playerController = GetComponent<PlayerController2>();
 		}
 		dead = false;
@@ -49,6 +50,14 @@ public class AnimateObject : MonoBehaviour
 	{
 		GameManager.instance.YouDied();
 	}
+
+	private void PlayerDeath()
+	{
+		_animator.SetBool("noBlood", false);
+		_animator.SetTrigger("Death");
+					
+		Invoke(nameof(PlayerDied), 2);
+	}
 	
 	public void Attack(float damage)
 	{
@@ -57,7 +66,7 @@ public class AnimateObject : MonoBehaviour
 			if (!_playerController.IsRolling() && !_playerController.IsBlocking())
 			{
 				health -= damage;
-				//statusBar.Set(health);
+				statusBar.Set(health);
 			
 				Debug.Log(health);
 				if (Alive())
@@ -66,10 +75,7 @@ public class AnimateObject : MonoBehaviour
 				}
 				else
 				{
-					_animator.SetBool("noBlood", false);
-					_animator.SetTrigger("Death");
-					
-					Invoke(nameof(PlayerDied), 2);
+					PlayerDeath();
 				}	
 			}
 		}
@@ -88,5 +94,10 @@ public class AnimateObject : MonoBehaviour
 	{
 		health -= 0.1f;
 		statusBar.Set(health);
+
+		if (!Alive())
+		{
+			PlayerDeath();
+		}
 	}
 }
