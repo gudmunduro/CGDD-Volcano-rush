@@ -35,6 +35,8 @@ public class PlayerController2 : MonoBehaviour {
     public int                  m_baseFallDamage = 20;
     public PhysicsMaterial2D   m_slipperyMaterial;
 
+    public bool IsTouchingGround => m_groundSensor.Sense();
+    
     // Use this for initialization
 
     void Start ()
