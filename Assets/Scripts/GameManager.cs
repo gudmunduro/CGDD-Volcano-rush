@@ -14,8 +14,10 @@ public class GameManager : MonoBehaviour
     public int enemiesKilled = 0;
 
     private float _timer = 0;
+    private int _score = 0;
     private TextMeshProUGUI _timeLivedText;
     private TextMeshProUGUI _enemiesKilledText;
+    private TextMeshProUGUI _scoreText;
     
     private void Awake()
     {
@@ -34,6 +36,9 @@ public class GameManager : MonoBehaviour
                     break;
                 case "EnemiesKilled":
                     _enemiesKilledText = child.GetComponent<TextMeshProUGUI>();
+                    break;
+                case "Score":
+                    _scoreText = child.GetComponent<TextMeshProUGUI>();
                     break;
             }
         }
@@ -58,6 +63,14 @@ public class GameManager : MonoBehaviour
         return minutes + " Minutes and " + seconds + " Seconds";
 
     }
+
+    private int CalculateScore()
+    {
+        _score = 100 * enemiesKilled;
+        _score += 300 - Mathf.FloorToInt(_timer);
+        
+        return _score;
+    }
     
     public void YouWin()
     {
@@ -65,6 +78,7 @@ public class GameManager : MonoBehaviour
 
         _enemiesKilledText.text = "Enemies Killed: " + enemiesKilled;
         _timeLivedText.text = DisplayTime(_timer);
+        _scoreText.text = "Score: " + CalculateScore();
         
         Time.timeScale = 0;
     }
