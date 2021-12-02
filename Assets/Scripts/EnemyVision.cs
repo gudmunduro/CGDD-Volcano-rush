@@ -16,7 +16,7 @@ public class EnemyVision : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name == "Player")
+        if (other.gameObject.name == "Player" && other.gameObject.GetComponent<AnimateObject>().Alive())
         {
             PlayerInVision = other.gameObject;
         }
@@ -36,5 +36,11 @@ public class EnemyVision : MonoBehaviour
         {
             EnemiesInVision.Remove(other.gameObject);
         }
+    }
+
+    void Update()
+    {
+        if (IsPlayerInVision && !PlayerInVision.GetComponent<AnimateObject>().Alive())
+            PlayerInVision = null;
     }
 }

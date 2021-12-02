@@ -24,7 +24,6 @@ public class AnimateObject : MonoBehaviour
 		if (player)
 		{ 
 			_playerController = GetComponent<PlayerController2>();
-			Debug.Log("helloooooo");
 		}
 		dead = false;
     }
