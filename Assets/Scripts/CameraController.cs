@@ -30,19 +30,7 @@ public class CameraController : MonoBehaviour
         _cameraPos = new Vector3(position.x, position.y, -10f);
         transform.position = Vector3.SmoothDamp(gameObject.transform.position, _cameraPos, ref _velocity, dampTime);
     }
-
-    private bool _isInTilemapBounds(Vector2 position, Vector2 size)
-    {
-        var tilemapX = tilemap.transform.position.x;
-        var tilemapY = tilemap.transform.position.y;
-        var halfTilemapX = tilemap.size.x / 2;
-        var halfTilemapY = tilemap.size.y / 2;
-        // y + height > tilemapY - 1 && y - height < tilemapY + halfTilemapY - 1;
-
-        return (position.x - size.x > tilemapX - 1 && position.x + size.x < tilemapX + halfTilemapX - 1)
-               && (position.y + size.y > tilemapY - 1 && position.y - size.y < tilemapY + halfTilemapY - 1);
-    }
-
+    
     private void _fixCameraPos(ref Vector3 position, float width, float height)
     {
         var tilemapX = tilemap.transform.position.x;
@@ -58,9 +46,13 @@ public class CameraController : MonoBehaviour
         {
             position.x = tilemapX + halfTilemapX - width / 2 - 1.5f;
         }
-        else if (position.y + height > (tilemapY + halfTilemapY / 4) + 0.1f)
+        if (position.y + height > (tilemapY + halfTilemapY / 4))
         {
-            position.y = tilemapY + halfTilemapY / 4 - height + 0.07f;
+            position.y = tilemapY + halfTilemapY / 4 - height;
+        }
+        else if (position.y < tilemapY - 3 * halfTilemapY / 4)
+        {
+            position.y = tilemapY - 3 * halfTilemapY / 4;
         }
     }
 }
