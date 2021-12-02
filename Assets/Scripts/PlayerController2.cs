@@ -194,7 +194,8 @@ public class PlayerController2 : MonoBehaviour {
         {
             m_rolling = true;
             m_animator.SetTrigger("Roll");
-            m_soundManager.PlaySound(SoundType.Tumble);
+            if(m_grounded)
+                m_soundManager.PlaySound(SoundType.Tumble);
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
             m_rollingCollider.enabled = true;
             m_standardCollider.enabled = false;
