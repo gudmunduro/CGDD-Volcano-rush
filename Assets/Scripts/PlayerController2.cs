@@ -34,6 +34,8 @@ public class PlayerController2 : MonoBehaviour {
     public float                damage;
     public int                  m_baseFallDamage = 20;
 
+    public bool IsTouchingGround => m_groundSensor.Sense();
+    
     // Use this for initialization
     void Start ()
     {
