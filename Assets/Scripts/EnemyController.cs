@@ -78,7 +78,7 @@ public class EnemyController : MonoBehaviour
         Vector2.Distance(_enemyVision.PlayerInVision.transform.position, transform.position);
 
     private bool IsPlayerJumping =>
-        GameManager.instance.transform.position.y - transform.position.y > 0.2f;
+        GameManager.instance.player.transform.position.y - transform.position.y > 0.2f;
 
 
     private void Awake()
