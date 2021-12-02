@@ -48,6 +48,7 @@ public class EnemyController : MonoBehaviour
     private float _currentTimeAttack;
     private float _lastDirectionSwitchTime;
     private float _touchGroundTime;
+    private AnimateObject _enemyAnimateObject;
     private AnimateObject _playerAnimateObject;
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackAnimId = Animator.StringToHash("Attack");
@@ -84,6 +85,7 @@ public class EnemyController : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _collider = GetComponent<Collider2D>();
+        _enemyAnimateObject = GetComponent<AnimateObject>();
 
         moveSpeed /= 100;
     }
@@ -108,8 +110,8 @@ public class EnemyController : MonoBehaviour
         }
         
         _move = 0;
-    
-        if (!GetComponent<AnimateObject>().Alive())
+
+        if (!_enemyAnimateObject.Alive())
         {
             _enemyState = EnemyState.Dying;
             _setAnimationState(EnemyAnimationState.Die);
@@ -173,6 +175,11 @@ public class EnemyController : MonoBehaviour
                 }
 
                 _attackPlayerUpdate();
+                break;
+            }
+            case EnemyState.Idle:
+            {
+                _setAnimationState(EnemyAnimationState.Idle);
                 break;
             }
         }
@@ -309,6 +316,7 @@ public class EnemyController : MonoBehaviour
 
                 if (distanceToPlayerX < 1.0f)
                 {
+                    _setAnimationState(EnemyAnimationState.Idle);
                     _move = 0;
                 }
             }
@@ -354,6 +362,8 @@ public class EnemyController : MonoBehaviour
 
     private Direction _getDirectionPlayerIsIn()
     {
+        if (!_enemyVision.IsPlayerInVision) return Direction.Right;
+        
         return _enemyVision.PlayerInVision.transform.position.x < transform.position.x
             ? Direction.Left
             : Direction.Right;

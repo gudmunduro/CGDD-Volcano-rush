@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     public float jumpForce;
     public float moveSpeed;
     public float initialSpeed;
-
+    
     private PlayerSensor _groundSensor;
     private Rigidbody2D _rigidbody;
     private Vector2 _velocity;
