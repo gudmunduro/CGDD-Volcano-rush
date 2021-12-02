@@ -18,12 +18,15 @@ public class PlayerController2 : MonoBehaviour {
     private bool                m_grounded = false;
     private bool                m_rolling = false;
     public bool                 m_blocking = false;
+    private bool                m_isFalling = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
     private float               m_delayToIdle = 0.0f;
     private float               m_rollDuration = 8.0f / 14.0f;
     private float               m_rollCurrentTime;
+    private float               m_fallingTime = 0.5f;
+    private float               m_currentFallingTime = 0f;
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
     public AudioSource          m_swipePlayer;
@@ -80,6 +83,11 @@ public class PlayerController2 : MonoBehaviour {
             m_rollCurrentTime += Time.deltaTime;
         }
 
+        if (m_isFalling)
+        {
+            m_currentFallingTime += Time.deltaTime;
+        }
+        
         // Disable rolling if timer extends duration
         if (m_rollCurrentTime > m_rollDuration)
         {
@@ -101,6 +109,7 @@ public class PlayerController2 : MonoBehaviour {
         if (!m_grounded && m_groundSensor.Sense())
         {
             m_grounded = true;
+            m_isFalling = true;
             m_animator.SetBool("Grounded", m_grounded);
         }
 
@@ -108,6 +117,8 @@ public class PlayerController2 : MonoBehaviour {
         if (m_grounded && !m_groundSensor.Sense())
         {
             m_grounded = false;
+            m_isFalling = true;
+            m_currentFallingTime = 0;
             m_animator.SetBool("Grounded", m_grounded);
         }
         
