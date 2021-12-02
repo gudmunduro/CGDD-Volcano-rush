@@ -55,7 +55,7 @@ public class AnimateObject : MonoBehaviour
 	{
 		_animator.SetBool("noBlood", false);
 		_animator.SetTrigger("Death");
-					
+		_playerController.PlayDeath();
 		Invoke(nameof(PlayerDied), 2);
 	}
 
@@ -71,7 +71,7 @@ public class AnimateObject : MonoBehaviour
 		}
 		else
 		{
-			_playerController.PlayDeath();
+			
 			PlayerDeath();
 		}	
 	}
