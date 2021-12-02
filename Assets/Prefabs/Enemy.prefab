@@ -395,6 +395,7 @@ MonoBehaviour:
   destroyOnKill: 1
   dead: 0
   player: 0
+  statusBar: {fileID: 0}
 --- !u!82 &7863832966579018577
 AudioSource:
   m_ObjectHideFlags: 0
