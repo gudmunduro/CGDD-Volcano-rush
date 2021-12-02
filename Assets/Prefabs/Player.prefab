@@ -167,10 +167,8 @@ MonoBehaviour:
   m_jumpForce: 7.5
   m_rollForce: 8
   enemies: {fileID: 0}
-  noFriction: {fileID: 6200000, guid: 9c497a4ce1f356b448c0dd3eca091d35, type: 2}
   m_blocking: 0
   m_facingDirection: 1
-  m_soundManager: {fileID: 0}
   damage: 5
 --- !u!70 &2897072917571347699
 CapsuleCollider2D:
@@ -234,7 +232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff802e004a2a8694fac11a717b86b8c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  overheat: 100
+  overheat: 0
   incoolzone: 0
   statusBar: {fileID: 0}
 --- !u!1 &5864403843007873122
