@@ -233,7 +233,7 @@ public class EnemyController : MonoBehaviour
 
         // Switch to the direction that makes more sense if enemies are colliding with each other
         if (_enemyAttackRange.AreEnemiesInAttackRange && _enemyAttackRange.EnemiesInAttackRange
-            .Any(e => e.GetComponent<EnemyController>().CurrentWalkingDirection != CurrentWalkingDirection))
+            .Any(e => e != null && e.GetComponent<EnemyController>().CurrentWalkingDirection != CurrentWalkingDirection))
         {
             _setPatrolDirection(Direction.Right);
         }
