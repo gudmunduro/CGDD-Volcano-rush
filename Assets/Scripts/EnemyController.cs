@@ -9,6 +9,7 @@ internal enum EnemyState
     PatrolRight,
     Attacking,
     Dying,
+    Idle
 }
 
 internal enum EnemyAnimationState
@@ -47,6 +48,7 @@ public class EnemyController : MonoBehaviour
     private float _currentTimeAttack;
     private float _lastDirectionSwitchTime;
     private float _touchGroundTime;
+    private AnimateObject _playerAnimateObject;
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackAnimId = Animator.StringToHash("Attack");
 
@@ -92,6 +94,7 @@ public class EnemyController : MonoBehaviour
         _enemyVision = GetComponentInChildren<EnemyVision>();
         _enemyAttackRange = GetComponentInChildren<EnemyAttackRange>();
         _groundFrontSensor = GetComponentInChildren<GroundFrontSensor>();
+        _playerAnimateObject = GameManager.instance.player.GetComponent<AnimateObject>();
     }
 
     private void Update()
@@ -134,6 +137,12 @@ public class EnemyController : MonoBehaviour
             _enemyState = EnemyState.Attacking;
         }
 
+        // Make enemies idle if player is dead
+        if (!_playerAnimateObject.Alive())
+        {
+            _enemyState = EnemyState.Idle;
+        }
+
         switch (_enemyState)
         {
             case EnemyState.PatrolLeft:
@@ -155,6 +164,11 @@ public class EnemyController : MonoBehaviour
                 }
 
                 _attackPlayerUpdate();
+                break;
+            }
+            case EnemyState.Idle:
+            {
+                _setAnimationState(EnemyAnimationState.Idle);
                 break;
             }
         }
