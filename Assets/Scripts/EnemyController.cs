@@ -309,16 +309,13 @@ public class EnemyController : MonoBehaviour
         // Follow player
         else
         {
-            if (IsPlayerInVisionJumping)
+            var distanceToPlayerX = Math.Abs(transform.position.x -
+                                             _enemyVision.PlayerInVision.transform.position.x);
+            
+            if (IsPlayerInVisionJumping && distanceToPlayerX < 1.0f)
             {
-                var distanceToPlayerX = Math.Abs(transform.position.x -
-                                                 _enemyVision.PlayerInVision.transform.position.x);
-
-                if (distanceToPlayerX < 1.0f)
-                {
-                    _setAnimationState(EnemyAnimationState.Idle);
-                    _move = 0;
-                }
+                _setAnimationState(EnemyAnimationState.Idle); 
+                _move = 0;
             }
             else
             {
