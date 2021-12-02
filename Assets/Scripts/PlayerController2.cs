@@ -18,14 +18,13 @@ public class PlayerController2 : MonoBehaviour {
     private bool                m_grounded = false;
     private bool                m_rolling = false;
     public bool                 m_blocking = false;
-    private bool                m_isFalling = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
     private float               m_delayToIdle = 0.0f;
     private float               m_rollDuration = 8.0f / 14.0f;
     private float               m_rollCurrentTime;
-    private float               m_fallingTime = 0.5f;
+    private float               m_fallingTime = 1.2f;
     private float               m_currentFallingTime = 0f;
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
@@ -35,6 +34,7 @@ public class PlayerController2 : MonoBehaviour {
     private AnimateObject       m_animateObject;
     private PlayerAttackRange   _playerAttackRange;
     public float                damage;
+    public int                  m_baseFallDamage = 20;
 
     // Use this for initialization
     void Start ()
@@ -83,10 +83,11 @@ public class PlayerController2 : MonoBehaviour {
             m_rollCurrentTime += Time.deltaTime;
         }
 
-        if (m_isFalling)
+        if (!m_grounded && m_body2d.velocity.y < 0)
         {
             m_currentFallingTime += Time.deltaTime;
         }
+        
         
         // Disable rolling if timer extends duration
         if (m_rollCurrentTime > m_rollDuration)
@@ -109,16 +110,23 @@ public class PlayerController2 : MonoBehaviour {
         if (!m_grounded && m_groundSensor.Sense())
         {
             m_grounded = true;
-            m_isFalling = true;
+            
+            Debug.Log(m_currentFallingTime);
+            
+            if (m_currentFallingTime > m_fallingTime)
+            {
+                m_animateObject.DamagePlayerHealth(m_baseFallDamage * Mathf.Floor(m_currentFallingTime));
+            }
+
             m_animator.SetBool("Grounded", m_grounded);
+            m_currentFallingTime = 0f;
+            
         }
 
         //Check if character just started falling
         if (m_grounded && !m_groundSensor.Sense())
         {
             m_grounded = false;
-            m_isFalling = true;
-            m_currentFallingTime = 0;
             m_animator.SetBool("Grounded", m_grounded);
         }
         
@@ -189,7 +197,7 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         //Jump
-        else if (Input.GetKeyDown("space") && m_grounded && !m_rolling)
+        else if ((Input.GetKeyDown("space") || Input.GetKeyDown("w")) && m_grounded && !m_rolling)
         {
             m_animator.SetTrigger("Jump");
             m_grounded = false;

@@ -55,8 +55,25 @@ public class AnimateObject : MonoBehaviour
 	{
 		_animator.SetBool("noBlood", false);
 		_animator.SetTrigger("Death");
-					
+		_playerController.PlayDeath();
 		Invoke(nameof(PlayerDied), 2);
+	}
+
+	public void DamagePlayerHealth(float damage)
+	{
+		health -= damage;
+		statusBar.Set(health);
+				
+		if (Alive())
+		{
+			_animator.SetTrigger("Hurt");
+			_playerController.PlayGrunt();
+		}
+		else
+		{
+			
+			PlayerDeath();
+		}	
 	}
 	
 	public void Attack(float damage)
@@ -65,19 +82,7 @@ public class AnimateObject : MonoBehaviour
 		{
 			if (!_playerController.IsRolling())
 			{
-				health -= damage;
-				statusBar.Set(health);
-				
-				if (Alive())
-				{
-					_animator.SetTrigger("Hurt");
-					_playerController.PlayGrunt();
-				}
-				else
-				{
-					_playerController.PlayDeath();
-					PlayerDeath();
-				}	
+				DamagePlayerHealth(damage);
 			}
 		}
 		else
