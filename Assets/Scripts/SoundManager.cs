@@ -31,6 +31,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource tumblePlayer;
 
     public AudioSource soloPlayer;
+    public AudioSource BGPlayer;
 
     private void Awake()
     {
