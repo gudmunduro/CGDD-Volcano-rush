@@ -921,6 +921,37 @@ PrefabInstance:
       objectReference: {fileID: 2057103314}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9956f74c83c5d164191b032469e5f916, type: 3}
+--- !u!1 &756849603 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5864403843007873122, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+  m_PrefabInstance: {fileID: 1192150031}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &756849608
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 756849603}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -2.1571462, y: 0.1542001}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 3.125, y: 1.71875}
+    newSize: {x: 3.125, y: 1.71875}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.338664, y: 0.6984731}
+  m_EdgeRadius: 0
 --- !u!1001 &760521951
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2639,6 +2670,22 @@ PrefabInstance:
       propertyPath: statusBar
       value: 
       objectReference: {fileID: 465650659}
+    - target: {fileID: 1050610126194354136, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: m_Size.x
+      value: 1.3386637
+      objectReference: {fileID: 0}
+    - target: {fileID: 1050610126194354136, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: m_Size.y
+      value: 0.6984731
+      objectReference: {fileID: 0}
+    - target: {fileID: 1050610126194354136, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.16933185
+      objectReference: {fileID: 0}
+    - target: {fileID: 1050610126194354136, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.15076347
+      objectReference: {fileID: 0}
     - target: {fileID: 2897072917571347692, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: m_Name
       value: Player

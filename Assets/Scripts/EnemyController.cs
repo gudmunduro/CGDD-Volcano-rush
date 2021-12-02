@@ -99,12 +99,18 @@ public class EnemyController : MonoBehaviour
 
     private void Update()
     {
+        if (_enemyState == EnemyState.Dying)
+        {
+            return;
+        }
+        
         _move = 0;
-
+    
         if (!GetComponent<AnimateObject>().Alive())
         {
             _enemyState = EnemyState.Dying;
             _setAnimationState(EnemyAnimationState.Die);
+            return;
         }
 
         // Setup for default platform (if the enemy is not falling)

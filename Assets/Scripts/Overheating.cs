@@ -32,7 +32,7 @@ public class Overheating : MonoBehaviour
         {
             if (overheat > 0)
             {
-                overheat -= 1;
+                overheat -= 0.3f;
                 statusBar.Set(overheat);
             }
         }
