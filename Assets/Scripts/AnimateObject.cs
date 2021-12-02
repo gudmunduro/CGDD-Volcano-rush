@@ -81,11 +81,16 @@ public class AnimateObject : MonoBehaviour
 		else
 		{
 			health -= damage;
+
+			
 			
 			if(Alive())
 				_animator.Play("EnemyHit");
 			else
+			{
 				_animator.Play("EnemyDead");
+				GameManager.instance.enemiesKilled++;
+			}
 		}
 	}
 
