@@ -2667,6 +2667,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 851928518, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: overheat
+      value: -10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 851928518, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: statusBar
       value: 
       objectReference: {fileID: 465650659}
@@ -2691,9 +2695,17 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 2897072917571347696, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: maxHealth
+      value: 100000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2897072917571347696, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: statusBar
       value: 
       objectReference: {fileID: 390014052}
+    - target: {fileID: 2897072917571347698, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: damage
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2897072917571347698, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: enemies
       value: 

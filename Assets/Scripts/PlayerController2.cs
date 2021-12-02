@@ -260,7 +260,10 @@ public class PlayerController2 : MonoBehaviour {
     private IEnumerator _attackEnemy(GameObject enemy)
     {
         yield return new WaitForSeconds(0.2f);
-        if (enemy)
+        var legalAnimation = m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1") ||
+                             m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2") ||
+                             m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3");
+        if (enemy && legalAnimation)
         {
             m_soundManager.PlaySound(SoundType.Bone);
             enemy.GetComponent<AnimateObject>().Attack(damage);

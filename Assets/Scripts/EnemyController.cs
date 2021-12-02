@@ -51,8 +51,11 @@ public class EnemyController : MonoBehaviour
     private AnimateObject _playerAnimateObject;
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackAnimId = Animator.StringToHash("Attack");
-
+    private EnemyAnimationState _currentAnimationState;
+    
     public SoundManager soundManager;
+    private static readonly int Walk = Animator.StringToHash("Walk");
+    private static readonly int Idle = Animator.StringToHash("Idle");
 
     public Direction CurrentWalkingDirection => _enemyState switch
     {
@@ -172,11 +175,6 @@ public class EnemyController : MonoBehaviour
                 _attackPlayerUpdate();
                 break;
             }
-            case EnemyState.Idle:
-            {
-                _setAnimationState(EnemyAnimationState.Idle);
-                break;
-            }
         }
     }
 
@@ -257,15 +255,21 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator _attackPlayer(GameObject player)
     {
-        if (!ValidBlock())
+        _animator.SetTrigger(AttackAnimId);
+        
+        yield return new WaitForSeconds(0.15f);
+        
+        if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" || _animator.GetNextAnimatorClipInfo(0)[0].clip.name == "EnemyAttack")
         {
-            yield return new WaitForSeconds(0.35f);
-            player.GetComponent<AnimateObject>().Attack(damage);
-        }
-        else
-        {
-            yield return new WaitForSeconds(0.2f);
-            soundManager.PlaySound(SoundType.Hit);
+            if (!ValidBlock())
+            {
+                player.GetComponent<AnimateObject>().Attack(damage);
+
+            }
+            else
+            {
+                soundManager.PlaySound(SoundType.Hit);
+            }
         }
     }
 
@@ -284,14 +288,15 @@ public class EnemyController : MonoBehaviour
             if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttack") &&
                 _currentTimeAttack >= attackRate)
             {
-                _setAnimationState(EnemyAnimationState.Idle);
-                _animator.SetTrigger(AttackAnimId);
-
                 soundManager.PlaySound(SoundType.Swipe);
 
                 StartCoroutine(_attackPlayer(_enemyAttackRange.PlayerInAttackRange));
 
                 _currentTimeAttack = 0;
+            }
+            else if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyIdle"))
+            {
+                _setAnimationState(EnemyAnimationState.Idle);
             }
         }
         // Follow player
@@ -304,7 +309,6 @@ public class EnemyController : MonoBehaviour
 
                 if (distanceToPlayerX < 1.0f)
                 {
-                    _setAnimationState(EnemyAnimationState.Idle);
                     _move = 0;
                 }
             }
@@ -367,6 +371,19 @@ public class EnemyController : MonoBehaviour
 
     private void _setAnimationState(EnemyAnimationState state)
     {
-        _animator.SetInteger(AnimatorStateKey, (int)state);
+        if (state == _currentAnimationState) return;
+
+        switch (state)
+        {
+            case EnemyAnimationState.Walk:
+                _animator.SetTrigger(Walk);
+                break;
+            case EnemyAnimationState.Idle:
+                _animator.SetTrigger(Idle);
+                break;
+        }
+        
+        
+        _currentAnimationState = state;
     }
 }
