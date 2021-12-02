@@ -28,10 +28,9 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_currentFallingTime = 0f;
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
-    public AudioSource          m_swipePlayer;
-    public AudioSource          m_hitPlayer;
-    public AudioClip[]          swipeSounds;
-    public AudioClip[]          hitSounds;
+
+    private SoundManager         m_soundManager; 
+
     private AnimateObject       m_animateObject;
     private PlayerAttackRange   _playerAttackRange;
     public float                damage;
@@ -47,6 +46,7 @@ public class PlayerController2 : MonoBehaviour {
         m_rollingCollider = GetComponent<CircleCollider2D>();
         m_animateObject = GetComponent<AnimateObject>();
         _playerAttackRange = GetComponentInChildren<PlayerAttackRange>();
+        m_soundManager = SoundManager.instance;
     }
 
     public bool IsRolling()
@@ -167,6 +167,7 @@ public class PlayerController2 : MonoBehaviour {
             {
                 m_animator.SetTrigger("Block");
                 m_animator.SetBool("IdleBlock", true);
+                m_soundManager.PlayGuard();
                 m_blocking = true;
             }
         }
@@ -182,6 +183,7 @@ public class PlayerController2 : MonoBehaviour {
         {
             m_rolling = true;
             m_animator.SetTrigger("Roll");
+            m_soundManager.PlaySound(SoundType.Tumble);
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
             m_rollingCollider.enabled = true;
             m_standardCollider.enabled = false;
@@ -245,13 +247,22 @@ public class PlayerController2 : MonoBehaviour {
         
     }
 
+    public void PlayGrunt()
+    {
+        m_soundManager.PlaySound(SoundType.Grunt);
+    }
+
+    public void PlayDeath()
+    {
+        m_soundManager.PlayDeath();
+    }
+
     private IEnumerator _attackEnemy(GameObject enemy)
     {
         yield return new WaitForSeconds(0.2f);
         if (enemy)
         {
-            m_hitPlayer.clip = hitSounds[(int)UnityEngine.Random.Range(0, hitSounds.Length)];
-            m_hitPlayer.Play();
+            m_soundManager.PlaySound(SoundType.Bone);
             enemy.GetComponent<AnimateObject>().Attack(damage);
         }
     }
@@ -262,8 +273,7 @@ public class PlayerController2 : MonoBehaviour {
         {
             if (m_currentAttack > 0)
             {
-                m_swipePlayer.clip = swipeSounds[(int)UnityEngine.Random.Range(0, swipeSounds.Length)];
-                m_swipePlayer.Play();
+                m_soundManager.PlaySound(SoundType.Swipe);
                 foreach (var enemy in _playerAttackRange.EnemiesInAttackRange)
                 {
                     StartCoroutine(_attackEnemy(enemy));

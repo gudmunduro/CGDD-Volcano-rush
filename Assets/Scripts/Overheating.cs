@@ -23,7 +23,7 @@ public class Overheating : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (overheat < 100 & !incoolzone)
+        if (overheat < 100 && !incoolzone)
         {
             overheat += 0.1f;
             statusBar.Set(overheat);

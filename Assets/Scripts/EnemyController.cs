@@ -52,10 +52,7 @@ public class EnemyController : MonoBehaviour
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackAnimId = Animator.StringToHash("Attack");
 
-    public AudioSource swipePlayer;
-    public AudioSource hitPlayer;
-    public AudioClip[] swipeSounds;
-    public AudioClip[] hitSounds;
+    public SoundManager soundManager;
 
     public Direction CurrentWalkingDirection => _enemyState switch
     {
@@ -95,6 +92,7 @@ public class EnemyController : MonoBehaviour
         _enemyAttackRange = GetComponentInChildren<EnemyAttackRange>();
         _groundFrontSensor = GetComponentInChildren<GroundFrontSensor>();
         _playerAnimateObject = GameManager.instance.player.GetComponent<AnimateObject>();
+        soundManager = SoundManager.instance;
         
         Physics2D.IgnoreCollision(GameManager.instance.player.GetComponent<CapsuleCollider2D>(), _collider, true);
     }
@@ -235,7 +233,7 @@ public class EnemyController : MonoBehaviour
 
         // Switch to the direction that makes more sense if enemies are colliding with each other
         if (_enemyAttackRange.AreEnemiesInAttackRange && _enemyAttackRange.EnemiesInAttackRange
-            .Any(e => e.GetComponent<EnemyController>().CurrentWalkingDirection != CurrentWalkingDirection))
+            .Any(e => e != null && e.GetComponent<EnemyController>().CurrentWalkingDirection != CurrentWalkingDirection))
         {
             _setPatrolDirection(Direction.Right);
         }
@@ -253,11 +251,16 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator _attackPlayer(GameObject player)
     {
-        yield return new WaitForSeconds(0.35f);
-        hitPlayer.clip = hitSounds[(int)UnityEngine.Random.Range(0, hitSounds.Length)];
-        hitPlayer.Play();
         if (!ValidBlock())
+        {
+            yield return new WaitForSeconds(0.35f);
             player.GetComponent<AnimateObject>().Attack(damage);
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.2f);
+            soundManager.PlaySound(SoundType.Hit);
+        }
     }
 
     public bool ValidBlock()
@@ -278,8 +281,7 @@ public class EnemyController : MonoBehaviour
                 _setAnimationState(EnemyAnimationState.Idle);
                 _animator.SetTrigger(AttackAnimId);
 
-                swipePlayer.clip = swipeSounds[(int)UnityEngine.Random.Range(0, swipeSounds.Length)];
-                swipePlayer.Play();
+                soundManager.PlaySound(SoundType.Swipe);
 
                 StartCoroutine(_attackPlayer(_enemyAttackRange.PlayerInAttackRange));
 
