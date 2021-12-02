@@ -52,10 +52,19 @@ public class PlayerController2 : MonoBehaviour {
         return m_rolling;
     }
     
-    public bool IsBlocking()
+    // Player and enemy facing each other yields valid block
+    public bool IsBlocking(Direction enemyDirection)
     {
-        return m_blocking;
+        if (m_blocking)
+        {
+            if (enemyDirection == Direction.Left && m_facingDirection == 1)
+                return true;
+            else if (enemyDirection == Direction.Right && m_facingDirection == -1)
+                return true;
+        }
+        return false;
     }
+
     // Update is called once per frame
     void Update ()
     {

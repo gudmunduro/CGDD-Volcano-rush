@@ -31,7 +31,8 @@ public class PlayerAttackRange : MonoBehaviour
     }
 
     void Update()
-    {
+    {  
+        // Flip collider since player is flipped by sprite render, could be more clean
         float _temp = transform.localPosition.x;
         if (GetComponentInParent<PlayerController2>().m_facingDirection < transform.localPosition.x && transform.localPosition.x > 0)
             _temp *= -1;

@@ -240,7 +240,15 @@ public class EnemyController : MonoBehaviour
         yield return new WaitForSeconds(0.35f);
         hitPlayer.clip = hitSounds[(int)UnityEngine.Random.Range(0, hitSounds.Length)];
         hitPlayer.Play();
-        player.GetComponent<AnimateObject>().Attack(damage);
+        if (!ValidBlock())
+            player.GetComponent<AnimateObject>().Attack(damage);
+    }
+
+    public bool ValidBlock()
+    {
+        if(_enemyAttackRange.IsPlayerInAttackRange)
+            return _enemyAttackRange.PlayerInAttackRange.GetComponent<PlayerController2>().IsBlocking(_getDirectionPlayerIsIn());
+        return false;
     }
 
     private void _attackPlayerUpdate()
