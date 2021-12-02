@@ -15,7 +15,7 @@ public class CoolZones : MonoBehaviour
     // Update is called once per frame
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name == "Player")
+        if (other.gameObject.name == "CoolZoneSensor")
         {
             FindObjectOfType<Overheating>().incoolzone = true;
         }
@@ -23,7 +23,7 @@ public class CoolZones : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.name == "Player")
+        if (other.gameObject.name == "CoolZoneSensor")
         {
             FindObjectOfType<Overheating>().incoolzone = false;
         }
