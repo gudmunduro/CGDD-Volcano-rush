@@ -77,8 +77,8 @@ public class EnemyController : MonoBehaviour
     private float DistanceToPlayerInVision =>
         Vector2.Distance(_enemyVision.PlayerInVision.transform.position, transform.position);
 
-    private bool IsPlayerInVisionJumping =>
-        _enemyVision.PlayerInVision.transform.position.y - transform.position.y > 0.2f;
+    private bool IsPlayerJumping =>
+        GameManager.instance.transform.position.y - transform.position.y > 0.2f;
 
 
     private void Awake()
@@ -168,7 +168,7 @@ public class EnemyController : MonoBehaviour
             }
             case EnemyState.Attacking:
             {
-                if (!_enemyVision.IsPlayerInVision)
+                if (!_enemyVision.IsPlayerInVision && !IsPlayerJumping)
                 {
                     _startDefaultWalk();
                     break;
@@ -310,9 +310,9 @@ public class EnemyController : MonoBehaviour
         else
         {
             var distanceToPlayerX = Math.Abs(transform.position.x -
-                                             _enemyVision.PlayerInVision.transform.position.x);
+                                             GameManager.instance.player.transform.position.x);
             
-            if (IsPlayerInVisionJumping && distanceToPlayerX < 1.0f)
+            if (IsPlayerJumping && distanceToPlayerX < 1.0f)
             {
                 _setAnimationState(EnemyAnimationState.Idle); 
                 _move = 0;
@@ -359,9 +359,7 @@ public class EnemyController : MonoBehaviour
 
     private Direction _getDirectionPlayerIsIn()
     {
-        if (!_enemyVision.IsPlayerInVision) return Direction.Right;
-        
-        return _enemyVision.PlayerInVision.transform.position.x < transform.position.x
+        return GameManager.instance.player.transform.position.x < transform.position.x
             ? Direction.Left
             : Direction.Right;
     }
