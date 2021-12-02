@@ -63,11 +63,12 @@ public class AnimateObject : MonoBehaviour
 	{
 		if (player)
 		{
-			if (!_playerController.IsRolling() && !_playerController.m_blocking)
+			if (!_playerController.IsRolling())
 			{
 				health -= damage;
 				statusBar.Set(health);
-				
+			
+				Debug.Log(health);
 				if (Alive())
 				{
 					_animator.SetTrigger("Hurt");

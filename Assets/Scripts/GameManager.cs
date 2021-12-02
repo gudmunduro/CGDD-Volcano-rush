@@ -9,7 +9,8 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public GameObject youDiedScreen;
     public GameObject youWinScreen;
-    
+    public GameObject player;
+
     private void Awake()
     {
         instance = this;
