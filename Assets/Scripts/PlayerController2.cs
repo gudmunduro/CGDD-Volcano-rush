@@ -52,6 +52,10 @@ public class PlayerController2 : MonoBehaviour {
         return m_rolling;
     }
     
+    public bool IsBlocking()
+    {
+        return m_blocking;
+    }
     // Update is called once per frame
     void Update ()
     {
