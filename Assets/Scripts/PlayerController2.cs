@@ -28,15 +28,16 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_currentFallingTime = 0f;
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
-
-    private SoundManager         m_soundManager; 
-
+    private SoundManager        m_soundManager;
+    
     private AnimateObject       m_animateObject;
     private PlayerAttackRange   _playerAttackRange;
     public float                damage;
     public int                  m_baseFallDamage = 20;
+    public PhysicsMaterial2D   m_slipperyMaterial;
 
     // Use this for initialization
+
     void Start ()
     {
         m_animator = GetComponent<Animator>();
@@ -77,6 +78,16 @@ public class PlayerController2 : MonoBehaviour {
         // Increase timer that controls attack combo
         m_timeSinceAttack += Time.deltaTime;
 
+        if (!m_grounded)
+        {
+            m_standardCollider.sharedMaterial = m_slipperyMaterial;
+        }
+
+        else
+        {
+            m_standardCollider.sharedMaterial = null;
+        }
+        
         // Increase timer that checks roll duration
         if (m_rolling)
         {
