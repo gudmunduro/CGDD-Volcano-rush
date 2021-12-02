@@ -1,8 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.SearchService;
 
 public class PlayerController2 : MonoBehaviour {
 
