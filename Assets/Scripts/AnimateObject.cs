@@ -19,11 +19,12 @@ public class AnimateObject : MonoBehaviour
     void Start()
     {
         health = maxHealth;
-		statusBar.SetMax(maxHealth);
+		//statusBar.SetMax(maxHealth);
 		_animator = GetComponent<Animator>();
 		if (player)
 		{ 
 			_playerController = GetComponent<PlayerController2>();
+			Debug.Log("helloooooo");
 		}
 		dead = false;
     }
@@ -52,12 +53,12 @@ public class AnimateObject : MonoBehaviour
 	
 	public void Attack(float damage)
 	{
-		if (player && !GetComponent<PlayerController2>().m_blocking)
+		if (player)
 		{
-			if (!_playerController.IsRolling())
+			if (!_playerController.IsRolling() && !_playerController.IsBlocking())
 			{
 				health -= damage;
-				statusBar.Set(health);
+				//statusBar.Set(health);
 			
 				Debug.Log(health);
 				if (Alive())
@@ -70,7 +71,6 @@ public class AnimateObject : MonoBehaviour
 					_animator.SetTrigger("Death");
 					
 					Invoke(nameof(PlayerDied), 2);
-					
 				}	
 			}
 		}
