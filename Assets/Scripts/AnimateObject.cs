@@ -72,9 +72,11 @@ public class AnimateObject : MonoBehaviour
 				if (Alive())
 				{
 					_animator.SetTrigger("Hurt");
+					_playerController.PlayGrunt();
 				}
 				else
 				{
+					_playerController.PlayDeath();
 					PlayerDeath();
 				}	
 			}
