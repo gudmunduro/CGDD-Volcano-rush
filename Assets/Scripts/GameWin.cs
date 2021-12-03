@@ -5,11 +5,17 @@ using UnityEngine;
 
 public class GameWin : MonoBehaviour
 {
+
+    private void CallWin()
+    {
+        GameManager.instance.YouWin();
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.name == "Player")
         {
-            GameManager.instance.YouWin();
+            Invoke(nameof(CallWin), 1);
         }
     }
 }

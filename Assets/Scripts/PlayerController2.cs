@@ -95,19 +95,25 @@ public class PlayerController2 : MonoBehaviour {
         {
             m_rollCurrentTime += Time.deltaTime;
         }
-
+        
+        
         if (!m_grounded && m_body2d.velocity.y < 0)
         {
             m_currentFallingTime += Time.deltaTime;
         }
         
         
+        if (m_body2d.velocity.y >= -0.6f)
+        {
+            m_currentFallingTime = 0f;
+        }
+        
         // Disable rolling if timer extends duration
         if (m_rollCurrentTime > m_rollDuration)
         {
             m_rollCurrentTime = 0f;
             
-            if (m_rollingSensor.Sense() && m_grounded)
+            if (m_rollingSensor.Sense())
             {
                 
                 m_animator.SetTrigger("ContinueRoll");
@@ -135,9 +141,7 @@ public class PlayerController2 : MonoBehaviour {
         if (!m_grounded && m_groundSensor.Sense())
         {
             m_grounded = true;
-            
-            Debug.Log(m_currentFallingTime);
-            
+
             if (m_currentFallingTime > m_fallingTime)
             {
                 m_animateObject.DamagePlayerHealth(m_baseFallDamage * Mathf.Floor(m_currentFallingTime));
