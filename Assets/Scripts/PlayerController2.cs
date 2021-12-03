@@ -214,7 +214,7 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         // Roll
-        else if (Input.GetKeyDown("left shift") && !m_rolling && inputX != 0)
+        else if ((Input.GetKeyDown("left shift") || Input.GetKeyDown("left ctrl")) && !m_rolling && inputX != 0)
         {
             m_rolling = true;
             m_animator.ResetTrigger("StandUp");
