@@ -28,6 +28,7 @@ public class PlayerController2 : MonoBehaviour {
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
     private SoundManager        m_soundManager;
+    public Camera               m_camera;
     
     private AnimateObject       m_animateObject;
     private PlayerAttackRange   _playerAttackRange;
@@ -49,6 +50,7 @@ public class PlayerController2 : MonoBehaviour {
         m_rollingCollider = GetComponent<CircleCollider2D>();
         m_animateObject = GetComponent<AnimateObject>();
         _playerAttackRange = GetComponentInChildren<PlayerAttackRange>();
+        
         m_soundManager = SoundManager.instance;
     }
 
@@ -169,6 +171,19 @@ public class PlayerController2 : MonoBehaviour {
                               m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2") ||
                               m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3");
         
+        // Swap direction of sprite depending on walk direction
+        if (inputX > 0 && !m_blocking && !illegaAnimation)
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+            m_facingDirection = 1;
+        }
+            
+        else if (inputX < 0 && !m_blocking && !illegaAnimation)
+        {
+            GetComponent<SpriteRenderer>().flipX = true;
+            m_facingDirection = -1;
+        }
+        
         // -- Handle Animations --
         //Attack
         if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling && 
@@ -193,6 +208,19 @@ public class PlayerController2 : MonoBehaviour {
 
             // Reset timer
             m_timeSinceAttack = 0.0f;
+
+            var check = m_camera.WorldToScreenPoint(transform.position);
+
+            if (Input.mousePosition.x < check.x)
+            {
+                GetComponent<SpriteRenderer>().flipX = true;
+                m_facingDirection = -1;
+            }
+            else
+            {
+                GetComponent<SpriteRenderer>().flipX = false;
+                m_facingDirection = 1;
+            }
         }
 
         // Block
@@ -204,6 +232,20 @@ public class PlayerController2 : MonoBehaviour {
                 m_animator.SetBool("IdleBlock", true);
                 m_soundManager.PlayGuard();
                 m_blocking = true;
+                
+                var check = m_camera.WorldToScreenPoint(transform.position);
+
+                if (Input.mousePosition.x < check.x)
+                {
+                    GetComponent<SpriteRenderer>().flipX = true;
+                    m_facingDirection = -1;
+                }
+                else
+                {
+                    GetComponent<SpriteRenderer>().flipX = false;
+                    m_facingDirection = 1;
+                }
+                
             }
         }
 
@@ -221,7 +263,23 @@ public class PlayerController2 : MonoBehaviour {
             m_animator.SetTrigger("Roll");
             if(m_grounded)
                 m_soundManager.PlaySound(SoundType.Tumble);
-            m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
+
+            int rollDirection;
+            if (inputX > 0)
+            {
+                rollDirection = 1;
+            }
+            else if (inputX < 0)
+            {
+                rollDirection = -1;
+            }
+            else
+            {
+                rollDirection = m_facingDirection;
+            }
+            
+            
+            m_body2d.velocity = new Vector2(rollDirection * m_rollForce, m_body2d.velocity.y);
             
             m_rollingCollider.enabled = true;
             m_standardCollider.enabled = false;
@@ -262,18 +320,6 @@ public class PlayerController2 : MonoBehaviour {
                 m_animator.SetInteger("AnimState", 0);
         }
         
-        // Swap direction of sprite depending on walk direction
-        if (inputX > 0 && !m_blocking)
-        {
-            GetComponent<SpriteRenderer>().flipX = false;
-            m_facingDirection = 1;
-        }
-            
-        else if (inputX < 0 && !m_blocking)
-        {
-            GetComponent<SpriteRenderer>().flipX = true;
-            m_facingDirection = -1;
-        }
 
         // Move
         var legalAnimation = m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") ||
