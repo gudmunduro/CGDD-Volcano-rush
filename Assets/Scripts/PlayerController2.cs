@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class PlayerController2 : MonoBehaviour {
 
@@ -16,6 +17,7 @@ public class PlayerController2 : MonoBehaviour {
     private PlayerSensor        m_rollingSensor;
     private bool                m_grounded = false;
     private bool                m_rolling = false;
+    private bool                m_extraJump = true;
     public bool                 m_blocking = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
@@ -23,6 +25,7 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_delayToIdle = 0.0f;
     private float               m_rollDuration = 8.0f / 14.0f;
     private float               m_rollCurrentTime;
+    private float               m_animationRollCancelTime = 8.0f / 28.0f;
     private float               m_fallingTime = 1.2f;
     private float               m_currentFallingTime = 0f;
     private CapsuleCollider2D   m_standardCollider;
@@ -34,11 +37,71 @@ public class PlayerController2 : MonoBehaviour {
     private PlayerAttackRange   _playerAttackRange;
     public float                damage;
     public int                  m_baseFallDamage = 20;
-    public PhysicsMaterial2D   m_slipperyMaterial;
+    public PhysicsMaterial2D    m_slipperyMaterial;
 
+    private PlayerControls      m_controls;
+    private Vector2             m_inputStick;
+
+    private bool                _jump;
+    private bool                _roll;
+    private bool                _attack;
+    private bool                _mouseAttack;
+    private bool                _block;
+    private bool                _mouseBlock;
+    private Vector2             _mousePos;
+    
     public bool IsTouchingGround => m_groundSensor.Sense();
     
     // Use this for initialization
+
+    private void Awake()
+    {
+        m_controls = new PlayerControls();
+        
+        // Running
+        m_controls.Gameplay.Walk.performed += ctx => m_inputStick = ctx.ReadValue<Vector2>();
+        m_controls.Gameplay.Walk.canceled += ctx => m_inputStick = Vector2.zero;
+        
+        // Jumping
+        m_controls.Gameplay.Jump.performed += ctx => _jump = true;
+        m_controls.Gameplay.Jump.canceled += ctx => _jump = false;
+        
+        // Rolling
+        m_controls.Gameplay.Roll.performed += ctx => _roll = true;
+        m_controls.Gameplay.Roll.canceled += ctx => _roll = false;
+        
+        // Attack
+        m_controls.Gameplay.Attack.performed += ctx => _attack = true;
+        m_controls.Gameplay.Attack.canceled += ctx => _attack = false;
+        
+        //Attack mouse
+        m_controls.Gameplay.AttackMouse.performed += ctx => _mouseAttack = true;
+        m_controls.Gameplay.AttackMouse.canceled += ctx => _mouseAttack = false;
+        
+        // Block
+        m_controls.Gameplay.Block.performed += ctx => _block = true;
+        m_controls.Gameplay.Block.canceled += ctx => _block = false;
+        
+        // Block
+        m_controls.Gameplay.MouseBlock.performed += ctx => _mouseBlock = true;
+        m_controls.Gameplay.MouseBlock.canceled += ctx => _mouseBlock = false;
+        
+        // Mouse pos
+        m_controls.Mouse.mouse.performed += ctx => _mousePos = ctx.ReadValue<Vector2>();
+        m_controls.Mouse.mouse.canceled += ctx => _mousePos = Vector2.zero;
+
+    }
+
+    private void OnEnable()
+    {
+        m_controls.Gameplay.Enable();
+    }
+
+    private void OnDisable()
+    {
+        m_controls.Gameplay.Disable();
+    }
+
 
     void Start ()
     {
@@ -90,6 +153,7 @@ public class PlayerController2 : MonoBehaviour {
         else
         {
             m_standardCollider.sharedMaterial = null;
+            m_extraJump = true;
         }
         
         // Increase timer that checks roll duration
@@ -165,32 +229,33 @@ public class PlayerController2 : MonoBehaviour {
         m_animator.SetFloat("AirSpeedY", m_body2d.velocity.y);
 
         // -- Handle input and movement --
-        var inputX = Input.GetAxis("Horizontal");
-        
+
         var illegaAnimation = m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1") ||
                               m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2") ||
                               m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3");
         
         // Swap direction of sprite depending on walk direction
-        if (inputX > 0 && !m_blocking && !illegaAnimation)
+        if (m_inputStick.x > 0 && !m_blocking && !illegaAnimation)
         {
             GetComponent<SpriteRenderer>().flipX = false;
             m_facingDirection = 1;
         }
             
-        else if (inputX < 0 && !m_blocking && !illegaAnimation)
+        else if (m_inputStick.x < 0 && !m_blocking && !illegaAnimation)
         {
             GetComponent<SpriteRenderer>().flipX = true;
             m_facingDirection = -1;
         }
+
+        var illegalAnimation2 = m_animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") ||
+                                m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall") ||
+                                m_animator.GetCurrentAnimatorStateInfo(0).IsName("Block") ||
+                                m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle Block");
         
         // -- Handle Animations --
         //Attack
-        if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling && 
-           !(m_animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") ||
-            m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall") ||
-            m_animator.GetCurrentAnimatorStateInfo(0).IsName("Block") || 
-            m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle Block") ))
+        if(_attack && m_timeSinceAttack > 0.25f && 
+           !illegalAnimation2 && !m_rollingSensor.Sense() && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
             m_currentAttack++;
             _attackEnemyUpdate();
@@ -211,20 +276,27 @@ public class PlayerController2 : MonoBehaviour {
 
             var check = m_camera.WorldToScreenPoint(transform.position);
 
-            if (Input.mousePosition.x < check.x)
+            if (_mouseAttack)
             {
-                GetComponent<SpriteRenderer>().flipX = true;
-                m_facingDirection = -1;
+                if (_mousePos.x < check.x)
+                {
+                    GetComponent<SpriteRenderer>().flipX = true;
+                    m_facingDirection = -1;
+                }
+                else
+                {
+                    GetComponent<SpriteRenderer>().flipX = false;
+                    m_facingDirection = 1;
+                }
             }
-            else
-            {
-                GetComponent<SpriteRenderer>().flipX = false;
-                m_facingDirection = 1;
-            }
+
+            m_body2d.velocity = new Vector2(0f, 0f);
+
         }
 
         // Block
-        else if (Input.GetMouseButton(1) && !m_rolling && !illegaAnimation)
+        else if (_block && !(illegaAnimation || illegalAnimation2) && 
+                 !m_rollingSensor.Sense() && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
             if (!m_blocking)
             {
@@ -235,28 +307,32 @@ public class PlayerController2 : MonoBehaviour {
                 
                 var check = m_camera.WorldToScreenPoint(transform.position);
 
-                if (Input.mousePosition.x < check.x)
+                if (_mouseBlock)
                 {
-                    GetComponent<SpriteRenderer>().flipX = true;
-                    m_facingDirection = -1;
+                    if (_mousePos.x < check.x)
+                    {
+                        GetComponent<SpriteRenderer>().flipX = true;
+                        m_facingDirection = -1;
+                    }
+                    else
+                    {
+                        GetComponent<SpriteRenderer>().flipX = false;
+                        m_facingDirection = 1;
+                    } 
                 }
-                else
-                {
-                    GetComponent<SpriteRenderer>().flipX = false;
-                    m_facingDirection = 1;
-                }
-                
+
+                m_body2d.velocity = new Vector2(0f, 0f);
             }
         }
 
-        else if (Input.GetMouseButtonUp(1))
+        else if (!_block && m_blocking)
         {
             m_animator.SetBool("IdleBlock", false);
             m_blocking = false;
         }
 
         // Roll
-        else if ((Input.GetKeyDown("left shift") || Input.GetKeyDown("left ctrl")) && !m_rolling && inputX != 0)
+        else if (_roll && !m_rolling && m_inputStick.x != 0)
         {
             m_rolling = true;
             m_animator.ResetTrigger("StandUp");
@@ -265,11 +341,11 @@ public class PlayerController2 : MonoBehaviour {
                 m_soundManager.PlaySound(SoundType.Tumble);
 
             int rollDirection;
-            if (inputX > 0)
+            if (m_inputStick.x > 0)
             {
                 rollDirection = 1;
             }
-            else if (inputX < 0)
+            else if (m_inputStick.x < 0)
             {
                 rollDirection = -1;
             }
@@ -293,8 +369,13 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         //Jump
-        else if ((Input.GetKeyDown("space") || Input.GetKeyDown("w")) && m_grounded && !m_rolling)
+        else if (_jump && (m_grounded || m_extraJump) && !m_rolling)
         {
+            if (!m_grounded)
+            {
+                m_extraJump = false;
+            }
+            
             m_animator.SetTrigger("Jump");
             m_grounded = false;
             m_animator.SetBool("Grounded", m_grounded);
@@ -304,7 +385,7 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         //Run
-        else if (Mathf.Abs(inputX) > Mathf.Epsilon)
+        else if (Mathf.Abs(m_inputStick.x) > Mathf.Epsilon)
         {
             // Reset timer
             m_delayToIdle = 0.05f;
@@ -327,8 +408,11 @@ public class PlayerController2 : MonoBehaviour {
                              m_animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") ||
                              m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall");
         if (!m_rolling && legalAnimation)
-            m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
-        
+            m_body2d.velocity = new Vector2(m_inputStick.x * m_speed, m_body2d.velocity.y);
+
+        _jump = false;
+        _attack = false;
+        _mouseAttack = false;
     }
 
     public void PlayGrunt()
