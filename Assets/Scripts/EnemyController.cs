@@ -32,7 +32,7 @@ public class EnemyController : MonoBehaviour
     public float moveSpeed;
     public float runMultiplier;
     public float damage = 2;
-    public float attackRate = 2f;
+    public float attackRate = 5f;
 
     private GameObject _ground;
     private EnemyVision _enemyVision;
@@ -51,12 +51,13 @@ public class EnemyController : MonoBehaviour
     private AnimateObject _enemyAnimateObject;
     private AnimateObject _playerAnimateObject;
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
-    private static readonly int AttackAnimId = Animator.StringToHash("Attack");
+    private static readonly int AttackWindupAnimTrigger = Animator.StringToHash("AttackWindup");
+    private static readonly int AttackAnimTrigger = Animator.StringToHash("Attack");
+    private static readonly int WalkAnimTrigger = Animator.StringToHash("Walk");
+    private static readonly int IdleAnimTrigger = Animator.StringToHash("Idle");
     private EnemyAnimationState _currentAnimationState;
     
     public SoundManager soundManager;
-    private static readonly int Walk = Animator.StringToHash("Walk");
-    private static readonly int Idle = Animator.StringToHash("Idle");
 
     public Direction CurrentWalkingDirection => _enemyState switch
     {
@@ -261,7 +262,13 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator _attackPlayer(GameObject player)
     {
-        _animator.SetTrigger(AttackAnimId);
+        _animator.SetTrigger(AttackWindupAnimTrigger);
+        
+        yield return new WaitForSeconds(0.25f);
+
+        if (!_enemyAttackRange.IsPlayerInAttackRange) yield break;
+        soundManager.PlaySound(SoundType.Swipe);
+        _animator.SetTrigger(AttackAnimTrigger);
         
         yield return new WaitForSeconds(0.15f);
         
@@ -270,7 +277,6 @@ public class EnemyController : MonoBehaviour
             if (!ValidBlock())
             {
                 player.GetComponent<AnimateObject>().Attack(damage);
-
             }
             else
             {
@@ -294,8 +300,6 @@ public class EnemyController : MonoBehaviour
             if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttack") &&
                 _currentTimeAttack >= attackRate)
             {
-                soundManager.PlaySound(SoundType.Swipe);
-
                 StartCoroutine(_attackPlayer(_enemyAttackRange.PlayerInAttackRange));
 
                 _currentTimeAttack = 0;
@@ -380,10 +384,10 @@ public class EnemyController : MonoBehaviour
         switch (state)
         {
             case EnemyAnimationState.Walk:
-                _animator.SetTrigger(Walk);
+                _animator.SetTrigger(WalkAnimTrigger);
                 break;
             case EnemyAnimationState.Idle:
-                _animator.SetTrigger(Idle);
+                _animator.SetTrigger(IdleAnimTrigger);
                 break;
         }
         

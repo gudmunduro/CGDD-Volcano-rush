@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
     private int CalculateScore()
     {
         _score = 100 * enemiesKilled;
-        _score += 300 - Mathf.FloorToInt(_timer);
+        _score += Math.Max(300 - Mathf.FloorToInt(_timer), 0);
         
         return _score;
     }
