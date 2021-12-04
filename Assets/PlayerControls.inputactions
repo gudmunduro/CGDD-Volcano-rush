@@ -9,7 +9,7 @@
                     "name": "Walk",
                     "type": "Value",
                     "id": "ecba5bb7-a1a4-43db-88b8-91d939e999e0",
-                    "expectedControlType": "Stick",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
                 },
@@ -60,6 +60,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "KeyboardWalk",
+                    "type": "Value",
+                    "id": "db1b5f84-b394-4a48-8908-f1994c8c4013",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -67,6 +75,28 @@
                     "name": "",
                     "id": "5487533b-9d71-4775-a636-86a9a571a84d",
                     "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "faa97474-d90b-4f23-a6f7-66884caaef16",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f3e62407-ba9a-4188-8bef-d821ebeaec79",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -86,9 +116,86 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "AD",
+                    "id": "8db6efc2-8187-4dc1-9a02-8b7b10f41310",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Walk",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "ae4a5be6-e50d-4f10-98c7-ec167faca5e3",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Walk",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "035c2050-bc50-42dd-b7c1-8ac4110acb70",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Walk",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "21b87900-6365-412c-8ea2-314b6d8fab94",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Walk",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "7879ae0a-62d0-451e-89f3-ae72f059f71e",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Walk",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
                     "id": "23d888ce-7a5b-47bc-9365-b66b034ef4c7",
                     "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Roll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f8f807ac-da6a-4bbb-a32a-c034a8a8707e",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Roll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b6862b0c-16ea-4181-bf7a-db8a8aa93efe",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -139,31 +246,15 @@
                     "action": "MouseBlock",
                     "isComposite": false,
                     "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Mouse",
-            "id": "662ad12c-bc3b-4b9f-b4f3-b7317f4b5edb",
-            "actions": [
-                {
-                    "name": "mouse",
-                    "type": "Value",
-                    "id": "e359b845-f054-47ae-9cc0-9a0298ed088a",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": ""
-                }
-            ],
-            "bindings": [
+                },
                 {
                     "name": "",
-                    "id": "7de711ea-dcc4-4104-9890-6616060a52bb",
-                    "path": "<Mouse>/position",
+                    "id": "049e0b99-0c26-40af-b40f-816c381751ff",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "mouse",
+                    "action": "KeyboardWalk",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

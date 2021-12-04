@@ -48,8 +48,7 @@ public class PlayerController2 : MonoBehaviour {
     private bool                _mouseAttack;
     private bool                _block;
     private bool                _mouseBlock;
-    private Vector2             _mousePos;
-    
+
     public bool IsTouchingGround => m_groundSensor.Sense();
     
     // Use this for initialization
@@ -85,11 +84,6 @@ public class PlayerController2 : MonoBehaviour {
         // Block
         m_controls.Gameplay.MouseBlock.performed += ctx => _mouseBlock = true;
         m_controls.Gameplay.MouseBlock.canceled += ctx => _mouseBlock = false;
-        
-        // Mouse pos
-        m_controls.Mouse.mouse.performed += ctx => _mousePos = ctx.ReadValue<Vector2>();
-        m_controls.Mouse.mouse.canceled += ctx => _mousePos = Vector2.zero;
-
     }
 
     private void OnEnable()
@@ -254,7 +248,7 @@ public class PlayerController2 : MonoBehaviour {
         
         // -- Handle Animations --
         //Attack
-        if(_attack && m_timeSinceAttack > 0.25f && 
+        if((_attack || _mouseAttack) && m_timeSinceAttack > 0.25f && 
            !illegalAnimation2 && !m_rollingSensor.Sense() && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
             m_currentAttack++;
@@ -278,7 +272,7 @@ public class PlayerController2 : MonoBehaviour {
 
             if (_mouseAttack)
             {
-                if (_mousePos.x < check.x)
+                if (Mouse.current.position.x.ReadValue() < check.x)
                 {
                     GetComponent<SpriteRenderer>().flipX = true;
                     m_facingDirection = -1;
@@ -295,7 +289,7 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         // Block
-        else if (_block && !(illegaAnimation || illegalAnimation2) && 
+        else if ((_block || _mouseBlock) && !(illegaAnimation || illegalAnimation2) && 
                  !m_rollingSensor.Sense() && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
             if (!m_blocking)
@@ -309,7 +303,7 @@ public class PlayerController2 : MonoBehaviour {
 
                 if (_mouseBlock)
                 {
-                    if (_mousePos.x < check.x)
+                    if (Mouse.current.position.x.ReadValue() < check.x)
                     {
                         GetComponent<SpriteRenderer>().flipX = true;
                         m_facingDirection = -1;
@@ -325,7 +319,7 @@ public class PlayerController2 : MonoBehaviour {
             }
         }
 
-        else if (!_block && m_blocking)
+        else if (!(_block || _mouseBlock) && m_blocking)
         {
             m_animator.SetBool("IdleBlock", false);
             m_blocking = false;

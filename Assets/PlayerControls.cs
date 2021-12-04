@@ -22,7 +22,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": ""Walk"",
                     ""type"": ""Value"",
                     ""id"": ""ecba5bb7-a1a4-43db-88b8-91d939e999e0"",
-                    ""expectedControlType"": ""Stick"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -73,6 +73,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""KeyboardWalk"",
+                    ""type"": ""Value"",
+                    ""id"": ""db1b5f84-b394-4a48-8908-f1994c8c4013"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -80,6 +88,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""5487533b-9d71-4775-a636-86a9a571a84d"",
                     ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""faa97474-d90b-4f23-a6f7-66884caaef16"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f3e62407-ba9a-4188-8bef-d821ebeaec79"",
+                    ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -99,9 +129,86 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""AD"",
+                    ""id"": ""8db6efc2-8187-4dc1-9a02-8b7b10f41310"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""ae4a5be6-e50d-4f10-98c7-ec167faca5e3"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""035c2050-bc50-42dd-b7c1-8ac4110acb70"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""21b87900-6365-412c-8ea2-314b6d8fab94"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""7879ae0a-62d0-451e-89f3-ae72f059f71e"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
                     ""name"": """",
                     ""id"": ""23d888ce-7a5b-47bc-9365-b66b034ef4c7"",
                     ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Roll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f8f807ac-da6a-4bbb-a32a-c034a8a8707e"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Roll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b6862b0c-16ea-4181-bf7a-db8a8aa93efe"",
+                    ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -152,31 +259,15 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""MouseBlock"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
-            ""name"": ""Mouse"",
-            ""id"": ""662ad12c-bc3b-4b9f-b4f3-b7317f4b5edb"",
-            ""actions"": [
-                {
-                    ""name"": ""mouse"",
-                    ""type"": ""Value"",
-                    ""id"": ""e359b845-f054-47ae-9cc0-9a0298ed088a"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                }
-            ],
-            ""bindings"": [
+                },
                 {
                     ""name"": """",
-                    ""id"": ""7de711ea-dcc4-4104-9890-6616060a52bb"",
-                    ""path"": ""<Mouse>/position"",
+                    ""id"": ""049e0b99-0c26-40af-b40f-816c381751ff"",
+                    ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""mouse"",
+                    ""action"": ""KeyboardWalk"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -194,9 +285,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Gameplay_Block = m_Gameplay.FindAction("Block", throwIfNotFound: true);
         m_Gameplay_AttackMouse = m_Gameplay.FindAction("AttackMouse", throwIfNotFound: true);
         m_Gameplay_MouseBlock = m_Gameplay.FindAction("MouseBlock", throwIfNotFound: true);
-        // Mouse
-        m_Mouse = asset.FindActionMap("Mouse", throwIfNotFound: true);
-        m_Mouse_mouse = m_Mouse.FindAction("mouse", throwIfNotFound: true);
+        m_Gameplay_KeyboardWalk = m_Gameplay.FindAction("KeyboardWalk", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -253,6 +342,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Gameplay_Block;
     private readonly InputAction m_Gameplay_AttackMouse;
     private readonly InputAction m_Gameplay_MouseBlock;
+    private readonly InputAction m_Gameplay_KeyboardWalk;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -264,6 +354,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Block => m_Wrapper.m_Gameplay_Block;
         public InputAction @AttackMouse => m_Wrapper.m_Gameplay_AttackMouse;
         public InputAction @MouseBlock => m_Wrapper.m_Gameplay_MouseBlock;
+        public InputAction @KeyboardWalk => m_Wrapper.m_Gameplay_KeyboardWalk;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -294,6 +385,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @MouseBlock.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMouseBlock;
                 @MouseBlock.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMouseBlock;
                 @MouseBlock.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMouseBlock;
+                @KeyboardWalk.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnKeyboardWalk;
+                @KeyboardWalk.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnKeyboardWalk;
+                @KeyboardWalk.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnKeyboardWalk;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -319,43 +413,13 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @MouseBlock.started += instance.OnMouseBlock;
                 @MouseBlock.performed += instance.OnMouseBlock;
                 @MouseBlock.canceled += instance.OnMouseBlock;
+                @KeyboardWalk.started += instance.OnKeyboardWalk;
+                @KeyboardWalk.performed += instance.OnKeyboardWalk;
+                @KeyboardWalk.canceled += instance.OnKeyboardWalk;
             }
         }
     }
     public GameplayActions @Gameplay => new GameplayActions(this);
-
-    // Mouse
-    private readonly InputActionMap m_Mouse;
-    private IMouseActions m_MouseActionsCallbackInterface;
-    private readonly InputAction m_Mouse_mouse;
-    public struct MouseActions
-    {
-        private @PlayerControls m_Wrapper;
-        public MouseActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @mouse => m_Wrapper.m_Mouse_mouse;
-        public InputActionMap Get() { return m_Wrapper.m_Mouse; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(MouseActions set) { return set.Get(); }
-        public void SetCallbacks(IMouseActions instance)
-        {
-            if (m_Wrapper.m_MouseActionsCallbackInterface != null)
-            {
-                @mouse.started -= m_Wrapper.m_MouseActionsCallbackInterface.OnMouse;
-                @mouse.performed -= m_Wrapper.m_MouseActionsCallbackInterface.OnMouse;
-                @mouse.canceled -= m_Wrapper.m_MouseActionsCallbackInterface.OnMouse;
-            }
-            m_Wrapper.m_MouseActionsCallbackInterface = instance;
-            if (instance != null)
-            {
-                @mouse.started += instance.OnMouse;
-                @mouse.performed += instance.OnMouse;
-                @mouse.canceled += instance.OnMouse;
-            }
-        }
-    }
-    public MouseActions @Mouse => new MouseActions(this);
     public interface IGameplayActions
     {
         void OnWalk(InputAction.CallbackContext context);
@@ -365,9 +429,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnBlock(InputAction.CallbackContext context);
         void OnAttackMouse(InputAction.CallbackContext context);
         void OnMouseBlock(InputAction.CallbackContext context);
-    }
-    public interface IMouseActions
-    {
-        void OnMouse(InputAction.CallbackContext context);
+        void OnKeyboardWalk(InputAction.CallbackContext context);
     }
 }

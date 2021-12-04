@@ -11,8 +11,8 @@ public class GameManager : MonoBehaviour
     public GameObject youDiedScreen;
     public GameObject youWinScreen;
     public GameObject player;
-    public TextMeshProUGUI liveTimerText;
-    public TextMeshProUGUI liveScoreText;
+    //public TextMeshProUGUI liveTimerText;
+    //public TextMeshProUGUI liveScoreText;
     public int enemiesKilled = 0;
 
     private float _timer = 0;
@@ -50,8 +50,8 @@ public class GameManager : MonoBehaviour
     {
         _timer += Time.deltaTime;
 
-        liveTimerText.text = _displayTimeShort(_timer);
-        liveScoreText.text = CalculateScore().ToString();
+        //liveTimerText.text = _displayTimeShort(_timer);
+        //liveScoreText.text = CalculateScore().ToString();
     }
 
     public void YouDied()
