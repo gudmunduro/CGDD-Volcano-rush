@@ -12,6 +12,12 @@ internal enum EnemyState
     Idle
 }
 
+internal enum EnemyAttackState
+{
+    Following,
+    Attacking
+}
+
 internal enum EnemyAnimationState
 {
     Idle = 0,
@@ -29,10 +35,13 @@ public enum EnemyMessage
 
 public class EnemyController : MonoBehaviour
 {
+    private const int MaxEnemiesAttackingPlayer = 2; 
+    
     public float moveSpeed;
     public float runMultiplier;
     public float damage = 2;
     public float attackRate = 5f;
+    public GlobalEnemyController globalEnemyController;
 
     private GameObject _ground;
     private EnemyVision _enemyVision;
@@ -42,6 +51,7 @@ public class EnemyController : MonoBehaviour
     private float _platformStartX = float.NegativeInfinity;
     private float _platformEndX = float.PositiveInfinity;
     private EnemyState _enemyState;
+    private EnemyAttackState _enemyAttackState;
     private int _move = 0;
     private Animator _animator;
     private Collider2D _collider;
@@ -88,6 +98,8 @@ public class EnemyController : MonoBehaviour
         _enemyAnimateObject = GetComponent<AnimateObject>();
 
         moveSpeed /= 100;
+        _enemyState = EnemyState.Idle;
+        _enemyAttackState = EnemyAttackState.Following;
     }
 
     void Start()
@@ -113,6 +125,11 @@ public class EnemyController : MonoBehaviour
 
         if (!_enemyAnimateObject.Alive())
         {
+            if (_enemyState == EnemyState.Attacking && _enemyAttackState == EnemyAttackState.Attacking)
+            {
+                globalEnemyController.enemiesAttackingPlayer -= 1;
+            }
+            
             _enemyState = EnemyState.Dying;
             _setAnimationState(EnemyAnimationState.Die);
             return;
@@ -170,6 +187,7 @@ public class EnemyController : MonoBehaviour
             {
                 if (!_enemyVision.IsPlayerInVision && !IsPlayerJumping)
                 {
+                    _enemyAttackState = EnemyAttackState.Following;
                     _startDefaultWalk();
                     break;
                 }
@@ -294,37 +312,54 @@ public class EnemyController : MonoBehaviour
 
     private void _attackPlayerUpdate()
     {
-        // Attack player
-        if (_enemyAttackRange.IsPlayerInAttackRange)
+        switch (_enemyAttackState)
         {
-            if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttack") &&
-                _currentTimeAttack >= attackRate)
+            case EnemyAttackState.Following:
             {
-                StartCoroutine(_attackPlayer(_enemyAttackRange.PlayerInAttackRange));
-
-                _currentTimeAttack = 0;
-            }
-            else if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyIdle"))
-            {
-                _setAnimationState(EnemyAnimationState.Idle);
-            }
-        }
-        // Follow player
-        else
-        {
-            var distanceToPlayerX = Math.Abs(transform.position.x -
-                                             GameManager.instance.player.transform.position.x);
+                if (_enemyAttackRange.IsPlayerInAttackRange && globalEnemyController.enemiesAttackingPlayer < MaxEnemiesAttackingPlayer)
+                {
+                    _enemyAttackState = EnemyAttackState.Attacking;
+                    globalEnemyController.enemiesAttackingPlayer += 1;
+                    break;
+                }
+                
+                var distanceToPlayerX = Math.Abs(transform.position.x -
+                                                 GameManager.instance.player.transform.position.x);
             
-            if (IsPlayerJumping && distanceToPlayerX < 1.0f)
-            {
-                _setAnimationState(EnemyAnimationState.Idle); 
-                _move = 0;
+                if (IsPlayerJumping && distanceToPlayerX < 1.0f)
+                {
+                    _setAnimationState(EnemyAnimationState.Idle); 
+                    _move = 0;
+                }
+                else
+                {
+                    _setAnimationState(EnemyAnimationState.Walk);
+                    _move = (int)runMultiplier;
+                    _setEnemyDirection(_getDirectionPlayerIsIn());
+                }
+                break;
             }
-            else
+            case EnemyAttackState.Attacking:
             {
-                _setAnimationState(EnemyAnimationState.Walk);
-                _move = (int)runMultiplier;
-                _setEnemyDirection(_getDirectionPlayerIsIn());
+                if (!_enemyAttackRange.IsPlayerInAttackRange)
+                {
+                    _enemyAttackState = EnemyAttackState.Following;
+                    globalEnemyController.enemiesAttackingPlayer -= 1;
+                    break;
+                }
+                
+                if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttack") &&
+                    _currentTimeAttack >= attackRate)
+                {
+                    StartCoroutine(_attackPlayer(_enemyAttackRange.PlayerInAttackRange));
+
+                    _currentTimeAttack = 0;
+                }
+                else if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyIdle"))
+                {
+                    _setAnimationState(EnemyAnimationState.Idle);
+                }
+                break;
             }
         }
     }

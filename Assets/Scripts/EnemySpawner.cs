@@ -10,7 +10,13 @@ public class EnemySpawner : MonoBehaviour
     public int enemyCount;
     public Transform spawnPoint;
     private bool _enemiesSpawned = false;
+    private GlobalEnemyController _globalEnemyController;
     private float DistanceToPlayer => Vector2.Distance(transform.position, GameManager.instance.player.transform.position);
+
+    private void Awake()
+    {
+        _globalEnemyController = spawnPoint.GetComponent<GlobalEnemyController>();
+    }
 
     void Update()
     {
@@ -18,7 +24,8 @@ public class EnemySpawner : MonoBehaviour
         {
             for (var i = 0; i < enemyCount; i++)
             {
-                Instantiate(enemyPrefab, transform.position, Quaternion.identity, spawnPoint);
+                var enemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity, spawnPoint);
+                enemy.GetComponent<EnemyController>().globalEnemyController = _globalEnemyController;
             }
 
             _enemiesSpawned = true;
