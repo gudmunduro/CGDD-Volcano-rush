@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     public GameObject youDiedScreen;
     public GameObject youWinScreen;
     public GameObject player;
+    public TextMeshProUGUI liveTimerText;
+    public TextMeshProUGUI liveScoreText;
     public int enemiesKilled = 0;
 
     private float _timer = 0;
@@ -47,6 +49,9 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         _timer += Time.deltaTime;
+
+        liveTimerText.text = _displayTimeShort(_timer);
+        liveScoreText.text = CalculateScore().ToString();
     }
 
     public void YouDied()
@@ -61,7 +66,14 @@ public class GameManager : MonoBehaviour
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
 
         return minutes + " Minutes and " + seconds + " Seconds";
+    }
 
+    private string _displayTimeShort(float timeToDisplay)
+    {
+        var minutes = Mathf.FloorToInt(timeToDisplay / 60); 
+        var seconds = Mathf.FloorToInt(timeToDisplay % 60);
+
+        return $"{minutes}:{seconds:00}";
     }
 
     private int CalculateScore()
