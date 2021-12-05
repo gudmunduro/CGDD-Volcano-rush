@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public TextMeshProUGUI liveTimerText;
     public TextMeshProUGUI liveScoreText;
+    public Image overheatEffectBackground;
     public int enemiesKilled = 0;
 
     private float _timer = 0;
@@ -20,6 +22,7 @@ public class GameManager : MonoBehaviour
     private TextMeshProUGUI _timeLivedText;
     private TextMeshProUGUI _enemiesKilledText;
     private TextMeshProUGUI _scoreText;
+    private Overheating _playerOverheating;
     
     private void Awake()
     {
@@ -44,6 +47,8 @@ public class GameManager : MonoBehaviour
                     break;
             }
         }
+
+        _playerOverheating = player.GetComponent<Overheating>();
     }
 
     private void Update()
@@ -52,6 +57,18 @@ public class GameManager : MonoBehaviour
 
         liveTimerText.text = _displayTimeShort(_timer);
         liveScoreText.text = CalculateScore().ToString();
+
+        if (_playerOverheating.overheat > 70)
+        {
+            var color = overheatEffectBackground.color;
+            var alpha = (_playerOverheating.overheat - 70) / 30 * 0.24f;
+            overheatEffectBackground.color = new Color(color.r, color.g, color.b, alpha);
+        }
+        else
+        {
+            var color = overheatEffectBackground.color;
+            overheatEffectBackground.color = new Color(color.r, color.g, color.b, 0);
+        }
     }
 
     public void YouDied()

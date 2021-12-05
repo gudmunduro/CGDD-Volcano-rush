@@ -35,8 +35,7 @@ public enum EnemyMessage
 
 public class EnemyController : MonoBehaviour
 {
-    private const int MaxEnemiesAttackingPlayer = 2; 
-    
+    public int maxEnemiesAttackingPlayer = 2;
     public float moveSpeed;
     public float runMultiplier;
     public float damage = 2;
@@ -316,7 +315,7 @@ public class EnemyController : MonoBehaviour
         {
             case EnemyAttackState.Following:
             {
-                if (_enemyAttackRange.IsPlayerInAttackRange && globalEnemyController.enemiesAttackingPlayer < MaxEnemiesAttackingPlayer)
+                if (_enemyAttackRange.IsPlayerInAttackRange && globalEnemyController.enemiesAttackingPlayer < maxEnemiesAttackingPlayer)
                 {
                     _enemyAttackState = EnemyAttackState.Attacking;
                     globalEnemyController.enemiesAttackingPlayer += 1;
