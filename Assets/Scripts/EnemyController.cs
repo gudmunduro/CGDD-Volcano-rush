@@ -68,6 +68,7 @@ public class EnemyController : MonoBehaviour
     private EnemyAnimationState _currentAnimationState;
     
     public SoundManager soundManager;
+    private bool isQuitting;
 
     public Direction CurrentWalkingDirection => _enemyState switch
     {
@@ -100,6 +101,17 @@ public class EnemyController : MonoBehaviour
         moveSpeed /= 100;
         _enemyState = EnemyState.Idle;
         _enemyAttackState = EnemyAttackState.Following;
+    }
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
+    }
+
+    private void OnDestroy()
+    {
+        if (!isQuitting)
+            Instantiate(itemDropPrefab, transform.position, Quaternion.identity);
     }
 
     void Start()

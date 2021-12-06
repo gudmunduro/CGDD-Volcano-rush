@@ -33,10 +33,10 @@ public class AnimateObject : MonoBehaviour
     void Update()
     {
 	    if(!Alive() && dead && !player)
-		{
-			Instantiate(gameObject.GetComponent<EnemyController>().itemDropPrefab, transform);
 			Destroy(gameObject);
-		}
+
+		if (player)
+			statusBar.Set(health);
 	}
 
 	public float HealthPct()
@@ -65,8 +65,7 @@ public class AnimateObject : MonoBehaviour
 	public void DamagePlayerHealth(float damage)
 	{
 		health -= damage;
-		statusBar.Set(health);
-				
+
 		if (Alive())
 		{
 			_animator.SetTrigger("Hurt");
@@ -74,7 +73,6 @@ public class AnimateObject : MonoBehaviour
 		}
 		else
 		{
-			
 			PlayerDeath();
 		}	
 	}
@@ -122,7 +120,6 @@ public class AnimateObject : MonoBehaviour
 	public void OverheatingDamage()
 	{
 		health -= 0.1f;
-		statusBar.Set(health);
 
 		if (!Alive() && !dead)
 		{

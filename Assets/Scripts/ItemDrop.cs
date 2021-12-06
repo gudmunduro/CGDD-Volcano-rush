@@ -11,14 +11,15 @@ public class ItemDrop : MonoBehaviour
     void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _spriteRenderer.sprite = foods[(int)Random.Range(0, foods.Length - 1)];
+        int _random = (int)Random.Range(0, foods.Length - 1);
+        _spriteRenderer.sprite = foods[_random];
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.name == "Player")
         {
-            gameObject.GetComponent<AnimateObject>().Heal(healAmount);
+            other.GetComponent<AnimateObject>().Heal(healAmount);
             Destroy(gameObject);
         }
     }
