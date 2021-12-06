@@ -62,10 +62,15 @@ public class SoundManager : MonoBehaviour
     public void PlayJump(bool grounded)
     {
         if (grounded)
+        {
             soloPlayer.clip = jumpSound;
+            soloPlayer.volume = soloVolume/4f;
+        }
         else
+        {
             soloPlayer.clip = jumpSound2;
-        soloPlayer.volume = soloVolume/4f;
+            soloPlayer.volume = soloVolume;
+        }
         soloPlayer.Play();
     }
 
