@@ -60,14 +60,6 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
-                },
-                {
-                    "name": "KeyboardWalk",
-                    "type": "Value",
-                    "id": "db1b5f84-b394-4a48-8908-f1994c8c4013",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -244,17 +236,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "MouseBlock",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "049e0b99-0c26-40af-b40f-816c381751ff",
-                    "path": "<Keyboard>/d",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "KeyboardWalk",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

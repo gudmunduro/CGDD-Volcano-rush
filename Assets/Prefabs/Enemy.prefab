@@ -326,7 +326,7 @@ MonoBehaviour:
   moveSpeed: 3
   runMultiplier: 2
   damage: 10
-  attackRate: 2
+  attackRate: 1
   itemDropPrefab: {fileID: 8379082951596246780, guid: ffabfe705331bcf94a0771128ca84443, type: 3}
   globalEnemyController: {fileID: 0}
   soundManager: {fileID: 0}
@@ -382,7 +382,6 @@ MonoBehaviour:
   maxHealth: 10
   health: 0
   destroyOnKill: 1
-  itemDropPrefab: {fileID: 0}
   dead: 0
   player: 0
   statusBar: {fileID: 0}
