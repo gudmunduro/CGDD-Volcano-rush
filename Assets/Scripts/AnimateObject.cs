@@ -33,7 +33,10 @@ public class AnimateObject : MonoBehaviour
     void Update()
     {
 	    if(!Alive() && dead && !player)
+		{
+			Instantiate(gameObject.GetComponent<EnemyController>().itemDropPrefab, transform);
 			Destroy(gameObject);
+		}
 	}
 
 	public float HealthPct()
@@ -74,6 +77,14 @@ public class AnimateObject : MonoBehaviour
 			
 			PlayerDeath();
 		}	
+	}
+
+	public void Heal(float amount)
+	{
+		if (health + amount <= maxHealth)
+			health += amount;
+		else
+			health = maxHealth;
 	}
 
 	public void DamageEnemyHealth(float damage, bool player=false)

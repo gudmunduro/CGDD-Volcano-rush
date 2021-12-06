@@ -40,6 +40,7 @@ public class EnemyController : MonoBehaviour
     public float runMultiplier;
     public float damage = 2;
     public float attackRate = 5f;
+    public Transform itemDropPrefab;
     public GlobalEnemyController globalEnemyController;
 
     private GameObject _ground;
