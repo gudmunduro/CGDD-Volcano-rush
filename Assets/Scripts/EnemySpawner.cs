@@ -9,7 +9,7 @@ public class EnemySpawner : MonoBehaviour
     public Transform enemyPrefab;
     public int enemyCount;
     public Transform spawnPoint;
-    private bool _enemiesSpawned = false;
+    public bool enemiesSpawned = false;
     private GlobalEnemyController _globalEnemyController;
     private float DistanceToPlayer => Vector2.Distance(transform.position, GameManager.instance.player.transform.position);
 
@@ -20,7 +20,7 @@ public class EnemySpawner : MonoBehaviour
 
     void Update()
     {
-        if (DistanceToPlayer < 20.0f && !_enemiesSpawned)
+        if (DistanceToPlayer < 20.0f && !enemiesSpawned)
         {
             for (var i = 0; i < enemyCount; i++)
             {
@@ -28,7 +28,7 @@ public class EnemySpawner : MonoBehaviour
                 enemy.GetComponent<EnemyController>().globalEnemyController = _globalEnemyController;
             }
 
-            _enemiesSpawned = true;
+            enemiesSpawned = true;
         }
     }
 }
