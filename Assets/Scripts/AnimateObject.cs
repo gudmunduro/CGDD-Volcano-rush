@@ -135,4 +135,11 @@ public class AnimateObject : MonoBehaviour
 			PlayerDeath();
 		}
 	}
+
+	public void Respawn()
+	{
+		dead = false;
+		health = 100;
+		_animator.Play("Idle");
+	}
 }

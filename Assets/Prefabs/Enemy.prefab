@@ -327,7 +327,8 @@ MonoBehaviour:
   runMultiplier: 2
   damage: 10
   attackRate: 1
-  itemDropPrefab: {fileID: 8379082951596246780, guid: ffabfe705331bcf94a0771128ca84443, type: 3}
+  itemDropPrefab: {fileID: 7357148476857602677, guid: 7e41a27fb173a4accbda0755be6acda5, type: 3}
+  upgradeDropPrefab: {fileID: 6010603995006689582, guid: 687f40a3b259a512c9832fc55984a034, type: 3}
   globalEnemyController: {fileID: 0}
 --- !u!70 &7468525167605376376
 CapsuleCollider2D:

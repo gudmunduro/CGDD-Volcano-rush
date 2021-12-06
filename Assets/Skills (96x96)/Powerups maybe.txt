@@ -1,0 +1,10 @@
+
+5 - stun
+10 - attack speed
+15 - slower/no overheating
+16 - more life
+30 - run speed
+40 - health from killing
+41 - strength (knockback)
+48 - double jump
+51 - increased range

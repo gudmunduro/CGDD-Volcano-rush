@@ -41,8 +41,10 @@ public class EnemyController : MonoBehaviour
     public float damage = 2;
     public float attackRate = 1f;
     public Transform itemDropPrefab;
+    public Transform upgradeDropPrefab;
     public GlobalEnemyController globalEnemyController;
-
+    
+    private GameObject items;
     private GameObject _ground;
     private EnemyVision _enemyVision;
     private EnemyGroundSensor _groundSensor;
@@ -111,7 +113,20 @@ public class EnemyController : MonoBehaviour
     private void OnDestroy()
     {
         if (!isQuitting)
-            Instantiate(itemDropPrefab, transform.position, Quaternion.identity);
+        {
+            // Any drop
+            if (UnityEngine.Random.Range(0f, 1f) > .4f)
+            {
+                // Health drop
+                if (UnityEngine.Random.Range(0f, 1f) > .2f)
+                    Instantiate(itemDropPrefab, transform.position, Quaternion.identity);
+
+                // Upgrade drop
+                else
+                    Instantiate(upgradeDropPrefab, transform.position, Quaternion.identity);
+            }
+        }
+            
     }
 
     void Start()
@@ -122,7 +137,9 @@ public class EnemyController : MonoBehaviour
         _groundFrontSensor = GetComponentInChildren<GroundFrontSensor>();
         _playerAnimateObject = GameManager.instance.player.GetComponent<AnimateObject>();
         soundManager = SoundManager.instance;
+        items = GameObject.Find("Items");
 
+        
         Physics2D.IgnoreCollision(GameManager.instance.player.GetComponent<CapsuleCollider2D>(), _collider, true);
     }
 
@@ -300,13 +317,9 @@ public class EnemyController : MonoBehaviour
     {
         _animator.SetTrigger(AttackWindupAnimTrigger);
 
-        yield return new WaitForSeconds(0.10f);
+        yield return new WaitForSeconds(0.5f);
 
-        if (!_enemyAttackRange.IsPlayerInAttackRange)
-        {
-            Debug.Log("Enemy outside attack range");
-            yield break;
-        }
+        if (!_enemyAttackRange.IsPlayerInAttackRange) yield break;
         soundManager.PlaySound(SoundType.Swipe);
         _animator.SetTrigger(AttackAnimTrigger);
 

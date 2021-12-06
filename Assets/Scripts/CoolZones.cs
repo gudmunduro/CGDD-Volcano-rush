@@ -5,11 +5,11 @@ using UnityEngine;
 public class CoolZones : MonoBehaviour
 {
 
-    private Overheating _overheating;
+    private PlayerController2 _playercontroller;
     // Start is called before the first frame update
     void Start()
     {
-        _overheating = GetComponent<Overheating>();
+        _playercontroller = GameManager.instance.player.GetComponent<PlayerController2>();
     }
 
     // Update is called once per frame
@@ -18,6 +18,7 @@ public class CoolZones : MonoBehaviour
         if (other.gameObject.name == "CoolZoneSensor")
         {
             FindObjectOfType<Overheating>().incoolzone = true;
+            _playercontroller.ChangePosition(transform.position.x, transform.position.y); 
         }
     }
 
