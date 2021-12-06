@@ -3212,6 +3212,10 @@ PrefabInstance:
       propertyPath: statusBar
       value: 
       objectReference: {fileID: 465650659}
+    - target: {fileID: 283026289654816217, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
+      propertyPath: m_Mass
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2897072917571347692, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: m_Name
       value: Player

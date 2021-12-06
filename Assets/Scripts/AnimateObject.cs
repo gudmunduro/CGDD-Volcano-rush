@@ -85,7 +85,7 @@ public class AnimateObject : MonoBehaviour
 			health = maxHealth;
 	}
 
-	public void DamageEnemyHealth(float damage, bool player=false)
+	public void DamageEnemyHealth(float damage, bool Isplayer=false)
 	{
 		health -= damage;
 
@@ -95,11 +95,19 @@ public class AnimateObject : MonoBehaviour
 		{
 			_animator.Play("EnemyDead");
 
-			if (player)
+			if (Isplayer)
 			{
 				GameManager.instance.enemiesKilled++;
 			}
 		}
+	}
+
+	public void Kill()
+	{
+		health = 0;
+		
+		
+		
 	}
 	
 	public void Attack(float damage)
