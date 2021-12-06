@@ -431,6 +431,11 @@ public class PlayerController2 : MonoBehaviour {
         m_soundManager.PlayDeath();
     }
 
+    public void PlayBlockAnimation()
+    {
+        m_animator.SetTrigger("Block");
+    }
+
     private IEnumerator _attackEnemy(GameObject enemy)
     {
         yield return new WaitForSeconds(m_attackSpeed);

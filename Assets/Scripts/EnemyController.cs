@@ -112,6 +112,11 @@ public class EnemyController : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (_enemyState == EnemyState.Attacking && _enemyAttackState == EnemyAttackState.Attacking)
+        {
+            globalEnemyController.enemiesAttackingPlayer -= 1;
+        }
+        
         if (!isQuitting)
         {
             // Any drop
@@ -325,6 +330,9 @@ public class EnemyController : MonoBehaviour
 
         yield return new WaitForSeconds(0.12f);
         
+        Debug.Log(_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
+        Debug.Log(_animator.GetNextAnimatorClipInfo(0)[0].clip.name);
+        
         if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" ||
             _animator.GetNextAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" ||
             _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttackWindup" ||
@@ -337,6 +345,7 @@ public class EnemyController : MonoBehaviour
             else
             {
                 soundManager.PlaySound(SoundType.Hit);
+                player.GetComponent<PlayerController2>().PlayBlockAnimation();
             }
         }
     }
