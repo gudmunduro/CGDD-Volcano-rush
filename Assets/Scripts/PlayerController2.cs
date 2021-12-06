@@ -11,6 +11,7 @@ public class PlayerController2 : MonoBehaviour {
     [SerializeField] float      m_rollForce = 6.0f;
 
     public GameObject           enemies;
+    public ParticleSystem       landingParticleSystem;
 
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
@@ -203,7 +204,11 @@ public class PlayerController2 : MonoBehaviour {
         if (!m_grounded && m_groundSensor.Sense())
         {
             if (!m_rolling && !m_grounded)
+            {
                 m_soundManager.PlaySound(SoundType.Step);
+                landingParticleSystem.Emit(4);
+            }
+
             m_grounded = true;
 
             if (m_currentFallingTime > m_fallingTime)
@@ -376,7 +381,6 @@ public class PlayerController2 : MonoBehaviour {
             
             m_soundManager.PlayJump(m_grounded);
             m_animator.SetTrigger("Jump");
-            m_grounded = false;
             m_animator.SetBool("Grounded", m_grounded);
             m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
             // m_groundSensor.Disable(0.2f);
