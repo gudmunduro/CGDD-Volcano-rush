@@ -326,7 +326,7 @@ MonoBehaviour:
   moveSpeed: 3
   runMultiplier: 2
   damage: 10
-  attackRate: 1
+  attackRate: 2
   itemDropPrefab: {fileID: 8379082951596246780, guid: ffabfe705331bcf94a0771128ca84443, type: 3}
   globalEnemyController: {fileID: 0}
   soundManager: {fileID: 0}

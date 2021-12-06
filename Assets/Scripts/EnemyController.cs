@@ -300,13 +300,9 @@ public class EnemyController : MonoBehaviour
     {
         _animator.SetTrigger(AttackWindupAnimTrigger);
 
-        yield return new WaitForSeconds(0.10f);
+        yield return new WaitForSeconds(0.5f);
 
-        if (!_enemyAttackRange.IsPlayerInAttackRange)
-        {
-            Debug.Log("Enemy outside attack range");
-            yield break;
-        }
+        if (!_enemyAttackRange.IsPlayerInAttackRange) yield break;
         soundManager.PlaySound(SoundType.Swipe);
         _animator.SetTrigger(AttackAnimTrigger);
 
