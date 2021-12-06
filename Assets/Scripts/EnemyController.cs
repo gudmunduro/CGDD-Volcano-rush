@@ -41,6 +41,7 @@ public class EnemyController : MonoBehaviour
     public float damage = 2;
     public float attackRate = 1f;
     public Transform itemDropPrefab;
+    public Transform upgradeDropPrefab;
     public GlobalEnemyController globalEnemyController;
     
     private GameObject items;
@@ -117,7 +118,20 @@ public class EnemyController : MonoBehaviour
         }
         
         if (!isQuitting)
-            Instantiate(itemDropPrefab, transform.position, Quaternion.identity, items.transform);
+        {
+            // Any drop
+            if (UnityEngine.Random.Range(0f, 1f) > .4f)
+            {
+                // Health drop
+                if (UnityEngine.Random.Range(0f, 1f) > .2f)
+                    Instantiate(itemDropPrefab, transform.position, Quaternion.identity);
+
+                // Upgrade drop
+                else
+                    Instantiate(upgradeDropPrefab, transform.position, Quaternion.identity);
+            }
+        }
+            
     }
 
     void Start()

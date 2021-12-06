@@ -33,6 +33,7 @@ public class PlayerController2 : MonoBehaviour {
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
     private SoundManager        m_soundManager;
+    public float                m_attackSpeed;
     public bool                 m_stepFrame = false;
     public Camera               m_camera;
     
@@ -444,7 +445,7 @@ public class PlayerController2 : MonoBehaviour {
 
     private IEnumerator _attackEnemy(GameObject enemy)
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(m_attackSpeed);
         var legalAnimation = m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1") ||
                              m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2") ||
                              m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3");
