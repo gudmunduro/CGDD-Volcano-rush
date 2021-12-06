@@ -39,7 +39,7 @@ public class EnemyController : MonoBehaviour
     public float moveSpeed;
     public float runMultiplier;
     public float damage = 2;
-    public float attackRate = 5f;
+    public float attackRate = 1f;
     public GlobalEnemyController globalEnemyController;
 
     private GameObject _ground;
@@ -65,7 +65,7 @@ public class EnemyController : MonoBehaviour
     private static readonly int WalkAnimTrigger = Animator.StringToHash("Walk");
     private static readonly int IdleAnimTrigger = Animator.StringToHash("Idle");
     private EnemyAnimationState _currentAnimationState;
-    
+
     public SoundManager soundManager;
 
     public Direction CurrentWalkingDirection => _enemyState switch
@@ -109,7 +109,7 @@ public class EnemyController : MonoBehaviour
         _groundFrontSensor = GetComponentInChildren<GroundFrontSensor>();
         _playerAnimateObject = GameManager.instance.player.GetComponent<AnimateObject>();
         soundManager = SoundManager.instance;
-        
+
         Physics2D.IgnoreCollision(GameManager.instance.player.GetComponent<CapsuleCollider2D>(), _collider, true);
     }
 
@@ -119,7 +119,7 @@ public class EnemyController : MonoBehaviour
         {
             return;
         }
-        
+
         _move = 0;
 
         if (!_enemyAnimateObject.Alive())
@@ -128,7 +128,7 @@ public class EnemyController : MonoBehaviour
             {
                 globalEnemyController.enemiesAttackingPlayer -= 1;
             }
-            
+
             _enemyState = EnemyState.Dying;
             _setAnimationState(EnemyAnimationState.Die);
             return;
@@ -186,6 +186,11 @@ public class EnemyController : MonoBehaviour
             {
                 if (!_enemyVision.IsPlayerInVision && !IsPlayerJumping)
                 {
+                    if (_enemyAttackState == EnemyAttackState.Attacking)
+                    {
+                        globalEnemyController.enemiesAttackingPlayer -= 1;
+                    }
+
                     _enemyAttackState = EnemyAttackState.Following;
                     _startDefaultWalk();
                     break;
@@ -261,7 +266,8 @@ public class EnemyController : MonoBehaviour
 
         // Switch to the direction that makes more sense if enemies are colliding with each other
         if (_enemyAttackRange.AreEnemiesInAttackRange && _enemyAttackRange.EnemiesInAttackRange
-            .Any(e => e != null && e.GetComponent<EnemyController>().CurrentWalkingDirection != CurrentWalkingDirection))
+            .Any(e => e != null &&
+                      e.GetComponent<EnemyController>().CurrentWalkingDirection != CurrentWalkingDirection))
         {
             _setPatrolDirection(Direction.Right);
         }
@@ -280,16 +286,23 @@ public class EnemyController : MonoBehaviour
     private IEnumerator _attackPlayer(GameObject player)
     {
         _animator.SetTrigger(AttackWindupAnimTrigger);
-        
-        yield return new WaitForSeconds(0.25f);
 
-        if (!_enemyAttackRange.IsPlayerInAttackRange) yield break;
+        yield return new WaitForSeconds(0.10f);
+
+        if (!_enemyAttackRange.IsPlayerInAttackRange)
+        {
+            Debug.Log("Enemy outside attack range");
+            yield break;
+        }
         soundManager.PlaySound(SoundType.Swipe);
         _animator.SetTrigger(AttackAnimTrigger);
+
+        yield return new WaitForSeconds(0.12f);
         
-        yield return new WaitForSeconds(0.15f);
-        
-        if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" || _animator.GetNextAnimatorClipInfo(0)[0].clip.name == "EnemyAttack")
+        if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" ||
+            _animator.GetNextAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" ||
+            _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttackWindup" ||
+            _animator.GetNextAnimatorClipInfo(0)[0].clip.name == "EnemyAttackWindup")
         {
             if (!ValidBlock())
             {
@@ -304,8 +317,9 @@ public class EnemyController : MonoBehaviour
 
     public bool ValidBlock()
     {
-        if(_enemyAttackRange.IsPlayerInAttackRange)
-            return _enemyAttackRange.PlayerInAttackRange.GetComponent<PlayerController2>().IsBlocking(_getDirectionPlayerIsIn());
+        if (_enemyAttackRange.IsPlayerInAttackRange)
+            return _enemyAttackRange.PlayerInAttackRange.GetComponent<PlayerController2>()
+                .IsBlocking(_getDirectionPlayerIsIn());
         return false;
     }
 
@@ -315,19 +329,20 @@ public class EnemyController : MonoBehaviour
         {
             case EnemyAttackState.Following:
             {
-                if (_enemyAttackRange.IsPlayerInAttackRange && globalEnemyController.enemiesAttackingPlayer < maxEnemiesAttackingPlayer)
+                if (_enemyAttackRange.IsPlayerInAttackRange &&
+                    globalEnemyController.enemiesAttackingPlayer < maxEnemiesAttackingPlayer)
                 {
                     _enemyAttackState = EnemyAttackState.Attacking;
                     globalEnemyController.enemiesAttackingPlayer += 1;
                     break;
                 }
-                
+
                 var distanceToPlayerX = Math.Abs(transform.position.x -
                                                  GameManager.instance.player.transform.position.x);
-            
+
                 if (IsPlayerJumping && distanceToPlayerX < 1.0f)
                 {
-                    _setAnimationState(EnemyAnimationState.Idle); 
+                    _setAnimationState(EnemyAnimationState.Idle);
                     _move = 0;
                 }
                 else
@@ -336,6 +351,7 @@ public class EnemyController : MonoBehaviour
                     _move = (int)runMultiplier;
                     _setEnemyDirection(_getDirectionPlayerIsIn());
                 }
+
                 break;
             }
             case EnemyAttackState.Attacking:
@@ -346,7 +362,7 @@ public class EnemyController : MonoBehaviour
                     globalEnemyController.enemiesAttackingPlayer -= 1;
                     break;
                 }
-                
+
                 if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttack") &&
                     _currentTimeAttack >= attackRate)
                 {
@@ -358,6 +374,7 @@ public class EnemyController : MonoBehaviour
                 {
                     _setAnimationState(EnemyAnimationState.Idle);
                 }
+
                 break;
             }
         }
@@ -424,8 +441,8 @@ public class EnemyController : MonoBehaviour
                 _animator.SetTrigger(IdleAnimTrigger);
                 break;
         }
-        
-        
+
+
         _currentAnimationState = state;
     }
 }

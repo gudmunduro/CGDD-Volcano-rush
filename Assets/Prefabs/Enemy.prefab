@@ -322,10 +322,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a1621a15d04ff74b9c9be56bf4cbeef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxEnemiesAttackingPlayer: 2
   moveSpeed: 3
   runMultiplier: 2
   damage: 10
-  attackRate: 2
+  attackRate: 1
+  globalEnemyController: {fileID: 0}
   soundManager: {fileID: 0}
 --- !u!70 &7468525167605376376
 CapsuleCollider2D:
