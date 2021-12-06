@@ -42,7 +42,8 @@ public class EnemyController : MonoBehaviour
     public float attackRate = 1f;
     public Transform itemDropPrefab;
     public GlobalEnemyController globalEnemyController;
-
+    
+    private GameObject items;
     private GameObject _ground;
     private EnemyVision _enemyVision;
     private EnemyGroundSensor _groundSensor;
@@ -111,7 +112,7 @@ public class EnemyController : MonoBehaviour
     private void OnDestroy()
     {
         if (!isQuitting)
-            Instantiate(itemDropPrefab, transform.position, Quaternion.identity);
+            Instantiate(itemDropPrefab, transform.position, Quaternion.identity, items.transform);
     }
 
     void Start()
@@ -122,7 +123,9 @@ public class EnemyController : MonoBehaviour
         _groundFrontSensor = GetComponentInChildren<GroundFrontSensor>();
         _playerAnimateObject = GameManager.instance.player.GetComponent<AnimateObject>();
         soundManager = SoundManager.instance;
+        items = GameObject.Find("Items");
 
+        
         Physics2D.IgnoreCollision(GameManager.instance.player.GetComponent<CapsuleCollider2D>(), _collider, true);
     }
 

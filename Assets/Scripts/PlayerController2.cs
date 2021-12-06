@@ -37,6 +37,7 @@ public class PlayerController2 : MonoBehaviour {
     public Camera               m_camera;
     
     private AnimateObject       m_animateObject;
+    private Overheating         m_overheating;
     private PlayerAttackRange   _playerAttackRange;
     public float                damage;
     public int                  m_baseFallDamage = 20;
@@ -53,6 +54,9 @@ public class PlayerController2 : MonoBehaviour {
     private bool                _mouseBlock;
 
     public bool IsTouchingGround => m_groundSensor.Sense();
+
+    public float playerXposition;
+    public float playerYposition;
     
     // Use this for initialization
 
@@ -109,7 +113,10 @@ public class PlayerController2 : MonoBehaviour {
         m_standardCollider = GetComponent<CapsuleCollider2D>();
         m_rollingCollider = GetComponent<CircleCollider2D>();
         m_animateObject = GetComponent<AnimateObject>();
+        m_overheating = GetComponent<Overheating>();
         _playerAttackRange = GetComponentInChildren<PlayerAttackRange>();
+        playerXposition = transform.position.x;
+        playerYposition = transform.position.y;
         
         m_soundManager = SoundManager.instance;
     }
@@ -456,5 +463,18 @@ public class PlayerController2 : MonoBehaviour {
                 }
             }
         }
+    }
+
+    public void ChangePosition(float x , float y)
+    {
+        playerXposition = x;
+        playerYposition = y;
+    }
+
+    public void Respawn()
+    {
+        m_animateObject.Respawn();
+        m_overheating.overheat = 0;
+        gameObject.transform.position = new Vector3(playerXposition, playerYposition + 0.5f, 0);
     }
 }
