@@ -31,6 +31,7 @@ public class PlayerController2 : MonoBehaviour {
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
     private SoundManager        m_soundManager;
+    public bool                 m_stepFrame = false;
     public Camera               m_camera;
     
     private AnimateObject       m_animateObject;
@@ -200,6 +201,8 @@ public class PlayerController2 : MonoBehaviour {
         //Check if character just landed on the ground
         if (!m_grounded && m_groundSensor.Sense())
         {
+            if (!m_rolling && !m_grounded)
+                m_soundManager.PlaySound(SoundType.Step);
             m_grounded = true;
 
             if (m_currentFallingTime > m_fallingTime)
@@ -370,6 +373,7 @@ public class PlayerController2 : MonoBehaviour {
                 m_extraJump = false;
             }
             
+            m_soundManager.PlayJump(m_grounded);
             m_animator.SetTrigger("Jump");
             m_grounded = false;
             m_animator.SetBool("Grounded", m_grounded);
@@ -384,6 +388,8 @@ public class PlayerController2 : MonoBehaviour {
             // Reset timer
             m_delayToIdle = 0.05f;
             m_animator.SetInteger("AnimState", 1);
+            if ((m_stepFrame && m_soundManager.PlayPos(SoundType.Step) > 0.02f)&& (m_grounded && !m_rolling))
+                m_soundManager.PlaySound(SoundType.Step);
         }
 
         //Idle
