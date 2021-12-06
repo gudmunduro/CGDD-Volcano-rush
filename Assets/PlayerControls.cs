@@ -73,14 +73,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
-                },
-                {
-                    ""name"": ""KeyboardWalk"",
-                    ""type"": ""Value"",
-                    ""id"": ""db1b5f84-b394-4a48-8908-f1994c8c4013"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -259,17 +251,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""MouseBlock"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""049e0b99-0c26-40af-b40f-816c381751ff"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""KeyboardWalk"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -285,7 +266,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Gameplay_Block = m_Gameplay.FindAction("Block", throwIfNotFound: true);
         m_Gameplay_AttackMouse = m_Gameplay.FindAction("AttackMouse", throwIfNotFound: true);
         m_Gameplay_MouseBlock = m_Gameplay.FindAction("MouseBlock", throwIfNotFound: true);
-        m_Gameplay_KeyboardWalk = m_Gameplay.FindAction("KeyboardWalk", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -342,7 +322,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Gameplay_Block;
     private readonly InputAction m_Gameplay_AttackMouse;
     private readonly InputAction m_Gameplay_MouseBlock;
-    private readonly InputAction m_Gameplay_KeyboardWalk;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -354,7 +333,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Block => m_Wrapper.m_Gameplay_Block;
         public InputAction @AttackMouse => m_Wrapper.m_Gameplay_AttackMouse;
         public InputAction @MouseBlock => m_Wrapper.m_Gameplay_MouseBlock;
-        public InputAction @KeyboardWalk => m_Wrapper.m_Gameplay_KeyboardWalk;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -385,9 +363,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @MouseBlock.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMouseBlock;
                 @MouseBlock.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMouseBlock;
                 @MouseBlock.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnMouseBlock;
-                @KeyboardWalk.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnKeyboardWalk;
-                @KeyboardWalk.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnKeyboardWalk;
-                @KeyboardWalk.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnKeyboardWalk;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -413,9 +388,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @MouseBlock.started += instance.OnMouseBlock;
                 @MouseBlock.performed += instance.OnMouseBlock;
                 @MouseBlock.canceled += instance.OnMouseBlock;
-                @KeyboardWalk.started += instance.OnKeyboardWalk;
-                @KeyboardWalk.performed += instance.OnKeyboardWalk;
-                @KeyboardWalk.canceled += instance.OnKeyboardWalk;
             }
         }
     }
@@ -429,6 +401,5 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnBlock(InputAction.CallbackContext context);
         void OnAttackMouse(InputAction.CallbackContext context);
         void OnMouseBlock(InputAction.CallbackContext context);
-        void OnKeyboardWalk(InputAction.CallbackContext context);
     }
 }

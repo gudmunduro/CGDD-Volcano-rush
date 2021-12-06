@@ -129,7 +129,7 @@ public class PlayerController2 : MonoBehaviour {
         }
         return false;
     }
-
+    
     // Update is called once per frame
     void Update ()
     {

@@ -40,6 +40,7 @@ public class EnemyController : MonoBehaviour
     public float runMultiplier;
     public float damage = 2;
     public float attackRate = 1f;
+    public Transform itemDropPrefab;
     public GlobalEnemyController globalEnemyController;
 
     private GameObject _ground;
@@ -67,6 +68,7 @@ public class EnemyController : MonoBehaviour
     private EnemyAnimationState _currentAnimationState;
 
     public SoundManager soundManager;
+    private bool isQuitting;
 
     public Direction CurrentWalkingDirection => _enemyState switch
     {
@@ -99,6 +101,17 @@ public class EnemyController : MonoBehaviour
         moveSpeed /= 100;
         _enemyState = EnemyState.Idle;
         _enemyAttackState = EnemyAttackState.Following;
+    }
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
+    }
+
+    private void OnDestroy()
+    {
+        if (!isQuitting)
+            Instantiate(itemDropPrefab, transform.position, Quaternion.identity);
     }
 
     void Start()

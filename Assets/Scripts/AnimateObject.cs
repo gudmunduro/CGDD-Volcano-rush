@@ -34,6 +34,9 @@ public class AnimateObject : MonoBehaviour
     {
 	    if(!Alive() && dead && !player)
 			Destroy(gameObject);
+
+		if (player)
+			statusBar.Set(health);
 	}
 
 	public float HealthPct()
@@ -62,8 +65,7 @@ public class AnimateObject : MonoBehaviour
 	public void DamagePlayerHealth(float damage)
 	{
 		health -= damage;
-		statusBar.Set(health);
-				
+
 		if (Alive())
 		{
 			_animator.SetTrigger("Hurt");
@@ -71,9 +73,16 @@ public class AnimateObject : MonoBehaviour
 		}
 		else
 		{
-			
 			PlayerDeath();
 		}	
+	}
+
+	public void Heal(float amount)
+	{
+		if (health + amount <= maxHealth)
+			health += amount;
+		else
+			health = maxHealth;
 	}
 
 	public void DamageEnemyHealth(float damage, bool player=false)
@@ -111,7 +120,6 @@ public class AnimateObject : MonoBehaviour
 	public void OverheatingDamage()
 	{
 		health -= 0.1f;
-		statusBar.Set(health);
 
 		if (!Alive() && !dead)
 		{
