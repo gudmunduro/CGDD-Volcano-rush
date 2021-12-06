@@ -66,8 +66,8 @@ public class EnemyController : MonoBehaviour
     private static readonly int WalkAnimTrigger = Animator.StringToHash("Walk");
     private static readonly int IdleAnimTrigger = Animator.StringToHash("Idle");
     private EnemyAnimationState _currentAnimationState;
-
-    public SoundManager soundManager;
+    
+    private SoundManager soundManager;
     private bool isQuitting;
 
     public Direction CurrentWalkingDirection => _enemyState switch
