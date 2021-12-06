@@ -11,6 +11,7 @@ public class PlayerController2 : MonoBehaviour {
     [SerializeField] float      m_rollForce = 6.0f;
 
     public GameObject           enemies;
+    public ParticleSystem       landingParticleSystem;
 
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
@@ -37,6 +38,7 @@ public class PlayerController2 : MonoBehaviour {
     public Camera               m_camera;
     
     private AnimateObject       m_animateObject;
+    private Overheating         m_overheating;
     private PlayerAttackRange   _playerAttackRange;
     public float                damage;
     public int                  m_baseFallDamage = 20;
@@ -53,6 +55,9 @@ public class PlayerController2 : MonoBehaviour {
     private bool                _mouseBlock;
 
     public bool IsTouchingGround => m_groundSensor.Sense();
+
+    public float playerXposition;
+    public float playerYposition;
     
     // Use this for initialization
 
@@ -109,7 +114,10 @@ public class PlayerController2 : MonoBehaviour {
         m_standardCollider = GetComponent<CapsuleCollider2D>();
         m_rollingCollider = GetComponent<CircleCollider2D>();
         m_animateObject = GetComponent<AnimateObject>();
+        m_overheating = GetComponent<Overheating>();
         _playerAttackRange = GetComponentInChildren<PlayerAttackRange>();
+        playerXposition = transform.position.x;
+        playerYposition = transform.position.y;
         
         m_soundManager = SoundManager.instance;
     }
@@ -204,7 +212,11 @@ public class PlayerController2 : MonoBehaviour {
         if (!m_grounded && m_groundSensor.Sense())
         {
             if (!m_rolling && !m_grounded)
+            {
                 m_soundManager.PlaySound(SoundType.Step);
+                landingParticleSystem.Emit(4);
+            }
+
             m_grounded = true;
 
             if (m_currentFallingTime > m_fallingTime)
@@ -377,7 +389,6 @@ public class PlayerController2 : MonoBehaviour {
             
             m_soundManager.PlayJump(m_grounded);
             m_animator.SetTrigger("Jump");
-            m_grounded = false;
             m_animator.SetBool("Grounded", m_grounded);
             m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
             // m_groundSensor.Disable(0.2f);
@@ -453,5 +464,18 @@ public class PlayerController2 : MonoBehaviour {
                 }
             }
         }
+    }
+
+    public void ChangePosition(float x , float y)
+    {
+        playerXposition = x;
+        playerYposition = y;
+    }
+
+    public void Respawn()
+    {
+        m_animateObject.Respawn();
+        m_overheating.overheat = 0;
+        gameObject.transform.position = new Vector3(playerXposition, playerYposition + 0.5f, 0);
     }
 }

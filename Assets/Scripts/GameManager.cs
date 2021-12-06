@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     public GameObject youDiedScreen;
     public GameObject youWinScreen;
     public GameObject player;
+    public GameObject enemies;
+    public GameObject items;
+    public GameObject enemyspawners;
     public TextMeshProUGUI liveTimerText;
     public TextMeshProUGUI liveScoreText;
     public Image overheatEffectBackground;
@@ -23,6 +26,7 @@ public class GameManager : MonoBehaviour
     private TextMeshProUGUI _enemiesKilledText;
     private TextMeshProUGUI _scoreText;
     private Overheating _playerOverheating;
+    private PlayerController2 _playercontroller;
     
     private void Awake()
     {
@@ -49,6 +53,7 @@ public class GameManager : MonoBehaviour
         }
 
         _playerOverheating = player.GetComponent<Overheating>();
+        _playercontroller = player.GetComponent<PlayerController2>();
     }
 
     private void Update()
@@ -118,4 +123,29 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
     
+    public IEnumerator ReloadCheckpoint()
+    {
+        foreach (Transform child in enemies.transform) {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        yield return new WaitForSeconds(0);
+        Time.timeScale = 1;
+
+        foreach (Transform child in items.transform) {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        foreach(Transform child in enemyspawners.transform){
+            child.GetComponent<EnemySpawner>().enemiesSpawned = false;
+        }
+        youDiedScreen.SetActive(false);
+        Time.timeScale = 1;
+        _playercontroller.Respawn();
+    }
+
+    public void OnReloadClick()
+    {
+        StartCoroutine(ReloadCheckpoint());
+    }
 }
