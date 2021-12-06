@@ -469,6 +469,6 @@ public class PlayerController2 : MonoBehaviour {
     {
         m_animateObject.Respawn();
         m_overheating.overheat = 0;
-        gameObject.transform.position = new Vector3(playerXposition, playerYposition + 0.5f, 0);
+        gameObject.transform.position = new Vector3(playerXposition, playerYposition, 0);
     }
 }
