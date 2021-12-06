@@ -378,7 +378,7 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         //Jump
-        else if (_jump && m_grounded && !m_rolling)
+        else if (_jump && m_grounded && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
             m_soundManager.PlayJump(m_grounded);
             m_animator.SetTrigger("Jump");
