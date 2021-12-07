@@ -30,6 +30,7 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_fallingTime = 1.2f;
     private float               m_currentFallingTime = 0f;
     private CapsuleCollider2D   m_standardCollider;
+    private BoxCollider2D       m_standardCollider2;
     private CircleCollider2D    m_rollingCollider;
     private SoundManager        m_soundManager;
     public float                m_attackSpeed;
@@ -114,6 +115,9 @@ public class PlayerController2 : MonoBehaviour {
         m_groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
         m_rollingSensor = transform.Find("RollingSensor").GetComponent<PlayerSensor>();
         m_standardCollider = GetComponent<CapsuleCollider2D>();
+        m_standardCollider2 = GetComponent<BoxCollider2D>();
+        m_standardCollider2.sharedMaterial = m_slipperyMaterial;
+
         m_rollingCollider = GetComponent<CircleCollider2D>();
         m_animateObject = GetComponent<AnimateObject>();
         m_overheating = GetComponent<Overheating>();
@@ -177,7 +181,7 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         
-        if (m_body2d.velocity.y >= -0.6f)
+        if (m_body2d.velocity.y >= 0f)
         {
             m_currentFallingTime = 0f;
         }
@@ -201,12 +205,14 @@ public class PlayerController2 : MonoBehaviour {
                 m_rolling = false;
                 m_rollingCollider.enabled = false;
                 m_standardCollider.enabled = true;
+                m_standardCollider2.enabled = true;
 
                 foreach (Transform enemy in enemies.transform)
                 {
                     var enemyCollider = enemy.GetComponent<Collider2D>();
                 
                     Physics2D.IgnoreCollision(m_standardCollider, enemyCollider, true);
+                    Physics2D.IgnoreCollision(m_standardCollider2, enemyCollider, true);
                 }
             }
         }
@@ -346,7 +352,7 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         // Roll
-        else if (_roll && !m_rolling && m_inputStick.x != 0)
+        else if (_roll && !m_rolling)
         {
             m_rolling = true;
             m_animator.ResetTrigger("StandUp");
@@ -373,6 +379,7 @@ public class PlayerController2 : MonoBehaviour {
             
             m_rollingCollider.enabled = true;
             m_standardCollider.enabled = false;
+            m_standardCollider2.enabled = false;
             
             foreach (Transform enemy in enemies.transform)
             {

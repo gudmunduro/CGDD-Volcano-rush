@@ -3781,10 +3781,6 @@ PrefabInstance:
       propertyPath: statusBar
       value: 
       objectReference: {fileID: 465650659}
-    - target: {fileID: 283026289654816217, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
-      propertyPath: m_GravityScale
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 2897072917571347692, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: m_Name
       value: Player
@@ -3801,14 +3797,6 @@ PrefabInstance:
       propertyPath: m_camera
       value: 
       objectReference: {fileID: 1800781610}
-    - target: {fileID: 2897072917571347698, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
-      propertyPath: m_jumpForce
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 2897072917571347698, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
-      propertyPath: m_rollForce
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 6678397682123883729, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3875,11 +3863,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6678397682123883729, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 5.96
+      value: 8.32
       objectReference: {fileID: 0}
     - target: {fileID: 6678397682123883729, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 6.03
+      value: -14.66
       objectReference: {fileID: 0}
     - target: {fileID: 6678397682123883729, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
