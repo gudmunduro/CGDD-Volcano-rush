@@ -46,7 +46,7 @@ public class PlayerController2 : MonoBehaviour {
     public int                  m_baseFallDamage = 20;
     public PhysicsMaterial2D    m_slipperyMaterial;
 
-    private float               m_jumpWindow = 8.0f / 42.0f;
+    private float               m_jumpWindow = 8.0f / 54.0f;
     private float               m_currentJumpWindowTime;
     
     private PlayerControls      m_controls;
@@ -395,7 +395,7 @@ public class PlayerController2 : MonoBehaviour {
         //Jump
         else if (_jump && ((m_grounded || (m_doubleJumpEnabled && m_extraJump)) || m_currentJumpWindowTime < m_jumpWindow) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
-            if (!m_grounded)
+            if (!m_grounded && m_currentJumpWindowTime >= m_jumpWindow)
             {
                 m_extraJump = false;
             }
