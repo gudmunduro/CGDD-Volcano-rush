@@ -6,10 +6,11 @@ using UnityEngine.InputSystem;
 
 public class PlayerController2 : MonoBehaviour {
 
-    [SerializeField] float      m_speed = 4.0f;
+    public float                m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
     [SerializeField] float      m_rollForce = 6.0f;
-
+    [SerializeField] GameObject m_slideDust;
+    
     public GameObject           enemies;
     public ParticleSystem       landingParticleSystem;
 
@@ -17,9 +18,16 @@ public class PlayerController2 : MonoBehaviour {
     private Rigidbody2D         m_body2d;
     private PlayerSensor        m_groundSensor;
     private PlayerSensor        m_rollingSensor;
+    private PlayerSensor        m_wallSensorR1;
+    private PlayerSensor        m_wallSensorR2;
+    private PlayerSensor        m_wallSensorL1;
+    private PlayerSensor        m_wallSensorL2;
     private bool                m_grounded = false;
     private bool                m_rolling = false;
+    private bool                m_isWallSliding = false;
     public bool                 m_blocking = false;
+    private bool                m_extraJump = true;
+    public bool                 m_doubleJumpEnabled = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
@@ -27,7 +35,7 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_rollDuration = 8.0f / 14.0f;
     private float               m_rollCurrentTime;
     private float               m_animationRollCancelTime = 8.0f / 28.0f;
-    private float               m_fallingTime = 1.2f;
+    private float               m_fallingTime = 1f;
     private float               m_currentFallingTime = 0f;
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
@@ -41,8 +49,12 @@ public class PlayerController2 : MonoBehaviour {
     private PlayerAttackRange   _playerAttackRange;
     public float                damage;
     public int                  m_baseFallDamage = 20;
+    public float                m_maxSlidingFallSpeed = 3f;
     public PhysicsMaterial2D    m_slipperyMaterial;
 
+    private float               m_jumpWindow = 8.0f / 54.0f;
+    private float               m_currentJumpWindowTime;
+    
     private PlayerControls      m_controls;
     private Vector2             m_inputStick;
 
@@ -111,6 +123,7 @@ public class PlayerController2 : MonoBehaviour {
         m_groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
         m_rollingSensor = transform.Find("RollingSensor").GetComponent<PlayerSensor>();
         m_standardCollider = GetComponent<CapsuleCollider2D>();
+
         m_rollingCollider = GetComponent<CircleCollider2D>();
         m_animateObject = GetComponent<AnimateObject>();
         m_overheating = GetComponent<Overheating>();
@@ -119,6 +132,11 @@ public class PlayerController2 : MonoBehaviour {
         playerYposition = transform.position.y;
         
         m_soundManager = SoundManager.instance;
+
+        m_wallSensorR1 = transform.Find("WallSensor_R1").GetComponent<PlayerSensor>();
+        m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<PlayerSensor>();
+        m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<PlayerSensor>();
+        m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<PlayerSensor>();
     }
 
     public bool IsRolling()
@@ -152,11 +170,14 @@ public class PlayerController2 : MonoBehaviour {
         if (!m_grounded)
         {
             m_standardCollider.sharedMaterial = m_slipperyMaterial;
+            m_currentJumpWindowTime += Time.deltaTime;
         }
 
         else
         {
+            m_extraJump = true;
             m_standardCollider.sharedMaterial = null;
+            m_currentJumpWindowTime = 0;
         }
         
         // Increase timer that checks roll duration
@@ -170,13 +191,7 @@ public class PlayerController2 : MonoBehaviour {
         {
             m_currentFallingTime += Time.deltaTime;
         }
-        
-        
-        if (m_body2d.velocity.y >= -0.6f)
-        {
-            m_currentFallingTime = 0f;
-        }
-        
+
         // Disable rolling if timer extends duration
         if (m_rollCurrentTime > m_rollDuration)
         {
@@ -241,7 +256,8 @@ public class PlayerController2 : MonoBehaviour {
 
         var illegaAnimation = m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1") ||
                               m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2") ||
-                              m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3");
+                              m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3") ||
+                              m_animator.GetCurrentAnimatorStateInfo(0).IsName("Wall Slide");
         
         // Swap direction of sprite depending on walk direction
         if (m_inputStick.x > 0 && !m_blocking && !illegaAnimation)
@@ -262,6 +278,39 @@ public class PlayerController2 : MonoBehaviour {
                                 m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle Block");
         
         // -- Handle Animations --
+        
+        if (m_animateObject.Alive())
+        {
+            m_isWallSliding = (m_wallSensorR1.Sense() && m_wallSensorR2.Sense()) || (m_wallSensorL1.Sense() && m_wallSensorL2.Sense());
+            m_animator.SetBool("WallSlide", m_isWallSliding);
+            
+            if (m_isWallSliding)
+            {
+                m_currentFallingTime = 0;
+                
+                if (m_body2d.velocity.y < -m_maxSlidingFallSpeed)
+                {
+                    m_body2d.velocity = new Vector2(m_body2d.velocity.x, -m_maxSlidingFallSpeed);
+                }
+
+                if (m_wallSensorR1.Sense() && m_wallSensorR2.Sense())
+                {
+                    GetComponent<SpriteRenderer>().flipX = false;
+                    m_facingDirection = 1;
+                }
+                else
+                {
+                    GetComponent<SpriteRenderer>().flipX = true;
+                    m_facingDirection = -1;
+                }
+            }
+            else
+            {
+                m_animator.SetTrigger("OutOfSlideFall");
+            }
+        }
+            
+        
         //Attack
         if((_attack || _mouseAttack) && m_timeSinceAttack > 0.25f && 
            !illegalAnimation2 && !m_rollingSensor.Sense() && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
@@ -341,7 +390,7 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         // Roll
-        else if (_roll && !m_rolling && m_inputStick.x != 0)
+        else if (_roll && !m_rolling)
         {
             m_rolling = true;
             m_animator.ResetTrigger("StandUp");
@@ -368,7 +417,7 @@ public class PlayerController2 : MonoBehaviour {
             
             m_rollingCollider.enabled = true;
             m_standardCollider.enabled = false;
-            
+
             foreach (Transform enemy in enemies.transform)
             {
                 var enemyCollider = enemy.GetComponent<Collider2D>();
@@ -378,9 +427,13 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         //Jump
-        else if (_jump && m_grounded && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
+        else if (_jump && ((m_grounded || (m_doubleJumpEnabled && m_extraJump)) || m_currentJumpWindowTime < m_jumpWindow) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
-            m_soundManager.PlayJump(m_grounded);
+            if (!m_grounded && m_currentJumpWindowTime >= m_jumpWindow)
+            {
+                m_extraJump = false;
+            }
+            m_soundManager.PlayJump(m_grounded || m_currentJumpWindowTime < m_jumpWindow);
             m_animator.SetTrigger("Jump");
             m_animator.SetBool("Grounded", m_grounded);
             m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
@@ -412,7 +465,8 @@ public class PlayerController2 : MonoBehaviour {
         var legalAnimation = m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") ||
                              m_animator.GetCurrentAnimatorStateInfo(0).IsName("Run") ||
                              m_animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") ||
-                             m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall");
+                             m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall") ||
+                             m_animator.GetCurrentAnimatorStateInfo(0).IsName("Wall Slide");
         if (!m_rolling && legalAnimation)
             m_body2d.velocity = new Vector2(m_inputStick.x * m_speed, m_body2d.velocity.y);
 
@@ -476,4 +530,25 @@ public class PlayerController2 : MonoBehaviour {
         m_overheating.overheat = 0;
         gameObject.transform.position = new Vector3(playerXposition, playerYposition, 0);
     }
+    
+    // Animation Events
+    // Called in slide animation.
+    void AE_SlideDust()
+    {
+        Vector3 spawnPosition;
+
+        if (m_facingDirection == 1)
+            spawnPosition = m_wallSensorR2.transform.position;
+        else
+            spawnPosition = m_wallSensorL2.transform.position;
+
+        if (m_slideDust != null)
+        {
+            // Set correct arrow spawn position
+            GameObject dust = Instantiate(m_slideDust, spawnPosition, gameObject.transform.localRotation) as GameObject;
+            // Turn arrow in correct direction
+            dust.transform.localScale = new Vector3(m_facingDirection, 1, 1);
+        }
+    }
+    
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum PowerType
 {
@@ -20,53 +21,99 @@ public class Powerup : MonoBehaviour
     public Sprite[] powerups;
     private SpriteRenderer _spriteRenderer;
     public float duration;
-    private float _remainingTime;
     private PowerType _powerup;
     private bool _active;
     private Queue _valueQueue;
+    private GameObject _player;
+    private float _startTime;
 
-    // Start is called before the first frame update
+    private GameObject _powerUpUI;
+    private Image _powerUpImage;
+    
     void Start()
     {
         int _random = 1; //(int) Random.Range(0, powerups.Length - 1);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _spriteRenderer.sprite = powerups[_random];
         _powerup = GetType(_spriteRenderer.name);
-        _remainingTime = duration;
         _active = false;
 
+        _powerUpUI = GameObject.Find("PowerUp");
+        _powerUpImage = _powerUpUI.GetComponent<Image>();
+        
         _valueQueue = new Queue();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_active)
+        if (_active && Time.time - _startTime > duration)
         {
-            _remainingTime -= 0.1f;
-            // TODO hide sprite or move to HUD to display remaining time
+            UpdateAll(_powerup, _player, false);
+            
+            Color c = _powerUpImage.color;
+            c.a = 0;
+            _powerUpImage.color = c;
+
+            Destroy(gameObject);
         }
-        if (_remainingTime <= 0)
+    }
+
+    private void UpdateAll(PowerType type, GameObject player, bool update)
+    {
+        switch(type)
         {
-            // TODO: clean up effects and destroy object
+            case PowerType.AttackSpeed:
+                UpgradeAttackSpeed(player, update);
+                break;
+            case PowerType.HeatResistance:
+                UpgradeHeatResistance(player, update);
+                break;
+            case PowerType.Speed:
+                UpgradeSpeed(player, update);
+                break;
+            case PowerType.DoubleJump:
+                UpgradeDoubleJump(player, update);
+                break;
+        }
+    }
+
+    private PowerType GetType(string spriteName)
+    {
+        switch(spriteName)
+        {
+            case "skill_icons10":
+                return PowerType.AttackSpeed;
+            case "skill_icons15":
+                return PowerType.HeatResistance;
+            case "skill_icons30":
+                return PowerType.Speed;
+            case "skill_icons48":
+                return PowerType.DoubleJump;
+            default:
+                return PowerType.DoubleJump;
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name == "Player")
+        if (other.gameObject.name == "Player" && !_active)
         {
-            PowerType _type = GetType(_spriteRenderer.sprite.name);
-            Debug.Log(_spriteRenderer.sprite.name);
-            switch(_type)
-            {
-                case PowerType.AttackSpeed:
-                    UpgradeAttackSpeed(other.gameObject, true);
-                    break;
-                case PowerType.Speed:
-                    UpgradeSpeed(other.gameObject);
-                    break;
-            }
+            _powerup = GetType(_spriteRenderer.sprite.name);
+            _player = other.gameObject;
+            UpdateAll(_powerup, _player, true);
+            GetComponent<BoxCollider2D>().enabled = false;
+            // TODO: pin icon to canvas and have it time out using the update method, finally destroying it
+
+            _spriteRenderer.enabled = false;
+            
+            Color c = _powerUpImage.color;
+            c.a = 1;
+            _powerUpImage.color = c;
+            
+            _powerUpImage.sprite = _spriteRenderer.sprite;
+            
+            _startTime = Time.time;
             _active = true;
         }
     }
@@ -94,21 +141,43 @@ public class Powerup : MonoBehaviour
         }
     }
 
-    private void UpgradeSpeed(GameObject player)
+    private void UpgradeHeatResistance(GameObject player, bool upgrade)
     {
-        // DO MORE UPGRADES
+        player.GetComponent<Overheating>().heatResistant = upgrade;
     }
 
-    private PowerType GetType(string spriteName)
+    private void UpgradeSpeed(GameObject player, bool upgrade)
     {
-        switch(spriteName)
+        float _temp;
+        if (upgrade)
         {
-            case "skill_icons10":
-                return PowerType.AttackSpeed;
-            case "skill_icons30":
-                return PowerType.AttackSpeed;
-            default:
-                return PowerType.DoubleJump;
+            _temp = player.GetComponent<PlayerController2>().m_speed;
+            _valueQueue.Enqueue(_temp);
+            player.GetComponent<PlayerController2>().m_speed = _temp * 1.5f;
+
+            _temp = player.GetComponent<Animator>().GetFloat("RunSpeed");
+            _valueQueue.Enqueue(_temp);
+            player.GetComponent<Animator>().SetFloat("RunSpeed", _temp * 1.5f);
+        }
+        else
+        {
+            _temp = (float) _valueQueue.Dequeue();
+            player.GetComponent<PlayerController2>().m_speed = _temp / 1.5f;
+
+            _temp = (float) _valueQueue.Dequeue();
+            player.GetComponent<Animator>().SetFloat("RunSpeed", _temp / 1.5f);
+        }
+    }
+
+    private void UpgradeDoubleJump(GameObject player, bool upgrade)
+    {
+        if (upgrade)
+        {
+            player.GetComponent<PlayerController2>().m_doubleJumpEnabled = true;
+        }
+        else
+        {
+            player.GetComponent<PlayerController2>().m_doubleJumpEnabled = false;
         }
     }
 }

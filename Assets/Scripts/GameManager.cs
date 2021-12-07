@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI liveTimerText;
     public TextMeshProUGUI liveScoreText;
     public Image overheatEffectBackground;
+    public OnlineLeaderboard onlineLeaderboard;
     public int enemiesKilled = 0;
 
     private float _timer = 0;
@@ -114,6 +115,7 @@ public class GameManager : MonoBehaviour
     
     public void YouWin()
     {
+        StartCoroutine(onlineLeaderboard.SubmitEntry("Player", CalculateScore(), _displayTimeShort(_timer)));
         youWinScreen.SetActive(true);
 
         _enemiesKilledText.text = "Enemies Killed: " + enemiesKilled;
