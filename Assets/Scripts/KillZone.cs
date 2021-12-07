@@ -8,9 +8,7 @@ public class KillZone : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         var animateObject = other.gameObject.GetComponent<AnimateObject>();
-        
-        Debug.Log("yayay");
-        
+
         if (other.CompareTag("Enemy"))
         {
             animateObject.DamageEnemyHealth(100000);

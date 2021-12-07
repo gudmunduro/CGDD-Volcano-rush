@@ -19,7 +19,6 @@ public class PlayerController2 : MonoBehaviour {
     private PlayerSensor        m_rollingSensor;
     private bool                m_grounded = false;
     private bool                m_rolling = false;
-    private bool                m_extraJump = true;
     public bool                 m_blocking = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
@@ -158,7 +157,6 @@ public class PlayerController2 : MonoBehaviour {
         else
         {
             m_standardCollider.sharedMaterial = null;
-            m_extraJump = true;
         }
         
         // Increase timer that checks roll duration
@@ -380,13 +378,8 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         //Jump
-        else if (_jump && (m_grounded || m_extraJump) && !m_rolling)
+        else if (_jump && m_grounded && !m_rolling)
         {
-            if (!m_grounded)
-            {
-                m_extraJump = false;
-            }
-            
             m_soundManager.PlayJump(m_grounded);
             m_animator.SetTrigger("Jump");
             m_animator.SetBool("Grounded", m_grounded);
@@ -481,6 +474,6 @@ public class PlayerController2 : MonoBehaviour {
     {
         m_animateObject.Respawn();
         m_overheating.overheat = 0;
-        gameObject.transform.position = new Vector3(playerXposition, playerYposition + 0.5f, 0);
+        gameObject.transform.position = new Vector3(playerXposition, playerYposition, 0);
     }
 }
