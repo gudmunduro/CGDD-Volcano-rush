@@ -22,6 +22,7 @@ public class PlayerController2 : MonoBehaviour {
     public bool                 m_blocking = false;
     private bool                m_extraJump = true;
     public bool                 m_doubleJumpEnabled = false;
+    public bool                 m_poweredUp = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;

@@ -120,10 +120,10 @@ public class EnemyController : MonoBehaviour
         if (!isQuitting)
         {
             // Any drop
-            if (UnityEngine.Random.Range(0f, 1f) > 0) //.4f)
+            if (UnityEngine.Random.Range(0f, 1f) > .4f)
             {
                 // Health drop
-                if (UnityEngine.Random.Range(0f, 1f) > 1) //.2f)
+                if (UnityEngine.Random.Range(0f, 1f) > .2f)
                     Instantiate(itemDropPrefab, transform.position, Quaternion.identity, items.transform);
 
                 // Upgrade drop
