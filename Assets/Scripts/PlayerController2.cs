@@ -288,6 +288,9 @@ public class PlayerController2 : MonoBehaviour {
             
             if (m_isWallSliding)
             {
+                if (!m_soundManager.PlayingSolo())
+                    m_soundManager.PlaySlide();
+
                 m_currentFallingTime = 0;
                 
                 if (m_body2d.velocity.y < -m_maxSlidingFallSpeed)
@@ -309,6 +312,7 @@ public class PlayerController2 : MonoBehaviour {
             else
             {
                 m_animator.SetTrigger("OutOfSlideFall");
+                m_soundManager.StopSolo();
             }
         }
             
