@@ -50,6 +50,7 @@ public class EnemyController : MonoBehaviour
     private EnemyGroundSensor _groundSensor;
     private EnemyAttackRange _enemyAttackRange;
     private GroundFrontSensor _groundFrontSensor;
+    private WallSensor _wallSensor;
     private float _platformStartX = float.NegativeInfinity;
     private float _platformEndX = float.PositiveInfinity;
     private EnemyState _enemyState;
@@ -62,15 +63,15 @@ public class EnemyController : MonoBehaviour
     private float _touchGroundTime;
     private AnimateObject _enemyAnimateObject;
     private AnimateObject _playerAnimateObject;
+    private EnemyAnimationState _currentAnimationState;
+    private SoundManager soundManager;
+    private bool isQuitting;
+
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackWindupAnimTrigger = Animator.StringToHash("AttackWindup");
     private static readonly int AttackAnimTrigger = Animator.StringToHash("Attack");
     private static readonly int WalkAnimTrigger = Animator.StringToHash("Walk");
     private static readonly int IdleAnimTrigger = Animator.StringToHash("Idle");
-    private EnemyAnimationState _currentAnimationState;
-
-    private SoundManager soundManager;
-    private bool isQuitting;
 
     public Direction CurrentWalkingDirection => _enemyState switch
     {
@@ -139,6 +140,7 @@ public class EnemyController : MonoBehaviour
         _enemyVision = GetComponentInChildren<EnemyVision>();
         _enemyAttackRange = GetComponentInChildren<EnemyAttackRange>();
         _groundFrontSensor = GetComponentInChildren<GroundFrontSensor>();
+        _wallSensor = GetComponentInChildren<WallSensor>();
         _playerAnimateObject = GameManager.instance.player.GetComponent<AnimateObject>();
         soundManager = SoundManager.instance;
         items = GameObject.Find("Items");
@@ -193,7 +195,7 @@ public class EnemyController : MonoBehaviour
         }
 
         // Attack player if it is in vision
-        if (_enemyVision.IsPlayerInVision)
+        if (_enemyVision.IsPlayerInVision && _isPlayerInReach())
         {
             _enemyState = EnemyState.Attacking;
         }
@@ -218,7 +220,7 @@ public class EnemyController : MonoBehaviour
             }
             case EnemyState.Attacking:
             {
-                if (!_enemyVision.IsPlayerInVision && !IsPlayerJumping)
+                if ((!_enemyVision.IsPlayerInVision || !_isPlayerInReach()) && !IsPlayerJumping)
                 {
                     if (_enemyAttackState == EnemyAttackState.Attacking)
                     {
@@ -270,20 +272,10 @@ public class EnemyController : MonoBehaviour
 
     private void _patrolUpdate(Direction direction)
     {
-        if ((direction == Direction.Left &&
-             DistanceToPlatformLeft < 1.0f ||
-             direction == Direction.Right && DistanceToPlatformRight < 1.0f) &&
-            _lastDirectionSwitchTime + 0.5f < Time.realtimeSinceStartup)
-        {
-            _setPatrolDirection(direction == Direction.Left ? Direction.Right : Direction.Left);
-            _lastDirectionSwitchTime = Time.realtimeSinceStartup;
-
-            _sendMessageToAllEnemiesInVision(EnemyMessage.SetDirection, _getDirectionForState(_enemyState));
-        }
-
-        if ((!_groundFrontSensor.IsGroundInFront ||
-             _enemyAttackRange.IsWallInAttackRange) && _lastDirectionSwitchTime + 0.5f < Time.realtimeSinceStartup
-                                                    && _touchGroundTime + 0.2f < Time.realtimeSinceStartup)
+        if ((!_groundFrontSensor.IsGroundInFront || _enemyAttackRange.IsWallInAttackRange ||
+             _wallSensor.IsWallInFront) &&
+            _lastDirectionSwitchTime + 0.5f < Time.realtimeSinceStartup
+            && _touchGroundTime + 0.2f < Time.realtimeSinceStartup)
         {
             switch (direction)
             {
@@ -296,6 +288,10 @@ public class EnemyController : MonoBehaviour
                     _sendMessageToAllEnemiesInVision(EnemyMessage.FoundPlatformEnd, _platformEndX);
                     break;
             }
+
+            _setPatrolDirection(direction == Direction.Left ? Direction.Right : Direction.Left);
+            _lastDirectionSwitchTime = Time.realtimeSinceStartup;
+            _sendMessageToAllEnemiesInVision(EnemyMessage.SetDirection, _getDirectionForState(_enemyState));
         }
 
         // Switch to the direction that makes more sense if enemies are colliding with each other
@@ -362,6 +358,7 @@ public class EnemyController : MonoBehaviour
             case EnemyAttackState.Following:
             {
                 if (_enemyAttackRange.IsPlayerInAttackRange &&
+                    _isPlayerInReach() &&
                     globalEnemyController.enemiesAttackingPlayer < maxEnemiesAttackingPlayer)
                 {
                     _enemyAttackState = EnemyAttackState.Attacking;
@@ -443,6 +440,31 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    private bool _isPlayerInReach()
+    {
+        //var playerDirection = _getDirectionPlayerIsIn();
+        
+        /*if (CurrentWalkingDirection == Direction.Left)
+            playerDirection = _swapDirection(playerDirection);
+        
+        
+        var direction = playerDirection == Direction.Left
+            ? (Vector2)transform.TransformDirection(Vector2.left)
+            : (Vector2)transform.TransformDirection(Vector2.right);*/
+
+        var playerCenterPosition = GameManager.instance.player.transform.position + new Vector3(0, 0.8f, 0);
+        var direction =
+            transform.TransformDirection(
+                Vector3.Normalize(playerCenterPosition - transform.position));
+
+        // Swap directions if enemy is facing in opposite direction
+        if (CurrentWalkingDirection == Direction.Left)
+            direction = -direction;
+        
+        var hit = Physics2D.Raycast(transform.position, direction);
+        return hit.collider != null && hit.collider.gameObject.CompareTag("Player");
+    }
+
     private Direction _getDirectionPlayerIsIn()
     {
         return GameManager.instance.player.transform.position.x < transform.position.x
@@ -476,5 +498,14 @@ public class EnemyController : MonoBehaviour
 
 
         _currentAnimationState = state;
+    }
+
+    private Direction _swapDirection(Direction direction)
+    {
+        return direction switch
+        {
+            Direction.Left => Direction.Right,
+            Direction.Right => Direction.Left
+        };
     }
 }
