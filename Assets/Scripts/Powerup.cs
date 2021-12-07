@@ -32,14 +32,16 @@ public class Powerup : MonoBehaviour
     
     void Start()
     {
-        int _random = 1; //(int) Random.Range(0, powerups.Length - 1);
+        //int _random = 3; //TESTING
+        int _random = (int) Random.Range(0, powerups.Length - 1);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _spriteRenderer.sprite = powerups[_random];
         _powerup = GetType(_spriteRenderer.name);
         _active = false;
 
-        _powerUpUI = GameObject.Find("PowerUp");
+        _powerUpUI = GameObject.Find("PowerUpHUD");
         _powerUpImage = _powerUpUI.GetComponent<Image>();
+        _powerUpUI.GetComponent<Animator>().SetFloat("Duration", 1f/duration);
         
         _valueQueue = new Queue();
     }
@@ -55,6 +57,7 @@ public class Powerup : MonoBehaviour
             c.a = 0;
             _powerUpImage.color = c;
 
+            _player.GetComponent<PlayerController2>().m_poweredUp = false;
             Destroy(gameObject);
         }
     }
@@ -99,22 +102,27 @@ public class Powerup : MonoBehaviour
     {
         if (other.gameObject.name == "Player" && !_active)
         {
-            _powerup = GetType(_spriteRenderer.sprite.name);
             _player = other.gameObject;
-            UpdateAll(_powerup, _player, true);
-            GetComponent<BoxCollider2D>().enabled = false;
-            // TODO: pin icon to canvas and have it time out using the update method, finally destroying it
+            if (!_player.GetComponent<PlayerController2>().m_poweredUp)
+            {
+                _powerup = GetType(_spriteRenderer.sprite.name);
+                _powerUpUI.GetComponent<Animator>().Play("PowerUpFade");
+                UpdateAll(_powerup, _player, true);
+                GetComponent<BoxCollider2D>().enabled = false;
+                // TODO: pin icon to canvas and have it time out using the update method, finally destroying it
 
-            _spriteRenderer.enabled = false;
-            
-            Color c = _powerUpImage.color;
-            c.a = 1;
-            _powerUpImage.color = c;
-            
-            _powerUpImage.sprite = _spriteRenderer.sprite;
-            
-            _startTime = Time.time;
-            _active = true;
+                _spriteRenderer.enabled = false;
+                
+                Color c = _powerUpImage.color;
+                c.a = 1;
+                _powerUpImage.color = c;
+                
+                _powerUpImage.sprite = _spriteRenderer.sprite;
+                
+                _startTime = Time.time;
+                _player.GetComponent<PlayerController2>().m_poweredUp = true;
+                _active = true;
+            }            
         }
     }
 
@@ -134,10 +142,10 @@ public class Powerup : MonoBehaviour
         else
         {
             _temp = (float) _valueQueue.Dequeue();
-            player.GetComponent<Animator>().SetFloat("AttackSpeed", _temp / 2f);
+            player.GetComponent<Animator>().SetFloat("AttackSpeed", _temp);
 
             _temp = (float) _valueQueue.Dequeue();
-            player.GetComponent<PlayerController2>().m_attackSpeed = _temp / 2f;
+            player.GetComponent<PlayerController2>().m_attackSpeed = _temp;
         }
     }
 
@@ -149,11 +157,16 @@ public class Powerup : MonoBehaviour
     private void UpgradeSpeed(GameObject player, bool upgrade)
     {
         float _temp;
+        PlayerController2 _pc2 = player.GetComponent<PlayerController2>();
         if (upgrade)
         {
-            _temp = player.GetComponent<PlayerController2>().m_speed;
+            _temp = _pc2.m_speed;
             _valueQueue.Enqueue(_temp);
-            player.GetComponent<PlayerController2>().m_speed = _temp * 1.5f;
+            _pc2.m_speed = _temp * 1.5f;
+
+            _temp = _pc2.m_rollForce;
+            _valueQueue.Enqueue(_temp);
+            _pc2.m_rollForce = _temp * 1.4f;
 
             _temp = player.GetComponent<Animator>().GetFloat("RunSpeed");
             _valueQueue.Enqueue(_temp);
@@ -162,10 +175,13 @@ public class Powerup : MonoBehaviour
         else
         {
             _temp = (float) _valueQueue.Dequeue();
-            player.GetComponent<PlayerController2>().m_speed = _temp / 1.5f;
+            _pc2.m_speed = _temp;
 
             _temp = (float) _valueQueue.Dequeue();
-            player.GetComponent<Animator>().SetFloat("RunSpeed", _temp / 1.5f);
+            _pc2.m_rollForce = _temp;
+
+            _temp = (float) _valueQueue.Dequeue();
+            player.GetComponent<Animator>().SetFloat("RunSpeed", _temp);
         }
     }
 

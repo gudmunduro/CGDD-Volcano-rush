@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Overheating : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class Overheating : MonoBehaviour
     public bool heatResistant = false;
 
     public bool incoolzone;
+    private Color barColor;
 
     public StatusBar statusBar;
 
@@ -21,11 +23,21 @@ public class Overheating : MonoBehaviour
     {
         incoolzone = false;
         _animateObject = GetComponent<AnimateObject>();
+        barColor = statusBar.transform.GetChild(0).GetComponent<Image>().color;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (heatResistant)
+        {
+            statusBar.transform.GetChild(0).GetComponent<Image>().color = new Color(0.57f, 0.54f, 045f);
+        }
+        else
+        {
+            statusBar.transform.GetChild(0).GetComponent<Image>().color = barColor;
+        }
+
         if (overheat < 100 && !incoolzone)
         {
             if (!heatResistant)

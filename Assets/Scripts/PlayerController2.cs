@@ -8,7 +8,8 @@ public class PlayerController2 : MonoBehaviour {
 
     public float                m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
-    [SerializeField] float      m_rollForce = 6.0f;
+    public float                m_rollForce = 6.0f;
+
     [SerializeField] GameObject m_slideDust;
     
     public GameObject           enemies;
@@ -28,6 +29,7 @@ public class PlayerController2 : MonoBehaviour {
     public bool                 m_blocking = false;
     private bool                m_extraJump = true;
     public bool                 m_doubleJumpEnabled = false;
+    public bool                 m_poweredUp = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
@@ -162,6 +164,7 @@ public class PlayerController2 : MonoBehaviour {
     {
         if (!m_animateObject.Alive())
         {
+            m_currentFallingTime = 0;
             return;
         }
         // Increase timer that controls attack combo
@@ -286,6 +289,9 @@ public class PlayerController2 : MonoBehaviour {
             
             if (m_isWallSliding)
             {
+                if (!m_soundManager.PlayingSolo())
+                    m_soundManager.PlaySlide();
+
                 m_currentFallingTime = 0;
                 
                 if (m_body2d.velocity.y < -m_maxSlidingFallSpeed)
@@ -307,6 +313,7 @@ public class PlayerController2 : MonoBehaviour {
             else
             {
                 m_animator.SetTrigger("OutOfSlideFall");
+                m_soundManager.StopSolo();
             }
         }
             

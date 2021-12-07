@@ -27,6 +27,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip guardSound;
     public AudioClip jumpSound;
     public AudioClip jumpSound2;
+    public AudioClip slideSound;
 
     public AudioSource swipePlayer;
     public AudioSource hitPlayer;
@@ -72,6 +73,22 @@ public class SoundManager : MonoBehaviour
             soloPlayer.volume = soloVolume;
         }
         soloPlayer.Play();
+    }
+
+    public void PlaySlide()
+    {
+        soloPlayer.clip = slideSound;
+        soloPlayer.Play();
+    }
+
+    public void StopSolo()
+    {
+        soloPlayer.Stop();
+    }
+
+    public bool PlayingSolo()
+    {
+        return soloPlayer.isPlaying;
     }
 
     public void PlaySound(SoundType type)
