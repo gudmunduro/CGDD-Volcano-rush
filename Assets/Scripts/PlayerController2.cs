@@ -8,7 +8,7 @@ public class PlayerController2 : MonoBehaviour {
 
     public float                m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
-    [SerializeField] float      m_rollForce = 6.0f;
+    public float      m_rollForce = 6.0f;
 
     public GameObject           enemies;
     public ParticleSystem       landingParticleSystem;

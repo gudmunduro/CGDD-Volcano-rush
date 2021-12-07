@@ -32,7 +32,7 @@ public class Powerup : MonoBehaviour
     
     void Start()
     {
-        //int _random = 0; //TESTING
+        //int _random = 3; //TESTING
         int _random = (int) Random.Range(0, powerups.Length - 1);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _spriteRenderer.sprite = powerups[_random];
@@ -157,11 +157,16 @@ public class Powerup : MonoBehaviour
     private void UpgradeSpeed(GameObject player, bool upgrade)
     {
         float _temp;
+        PlayerController2 _pc2 = player.GetComponent<PlayerController2>();
         if (upgrade)
         {
-            _temp = player.GetComponent<PlayerController2>().m_speed;
+            _temp = _pc2.m_speed;
             _valueQueue.Enqueue(_temp);
-            player.GetComponent<PlayerController2>().m_speed = _temp * 1.5f;
+            _pc2.m_speed = _temp * 1.5f;
+
+            _temp = _pc2.m_rollForce;
+            _valueQueue.Enqueue(_temp);
+            _pc2.m_rollForce = _temp * 1.4f;
 
             _temp = player.GetComponent<Animator>().GetFloat("RunSpeed");
             _valueQueue.Enqueue(_temp);
@@ -170,7 +175,10 @@ public class Powerup : MonoBehaviour
         else
         {
             _temp = (float) _valueQueue.Dequeue();
-            player.GetComponent<PlayerController2>().m_speed = _temp;
+            _pc2.m_speed = _temp;
+
+            _temp = (float) _valueQueue.Dequeue();
+            _pc2.m_rollForce = _temp;
 
             _temp = (float) _valueQueue.Dequeue();
             player.GetComponent<Animator>().SetFloat("RunSpeed", _temp);
