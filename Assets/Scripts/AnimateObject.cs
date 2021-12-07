@@ -57,6 +57,7 @@ public class AnimateObject : MonoBehaviour
 	private void PlayerDeath()
 	{
 		_animator.SetBool("noBlood", false);
+		_animator.SetBool("WallSlide", false);
 		_animator.SetTrigger("Death");
 		_playerController.PlayDeath();
 		Invoke(nameof(PlayerDied), 2);

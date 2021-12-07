@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1794681801207184613}
   - component: {fileID: 4141887582921760319}
   m_Layer: 0
-  m_Name: WallSlide_Dust
+  m_Name: SlideDust - old
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
