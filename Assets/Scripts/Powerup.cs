@@ -39,7 +39,7 @@ public class Powerup : MonoBehaviour
         _powerup = GetType(_spriteRenderer.name);
         _active = false;
 
-        _powerUpUI = GameObject.Find("PowerUp");
+        _powerUpUI = GameObject.Find("PowerUpHUD");
         _powerUpImage = _powerUpUI.GetComponent<Image>();
         _powerUpUI.GetComponent<Animator>().SetFloat("Duration", 1f/duration);
         
