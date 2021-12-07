@@ -129,15 +129,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   powerups:
-  - {fileID: 21300000, guid: a72b1d8862cd08ff6a0dd9802a2fef08, type: 3}
   - {fileID: 21300000, guid: 6a2f11efda7ae883286c582630e27668, type: 3}
-  - {fileID: 21300000, guid: 86840e10369257be8bd653965d16387b, type: 3}
-  - {fileID: 21300000, guid: 54cd324b395cf56fd8a21c4394860e89, type: 3}
   - {fileID: 21300000, guid: 8aabeaa2866e5a84497d9864634d0d20, type: 3}
-  - {fileID: 21300000, guid: b5c6b40d74d5bf743a56298a40d8069b, type: 3}
-  - {fileID: 21300000, guid: 7c702c23db57e4faa80a8c49af71d792, type: 3}
   - {fileID: 21300000, guid: e4ad3c1251804119b80ca869ba9e56c0, type: 3}
-  - {fileID: 21300000, guid: 6f96426a57d3d80d680c577b3dfb2d34, type: 3}
   duration: 5
 --- !u!61 &3008974972378314779
 BoxCollider2D:

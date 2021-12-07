@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController2 : MonoBehaviour {
 
-    [SerializeField] float      m_speed = 4.0f;
+    public float                m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
     [SerializeField] float      m_rollForce = 6.0f;
 
@@ -20,6 +20,8 @@ public class PlayerController2 : MonoBehaviour {
     private bool                m_grounded = false;
     private bool                m_rolling = false;
     public bool                 m_blocking = false;
+    private bool                m_extraJump = true;
+    public bool                 m_doubleJumpEnabled = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
@@ -156,6 +158,7 @@ public class PlayerController2 : MonoBehaviour {
 
         else
         {
+            m_extraJump = true;
             m_standardCollider.sharedMaterial = null;
         }
         
@@ -378,8 +381,12 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         //Jump
-        else if (_jump && m_grounded && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
+        else if (_jump && (m_grounded || (m_doubleJumpEnabled && m_extraJump)) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
+            if (!m_grounded)
+            {
+                m_extraJump = false;
+            }
             m_soundManager.PlayJump(m_grounded);
             m_animator.SetTrigger("Jump");
             m_animator.SetBool("Grounded", m_grounded);
