@@ -500,6 +500,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   overheat: 0
+  heatAmount: 0.05
+  coolAmount: 0.3
   incoolzone: 0
   statusBar: {fileID: 0}
 --- !u!61 &6438436356953632620

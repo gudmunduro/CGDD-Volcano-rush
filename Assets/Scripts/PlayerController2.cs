@@ -433,7 +433,7 @@ public class PlayerController2 : MonoBehaviour {
             {
                 m_extraJump = false;
             }
-            m_soundManager.PlayJump(m_grounded);
+            m_soundManager.PlayJump(m_grounded || m_currentJumpWindowTime < m_jumpWindow);
             m_animator.SetTrigger("Jump");
             m_animator.SetBool("Grounded", m_grounded);
             m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
