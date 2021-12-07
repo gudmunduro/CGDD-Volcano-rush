@@ -43,7 +43,7 @@ public class EnemyController : MonoBehaviour
     public Transform itemDropPrefab;
     public Transform upgradeDropPrefab;
     public GlobalEnemyController globalEnemyController;
-    
+
     private GameObject items;
     private GameObject _ground;
     private EnemyVision _enemyVision;
@@ -68,7 +68,7 @@ public class EnemyController : MonoBehaviour
     private static readonly int WalkAnimTrigger = Animator.StringToHash("Walk");
     private static readonly int IdleAnimTrigger = Animator.StringToHash("Idle");
     private EnemyAnimationState _currentAnimationState;
-    
+
     private SoundManager soundManager;
     private bool isQuitting;
 
@@ -116,7 +116,7 @@ public class EnemyController : MonoBehaviour
         {
             globalEnemyController.enemiesAttackingPlayer -= 1;
         }
-        
+
         if (!isQuitting)
         {
             // Any drop
@@ -131,7 +131,6 @@ public class EnemyController : MonoBehaviour
                     Instantiate(upgradeDropPrefab, transform.position, Quaternion.identity);
             }
         }
-            
     }
 
     void Start()
@@ -144,7 +143,7 @@ public class EnemyController : MonoBehaviour
         soundManager = SoundManager.instance;
         items = GameObject.Find("Items");
 
-        
+
         Physics2D.IgnoreCollision(GameManager.instance.player.GetComponent<CapsuleCollider2D>(), _collider, true);
     }
 
@@ -328,15 +327,13 @@ public class EnemyController : MonoBehaviour
         soundManager.PlaySound(SoundType.Swipe);
         _animator.SetTrigger(AttackAnimTrigger);
 
-        yield return new WaitForSeconds(0.12f);
-        
-        Debug.Log(_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
-        Debug.Log(_animator.GetNextAnimatorClipInfo(0)[0].clip.name);
-        
+        yield return new WaitForSeconds(0.14f);
+
         if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" ||
-            _animator.GetNextAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" ||
             _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttackWindup" ||
-            _animator.GetNextAnimatorClipInfo(0)[0].clip.name == "EnemyAttackWindup")
+            _animator.GetNextAnimatorClipInfo(0).Length > 0 && (
+                _animator.GetNextAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" ||
+                _animator.GetNextAnimatorClipInfo(0)[0].clip.name == "EnemyAttackWindup"))
         {
             if (!ValidBlock())
             {
