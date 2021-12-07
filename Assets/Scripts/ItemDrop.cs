@@ -17,7 +17,7 @@ public class ItemDrop : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name == "Player")
+        if (other.gameObject.name == "Player" && other.GetComponent<AnimateObject>().health < 100)
         {
             other.GetComponent<AnimateObject>().Heal(healAmount);
             Destroy(gameObject.transform.parent.gameObject);
