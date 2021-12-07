@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController2 : MonoBehaviour {
 
-    [SerializeField] float      m_speed = 4.0f;
+    public float                m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
     [SerializeField] float      m_rollForce = 6.0f;
 
@@ -20,6 +20,8 @@ public class PlayerController2 : MonoBehaviour {
     private bool                m_grounded = false;
     private bool                m_rolling = false;
     public bool                 m_blocking = false;
+    private bool                m_extraJump = true;
+    public bool                 m_doubleJumpEnabled = false;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
@@ -30,6 +32,7 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_fallingTime = 1.2f;
     private float               m_currentFallingTime = 0f;
     private CapsuleCollider2D   m_standardCollider;
+    private BoxCollider2D       m_standardCollider2;
     private CircleCollider2D    m_rollingCollider;
     private SoundManager        m_soundManager;
     public float                m_attackSpeed;
@@ -43,7 +46,7 @@ public class PlayerController2 : MonoBehaviour {
     public int                  m_baseFallDamage = 20;
     public PhysicsMaterial2D    m_slipperyMaterial;
 
-    private float               m_jumpWindow = 8.0f / 42.0f;
+    private float               m_jumpWindow = 8.0f / 54.0f;
     private float               m_currentJumpWindowTime;
     
     private PlayerControls      m_controls;
@@ -114,6 +117,9 @@ public class PlayerController2 : MonoBehaviour {
         m_groundSensor = transform.Find("GroundSensor").GetComponent<PlayerSensor>();
         m_rollingSensor = transform.Find("RollingSensor").GetComponent<PlayerSensor>();
         m_standardCollider = GetComponent<CapsuleCollider2D>();
+        m_standardCollider2 = GetComponent<BoxCollider2D>();
+        m_standardCollider2.sharedMaterial = m_slipperyMaterial;
+
         m_rollingCollider = GetComponent<CircleCollider2D>();
         m_animateObject = GetComponent<AnimateObject>();
         m_overheating = GetComponent<Overheating>();
@@ -160,6 +166,7 @@ public class PlayerController2 : MonoBehaviour {
 
         else
         {
+            m_extraJump = true;
             m_standardCollider.sharedMaterial = null;
             m_currentJumpWindowTime = 0;
         }
@@ -177,7 +184,7 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         
-        if (m_body2d.velocity.y >= -0.6f)
+        if (m_body2d.velocity.y >= 0f)
         {
             m_currentFallingTime = 0f;
         }
@@ -201,12 +208,14 @@ public class PlayerController2 : MonoBehaviour {
                 m_rolling = false;
                 m_rollingCollider.enabled = false;
                 m_standardCollider.enabled = true;
+                m_standardCollider2.enabled = true;
 
                 foreach (Transform enemy in enemies.transform)
                 {
                     var enemyCollider = enemy.GetComponent<Collider2D>();
                 
                     Physics2D.IgnoreCollision(m_standardCollider, enemyCollider, true);
+                    Physics2D.IgnoreCollision(m_standardCollider2, enemyCollider, true);
                 }
             }
         }
@@ -346,7 +355,7 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         // Roll
-        else if (_roll && !m_rolling && m_inputStick.x != 0)
+        else if (_roll && !m_rolling)
         {
             m_rolling = true;
             m_animator.ResetTrigger("StandUp");
@@ -373,6 +382,7 @@ public class PlayerController2 : MonoBehaviour {
             
             m_rollingCollider.enabled = true;
             m_standardCollider.enabled = false;
+            m_standardCollider2.enabled = false;
             
             foreach (Transform enemy in enemies.transform)
             {
@@ -383,9 +393,13 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         //Jump
-        else if (_jump && (m_grounded || m_currentJumpWindowTime < m_jumpWindow) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
+        else if (_jump && ((m_grounded || (m_doubleJumpEnabled && m_extraJump)) || m_currentJumpWindowTime < m_jumpWindow) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
-            m_soundManager.PlayJump(m_grounded);
+            if (!m_grounded && m_currentJumpWindowTime >= m_jumpWindow)
+            {
+                m_extraJump = false;
+            }
+            m_soundManager.PlayJump(m_grounded || m_currentJumpWindowTime < m_jumpWindow);
             m_animator.SetTrigger("Jump");
             m_animator.SetBool("Grounded", m_grounded);
             m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
