@@ -45,6 +45,9 @@ public class PlayerController2 : MonoBehaviour {
     public int                  m_baseFallDamage = 20;
     public PhysicsMaterial2D    m_slipperyMaterial;
 
+    private float               m_jumpWindow = 8.0f / 42.0f;
+    private float               m_currentJumpWindowTime;
+    
     private PlayerControls      m_controls;
     private Vector2             m_inputStick;
 
@@ -154,12 +157,14 @@ public class PlayerController2 : MonoBehaviour {
         if (!m_grounded)
         {
             m_standardCollider.sharedMaterial = m_slipperyMaterial;
+            m_currentJumpWindowTime += Time.deltaTime;
         }
 
         else
         {
             m_extraJump = true;
             m_standardCollider.sharedMaterial = null;
+            m_currentJumpWindowTime = 0;
         }
         
         // Increase timer that checks roll duration
@@ -381,7 +386,7 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         //Jump
-        else if (_jump && (m_grounded || (m_doubleJumpEnabled && m_extraJump)) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
+        else if (_jump && ((m_grounded || (m_doubleJumpEnabled && m_extraJump)) || m_currentJumpWindowTime < m_jumpWindow) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
             if (!m_grounded)
             {
