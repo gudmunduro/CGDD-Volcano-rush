@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
         _timer += Time.deltaTime;
 
         liveTimerText.text = _displayTimeShort(_timer);
-        liveScoreText.text = CalculateScore().ToString();
+        liveScoreText.text = _calculateLiveScore().ToString();
 
         if (_playerOverheating.overheat > 70)
         {
@@ -84,15 +84,15 @@ public class GameManager : MonoBehaviour
 
     private String DisplayTime(float timeToDisplay)
     {
-        float minutes = Mathf.FloorToInt(timeToDisplay / 60); 
-        float seconds = Mathf.FloorToInt(timeToDisplay % 60);
+        var minutes = Mathf.FloorToInt(timeToDisplay / 60); 
+        var seconds = Mathf.FloorToInt(timeToDisplay % 60);
 
         return minutes + " Minutes and " + seconds + " Seconds";
     }
 
     private string _displayTimeShort(float timeToDisplay)
     {
-        var minutes = Mathf.FloorToInt(timeToDisplay / 60); 
+        var minutes = Mathf.FloorToInt(timeToDisplay / 60);
         var seconds = Mathf.FloorToInt(timeToDisplay % 60);
 
         return $"{minutes}:{seconds:00}";
@@ -104,6 +104,11 @@ public class GameManager : MonoBehaviour
         _score += Math.Max(300 - Mathf.FloorToInt(_timer), 0);
         
         return _score;
+    }
+
+    private int _calculateLiveScore()
+    {
+        return 100 * enemiesKilled;
     }
     
     public void YouWin()

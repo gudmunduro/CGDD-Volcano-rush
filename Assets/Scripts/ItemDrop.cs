@@ -20,7 +20,7 @@ public class ItemDrop : MonoBehaviour
         if (other.gameObject.name == "Player")
         {
             other.GetComponent<AnimateObject>().Heal(healAmount);
-            Destroy(gameObject);
+            Destroy(gameObject.transform.parent.gameObject);
         }
     }
 }
