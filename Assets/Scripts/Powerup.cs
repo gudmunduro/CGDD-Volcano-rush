@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum PowerType
 {
@@ -26,6 +27,9 @@ public class Powerup : MonoBehaviour
     private GameObject _player;
     private float _startTime;
 
+    private GameObject _powerUpUI;
+    private Image _powerUpImage;
+    
     void Start()
     {
         int _random = 1; //(int) Random.Range(0, powerups.Length - 1);
@@ -34,6 +38,9 @@ public class Powerup : MonoBehaviour
         _powerup = GetType(_spriteRenderer.name);
         _active = false;
 
+        _powerUpUI = GameObject.Find("PowerUp");
+        _powerUpImage = _powerUpUI.GetComponent<Image>();
+        
         _valueQueue = new Queue();
     }
 
@@ -43,6 +50,11 @@ public class Powerup : MonoBehaviour
         if (_active && Time.time - _startTime > duration)
         {
             UpdateAll(_powerup, _player, false);
+            
+            Color c = _powerUpImage.color;
+            c.a = 0;
+            _powerUpImage.color = c;
+
             Destroy(gameObject);
         }
     }
@@ -92,6 +104,14 @@ public class Powerup : MonoBehaviour
             UpdateAll(_powerup, _player, true);
             GetComponent<BoxCollider2D>().enabled = false;
             // TODO: pin icon to canvas and have it time out using the update method, finally destroying it
+
+            _spriteRenderer.enabled = false;
+            
+            Color c = _powerUpImage.color;
+            c.a = 1;
+            _powerUpImage.color = c;
+            
+            _powerUpImage.sprite = _spriteRenderer.sprite;
             
             _startTime = Time.time;
             _active = true;
