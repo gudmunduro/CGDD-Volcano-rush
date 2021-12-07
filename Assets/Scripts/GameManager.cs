@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     private float _timer = 0;
     private int _score = 0;
+    private int _deaths = 0;
     private TextMeshProUGUI _timeLivedText;
     private TextMeshProUGUI _enemiesKilledText;
     private TextMeshProUGUI _scoreText;
@@ -100,15 +101,15 @@ public class GameManager : MonoBehaviour
 
     private int CalculateScore()
     {
-        _score = 100 * enemiesKilled;
-        _score += Math.Max(300 - Mathf.FloorToInt(_timer), 0);
+        _score = 100 * enemiesKilled  - 400 * _deaths;
+        _score += Math.Max((300 - Mathf.FloorToInt(_timer)) * 20, 0);
         
-        return _score;
+        return Math.Max(_score, 0);
     }
 
     private int _calculateLiveScore()
     {
-        return 100 * enemiesKilled;
+        return Math.Max(100 * enemiesKilled - 400 * _deaths, 0);
     }
     
     public void YouWin()
@@ -135,7 +136,6 @@ public class GameManager : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0);
-        Time.timeScale = 1;
 
         foreach (Transform child in items.transform) {
             GameObject.Destroy(child.gameObject);
@@ -144,9 +144,12 @@ public class GameManager : MonoBehaviour
         foreach(Transform child in enemyspawners.transform){
             child.GetComponent<EnemySpawner>().enemiesSpawned = false;
         }
+
+        _deaths += 1;
         youDiedScreen.SetActive(false);
         Time.timeScale = 1;
         _playercontroller.Respawn();
+        enemies.GetComponent<GlobalEnemyController>().enemiesAttackingPlayer = 0;
     }
 
     public void OnReloadClick()
