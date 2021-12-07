@@ -162,6 +162,7 @@ public class PlayerController2 : MonoBehaviour {
     {
         if (!m_animateObject.Alive())
         {
+            m_currentFallingTime = 0;
             return;
         }
         // Increase timer that controls attack combo
