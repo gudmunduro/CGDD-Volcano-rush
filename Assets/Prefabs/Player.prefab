@@ -324,7 +324,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0.5
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -357,11 +357,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_speed: 4
-  m_jumpForce: 7.5
-  m_rollForce: 8
+  m_jumpForce: 11
+  m_rollForce: 9
   enemies: {fileID: 0}
   landingParticleSystem: {fileID: 2658418031785033327}
   m_blocking: 0
+  m_doubleJumpEnabled: 0
   m_facingDirection: 1
   m_attackSpeed: 0
   m_stepFrame: 0
@@ -434,6 +435,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   overheat: 0
+  heatAmount: 0.05
+  coolAmount: 0.3
   incoolzone: 0
   statusBar: {fileID: 0}
 --- !u!1 &4424067747953353600

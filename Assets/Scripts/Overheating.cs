@@ -8,6 +8,9 @@ public class Overheating : MonoBehaviour
     private AnimateObject _animateObject;
 
     public float overheat;
+    public float heatAmount;
+    public float coolAmount;
+    public bool heatResistant = false;
 
     public bool incoolzone;
 
@@ -25,18 +28,20 @@ public class Overheating : MonoBehaviour
     {
         if (overheat < 100 && !incoolzone)
         {
-            overheat += 0.05f;
+            if (!heatResistant)
+                overheat += heatAmount;
+            
             statusBar.Set(overheat);
         }
         else if (incoolzone)
         {
             if (overheat > 0)
             {
-                overheat -= 0.3f;
+                overheat -= coolAmount;
                 statusBar.Set(overheat);
             }
         }
-        else
+        else if (!heatResistant)
         {
             _animateObject.OverheatingDamage();
         }
