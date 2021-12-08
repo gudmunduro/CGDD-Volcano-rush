@@ -1128,11 +1128,6 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6d1a6d5a7149fa4b842c13cb3c2064d, type: 3}
---- !u!1 &360074925 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6893111603197045750, guid: 10d357fd186c60d4babfbdc53c1be9ff, type: 3}
-  m_PrefabInstance: {fileID: 1422974930}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &381767886 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2918931521097558160, guid: 9956f74c83c5d164191b032469e5f916, type: 3}
@@ -3103,6 +3098,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6d1a6d5a7149fa4b842c13cb3c2064d, type: 3}
+--- !u!1 &968391958 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2008995753366361278, guid: 10d357fd186c60d4babfbdc53c1be9ff, type: 3}
+  m_PrefabInstance: {fileID: 1422974930}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &978080789
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7974,7 +7974,7 @@ PrefabInstance:
     - target: {fileID: 6639515102709099060, guid: ea870c67d3c9b79418d5f60b751e5779, type: 3}
       propertyPath: firstSelectedYouDied
       value: 
-      objectReference: {fileID: 360074925}
+      objectReference: {fileID: 968391958}
     - target: {fileID: 6639515102709099060, guid: ea870c67d3c9b79418d5f60b751e5779, type: 3}
       propertyPath: overheatEffectBackground
       value: 
