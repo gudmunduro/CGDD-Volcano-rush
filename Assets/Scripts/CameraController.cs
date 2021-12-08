@@ -37,6 +37,8 @@ public class CameraController : MonoBehaviour
         var tilemapY = tilemap.transform.position.y;
         var halfTilemapX = tilemap.size.x / 2;
         var halfTilemapY = tilemap.size.y / 2;
+        
+        Debug.Log($"a: {position.y - height}, b: {-halfTilemapY+tilemapY + 10.0f}");
 
         if (!(position.x - width / 2 > tilemapX - 0.5f))
         {
@@ -46,13 +48,13 @@ public class CameraController : MonoBehaviour
         {
             position.x = tilemapX + halfTilemapX - width / 2 - 1.5f;
         }
-        if (position.y + height > (tilemapY + halfTilemapY / 4))
+        if (position.y + height > halfTilemapY - tilemapY - height/2 - 2.0f)
         {
-            position.y = tilemapY + halfTilemapY / 4 - height;
+            position.y = halfTilemapY - tilemapY - height / 2 - 2.0f - height;
         }
-        else if (position.y < tilemapY - 3 * halfTilemapY / 4)
+        else if (position.y - height < -halfTilemapY+tilemapY + 7.0f)
         {
-            position.y = tilemapY - 3 * halfTilemapY / 4;
+            position.y = -halfTilemapY+tilemapY + 7.0f + height;
         }
     }
 }
