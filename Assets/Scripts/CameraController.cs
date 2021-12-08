@@ -37,8 +37,6 @@ public class CameraController : MonoBehaviour
         var tilemapY = tilemap.transform.position.y;
         var halfTilemapX = tilemap.size.x / 2;
         var halfTilemapY = tilemap.size.y / 2;
-        
-        Debug.Log($"a: {position.y - height}, b: {-halfTilemapY+tilemapY + 10.0f}");
 
         if (!(position.x - width / 2 > tilemapX - 0.5f))
         {
