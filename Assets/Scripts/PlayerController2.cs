@@ -44,6 +44,7 @@ public class PlayerController2 : MonoBehaviour {
     private SoundManager        m_soundManager;
     public float                m_attackSpeed;
     public bool                 m_stepFrame = false;
+    private bool                m_stepped = false;
     public Camera               m_camera;
     
     private AnimateObject       m_animateObject;
@@ -478,8 +479,15 @@ public class PlayerController2 : MonoBehaviour {
             // Reset timer
             m_delayToIdle = 0.05f;
             m_animator.SetInteger("AnimState", 1);
-            if ((m_stepFrame && m_soundManager.PlayPos(SoundType.Step) > 0.02f)&& (m_grounded && !m_rolling))
+            m_animator.SetFloat("RunSpeed", Mathf.Abs(m_inputStick.x));
+            if ((m_stepFrame && !m_stepped) && (m_grounded && !m_rolling))
+            {
                 m_soundManager.PlaySound(SoundType.Step);
+                m_stepped = true;
+            }
+            if (!m_stepFrame)
+                m_stepped = false;
+                
         }
 
         //Idle
