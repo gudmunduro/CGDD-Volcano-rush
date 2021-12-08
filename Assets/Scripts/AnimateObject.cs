@@ -38,8 +38,8 @@ public class AnimateObject : MonoBehaviour
     {
 
 		statusBar.Set(health);
-	    if(!Alive() && dead && !player)
-			Destroy(gameObject);
+	    if(!Alive() && dead && !player && !_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyDead"))
+			Destroy(gameObject.transform.parent);
 
 			
 	}
@@ -98,7 +98,7 @@ public class AnimateObject : MonoBehaviour
 
 		if(Alive())
 			_animator.Play("EnemyHit");
-		else
+		else if (!Alive() && !dead)
 		{
 			_animator.Play("EnemyDead");
 

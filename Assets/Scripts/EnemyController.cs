@@ -168,7 +168,7 @@ public class EnemyController : MonoBehaviour
             }
 
             _enemyState = EnemyState.Dying;
-            _setAnimationState(EnemyAnimationState.Die);
+            //_setAnimationState(EnemyAnimationState.Die);
             return;
         }
 
@@ -325,10 +325,17 @@ public class EnemyController : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
+        if (_enemyState == EnemyState.Dying);
+            yield break;
+
         if (!_enemyAttackRange.IsPlayerInAttackRange) yield break;
         _animator.SetTrigger(AttackAnimTrigger);
 
         yield return new WaitForSeconds(0.14f);
+
+        if (_enemyState == EnemyState.Dying);
+            yield break;
+            
         soundManager.PlaySound(SoundType.Swipe);
 
         if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" ||
