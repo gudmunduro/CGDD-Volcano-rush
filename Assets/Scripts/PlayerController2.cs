@@ -267,14 +267,12 @@ public class PlayerController2 : MonoBehaviour {
         {
             GetComponent<SpriteRenderer>().flipX = false;
             m_facingDirection = 1;
-            Debug.Log(m_facingDirection);
         }
             
         else if (m_inputStick.x < 0 && !m_blocking && !illegaAnimation)
         {
             GetComponent<SpriteRenderer>().flipX = true;
             m_facingDirection = -1;
-            Debug.Log(m_facingDirection);
         }
 
 
