@@ -12,7 +12,8 @@ public class PlayerSensor : MonoBehaviour
 
     public bool Sense()
     {
-        return _collision;
+        Debug.Log("Yo");
+        return !_disabled && _collision;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
