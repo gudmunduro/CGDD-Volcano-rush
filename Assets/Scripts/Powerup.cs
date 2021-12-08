@@ -106,7 +106,6 @@ public class Powerup : MonoBehaviour
         float r = (float) ((hexColor & 0xff0000) >> 16);
         float g = (float) ((hexColor & 0xff00) >> 8);
         float b = (float) (hexColor & 0xff);
-        Debug.Log(r);
         return new Color(r / 255f, g / 255f, b / 255f);
     }
 
