@@ -56,6 +56,7 @@ public class AnimateObject : MonoBehaviour
 
 	private void PlayerDeath()
 	{
+		dead = true;
 		_animator.SetBool("noBlood", false);
 		_animator.SetBool("WallSlide", false);
 		_animator.SetTrigger("Death");
@@ -72,7 +73,7 @@ public class AnimateObject : MonoBehaviour
 			_animator.SetTrigger("Hurt");
 			_playerController.PlayGrunt();
 		}
-		else
+		else if (!Alive() && !dead)
 		{
 			PlayerDeath();
 		}	
