@@ -4307,11 +4307,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 268086619, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -3.38
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 268086619, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -3.16
+      value: -0.89
       objectReference: {fileID: 0}
     - target: {fileID: 851928518, guid: caf2ffd52e5636943b7c751eb2e1c521, type: 3}
       propertyPath: statusBar
@@ -43228,11 +43228,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8878414578658746146, guid: 99b84806ccc8835498296fcc8619c916, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 24.97
+      value: 24.85
       objectReference: {fileID: 0}
     - target: {fileID: 8878414578658746146, guid: 99b84806ccc8835498296fcc8619c916, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -55.25
+      value: -55.27
       objectReference: {fileID: 0}
     - target: {fileID: 8878414578658746146, guid: 99b84806ccc8835498296fcc8619c916, type: 3}
       propertyPath: m_LocalPosition.z
@@ -43264,10 +43264,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8878414578658746146, guid: 99b84806ccc8835498296fcc8619c916, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8878414578658746147, guid: 99b84806ccc8835498296fcc8619c916, type: 3}
-      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8878414578658746148, guid: 99b84806ccc8835498296fcc8619c916, type: 3}
