@@ -10,11 +10,10 @@ public class LeaderboardUI : MonoBehaviour
     private const float EntryHeight = 61.20001f;
     
     public OnlineLeaderboard onlineLeaderboard;
-    public GameObject leaderboardCanvas;
-    public GameObject startCanvas;
     public Transform leaderboardEntryPrefab;
     public GameObject leaderboardContainer;
-
+    public StartScript startScript;
+    
     private bool _isTableFilled = false;
     private int _currentPage = 0;
     
@@ -84,7 +83,6 @@ public class LeaderboardUI : MonoBehaviour
     public void BackToStart()
     {
         onlineLeaderboard.ClearCache();
-        leaderboardCanvas.SetActive(false);
-        startCanvas.SetActive(true);
+        startScript.CloseLeaderBoard();
     }
 }

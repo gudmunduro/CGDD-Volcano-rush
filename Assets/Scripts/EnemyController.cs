@@ -43,6 +43,7 @@ public class EnemyController : MonoBehaviour
     public Transform itemDropPrefab;
     public Transform upgradeDropPrefab;
     public GlobalEnemyController globalEnemyController;
+    public GameObject enemyVisualisor;
 
     private GameObject items;
     private GameObject _ground;
@@ -97,7 +98,7 @@ public class EnemyController : MonoBehaviour
 
     private void Awake()
     {
-        _animator = GetComponent<Animator>();
+        _animator = GetComponentInChildren<Animator>();
         _collider = GetComponent<Collider2D>();
         _enemyAnimateObject = GetComponent<AnimateObject>();
 
@@ -167,7 +168,7 @@ public class EnemyController : MonoBehaviour
             }
 
             _enemyState = EnemyState.Dying;
-            _setAnimationState(EnemyAnimationState.Die);
+            //_setAnimationState(EnemyAnimationState.Die);
             return;
         }
 
@@ -303,7 +304,11 @@ public class EnemyController : MonoBehaviour
             _setPatrolDirection(Direction.Right);
         }
 
-        _move = 1;
+        _move = direction switch
+        {
+            Direction.Left => -1,
+            Direction.Right => 1
+        };
     }
 
     private void _setPatrolDirection(Direction direction)
@@ -320,10 +325,17 @@ public class EnemyController : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
+        if (_enemyState == EnemyState.Dying);
+            yield break;
+
         if (!_enemyAttackRange.IsPlayerInAttackRange) yield break;
         _animator.SetTrigger(AttackAnimTrigger);
 
         yield return new WaitForSeconds(0.14f);
+
+        if (_enemyState == EnemyState.Dying);
+            yield break;
+            
         soundManager.PlaySound(SoundType.Swipe);
 
         if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" ||
@@ -378,7 +390,11 @@ public class EnemyController : MonoBehaviour
                 else
                 {
                     _setAnimationState(EnemyAnimationState.Walk);
-                    _move = (int)runMultiplier;
+                    _move = _getDirectionPlayerIsIn() switch
+                    {
+                        Direction.Left => -(int)runMultiplier,
+                        Direction.Right => (int)runMultiplier
+                    };
                     _setEnemyDirection(_getDirectionPlayerIsIn());
                 }
 
@@ -415,10 +431,10 @@ public class EnemyController : MonoBehaviour
         switch (direction)
         {
             case Direction.Left:
-                transform.eulerAngles = new Vector3(0, 180.0f, 0);
+                enemyVisualisor.transform.eulerAngles = new Vector3(0, 180.0f, 0);
                 break;
             case Direction.Right:
-                transform.eulerAngles = new Vector3(0, 0, 0);
+                enemyVisualisor.transform.eulerAngles = new Vector3(0, 0, 0);
                 break;
         }
     }
@@ -458,9 +474,6 @@ public class EnemyController : MonoBehaviour
             transform.TransformDirection(
                 Vector3.Normalize(playerCenterPosition - transform.position));
 
-        // Swap directions if enemy is facing in opposite direction
-        if (CurrentWalkingDirection == Direction.Left)
-            direction = -direction;
         
         var hit = Physics2D.Raycast(transform.position, direction);
         return hit.collider != null && (hit.collider.gameObject.CompareTag("Player") || hit.collider.CompareTag("PlayerComponent"));
