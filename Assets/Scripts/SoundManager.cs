@@ -10,6 +10,7 @@ public enum SoundType
     Bone,
     Tumble,
     Step,
+    Eat,
 }
 
 public class SoundManager : MonoBehaviour
@@ -22,6 +23,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip[] boneSounds;
     public AudioClip[] tumbleSounds;
     public AudioClip[] stepSounds;
+    public AudioClip[] eatSounds;
 
     public AudioClip deathSound;
     public AudioClip guardSound;
@@ -35,6 +37,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource bonePlayer;
     public AudioSource tumblePlayer;
     public AudioSource stepPlayer;
+    public AudioSource eatPlayer;
 
     public AudioSource soloPlayer;
     private float soloVolume;
@@ -105,8 +108,8 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySound(SoundType type)
     {
-        AudioClip[] clips = swipeSounds;
-        AudioSource player = swipePlayer;
+        AudioClip[] clips;
+        AudioSource player;
         switch (type)
         {
             case SoundType.Swipe:
@@ -132,6 +135,14 @@ public class SoundManager : MonoBehaviour
             case SoundType.Step:
                 clips = stepSounds;
                 player = stepPlayer;
+                break;
+            case SoundType.Eat:
+                clips = eatSounds;
+                player = eatPlayer;
+                break;
+            default:
+                clips = swipeSounds;
+                player = swipePlayer;
                 break;
         }
         player.clip = clips[(int)UnityEngine.Random.Range(0, clips.Length)];
