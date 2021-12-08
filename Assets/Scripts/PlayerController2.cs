@@ -275,6 +275,7 @@ public class PlayerController2 : MonoBehaviour {
             m_facingDirection = -1;
         }
 
+
         var illegalAnimation2 = m_animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") ||
                                 m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall") ||
                                 m_animator.GetCurrentAnimatorStateInfo(0).IsName("Block") ||
@@ -285,12 +286,12 @@ public class PlayerController2 : MonoBehaviour {
         
         if (m_animateObject.Alive())
         {
-            m_isWallSliding = (m_wallSensorR1.Sense() && m_wallSensorR2.Sense()) || (m_wallSensorL1.Sense() && m_wallSensorL2.Sense());
+            m_isWallSliding = !m_grounded && ((m_wallSensorR1.Sense() && m_wallSensorR2.Sense()) || (m_wallSensorL1.Sense() && m_wallSensorL2.Sense()));
             m_animator.SetBool("WallSlide", m_isWallSliding);
             
             if (m_isWallSliding)
             {
-                if (!m_soundManager.PlayingSolo())
+                if (!m_soundManager.PlayingSlide() && m_animator.GetCurrentAnimatorStateInfo(0).IsName("Wall Slide"))
                     m_soundManager.PlaySlide();
 
                 m_currentFallingTime = 0;
@@ -314,7 +315,8 @@ public class PlayerController2 : MonoBehaviour {
             else
             {
                 m_animator.SetTrigger("OutOfSlideFall");
-                m_soundManager.StopSolo();
+                if (m_soundManager.PlayingSlide())
+                    m_soundManager.StopSolo();
             }
         }
             
@@ -407,6 +409,7 @@ public class PlayerController2 : MonoBehaviour {
                 m_soundManager.PlaySound(SoundType.Tumble);
 
             int rollDirection;
+
             if (m_inputStick.x > 0)
             {
                 rollDirection = 1;
