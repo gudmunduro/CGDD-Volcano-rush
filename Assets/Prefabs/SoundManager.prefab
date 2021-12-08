@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5927798998347849907}
   - component: {fileID: 5927798998347849906}
   - component: {fileID: 2585382576018606484}
+  - component: {fileID: 1525881254946841468}
   - component: {fileID: 5927798998347849905}
   - component: {fileID: 7316848681928747299}
   - component: {fileID: 7961384966401887593}
@@ -97,6 +98,14 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b14be25392bc0781eb2f09e7f0e4b9e6, type: 3}
   - {fileID: 8300000, guid: ba1a55e2bce02e0bbaf1e19417bc14df, type: 3}
   - {fileID: 8300000, guid: b857a9e75c8beaedcb102f760f45b149, type: 3}
+  eatSounds:
+  - {fileID: 8300000, guid: 4a1e191efbdcff16182c3ca3991b371c, type: 3}
+  - {fileID: 8300000, guid: 2d4f18fa8a64c8032bd5f741d99dcd84, type: 3}
+  - {fileID: 8300000, guid: 0339b58e59130babcbb7ec459c0507af, type: 3}
+  - {fileID: 8300000, guid: 4ae968ec8722185ffa6b7b2d822493aa, type: 3}
+  - {fileID: 8300000, guid: 57a90b059f0eedca38933b3cf5b0bf3a, type: 3}
+  - {fileID: 8300000, guid: 76e4c477f51becc24aeefe67592b53d0, type: 3}
+  - {fileID: 8300000, guid: 22aff181734f2014dbaa39840a81298e, type: 3}
   deathSound: {fileID: 8300000, guid: 18293dfc5585034c7888c7c3ce371d0a, type: 3}
   guardSound: {fileID: 8300000, guid: 3209f0d79cda15860aba62f2459fcfdd, type: 3}
   jumpSound: {fileID: 8300000, guid: 22f188c25ac67dce29fe168d4cb889e5, type: 3}
@@ -108,6 +117,7 @@ MonoBehaviour:
   bonePlayer: {fileID: 5927798998347849907}
   tumblePlayer: {fileID: 5927798998347849906}
   stepPlayer: {fileID: 2585382576018606484}
+  eatPlayer: {fileID: 1525881254946841468}
   soloPlayer: {fileID: 5927798998347849905}
   BGPlayer: {fileID: 7316848681928747299}
   heartPlayer: {fileID: 7961384966401887593}
@@ -604,6 +614,102 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 98aadd2ea03a58b17b929bbdeae7286b, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.07
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &1525881254946841468
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5927798998347849904}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 4a1e191efbdcff16182c3ca3991b371c, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.346
   m_Pitch: 1
   Loop: 0
   Mute: 0
