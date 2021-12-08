@@ -278,7 +278,8 @@ public class PlayerController2 : MonoBehaviour {
         var illegalAnimation2 = m_animator.GetCurrentAnimatorStateInfo(0).IsName("Jump") ||
                                 m_animator.GetCurrentAnimatorStateInfo(0).IsName("Fall") ||
                                 m_animator.GetCurrentAnimatorStateInfo(0).IsName("Block") ||
-                                m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle Block");
+                                m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle Block") ||
+                                m_animator.GetCurrentAnimatorStateInfo(0).IsName("Wall Slide");
         
         // -- Handle Animations --
         
