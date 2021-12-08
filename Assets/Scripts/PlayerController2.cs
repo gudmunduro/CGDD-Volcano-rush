@@ -295,10 +295,12 @@ public class PlayerController2 : MonoBehaviour {
                     m_soundManager.PlaySlide();
 
                 m_currentFallingTime = 0;
-                
+
+                var velocity = m_body2d.velocity;
+
                 if (m_body2d.velocity.y < -m_maxSlidingFallSpeed)
                 {
-                    m_body2d.velocity = new Vector2(m_body2d.velocity.x, -m_maxSlidingFallSpeed);
+                    velocity.y = -m_maxSlidingFallSpeed;
                 }
 
                 if (m_wallSensorR1.Sense() && m_wallSensorR2.Sense())
@@ -311,6 +313,8 @@ public class PlayerController2 : MonoBehaviour {
                     GetComponent<SpriteRenderer>().flipX = true;
                     m_facingDirection = -1;
                 }
+
+                m_body2d.velocity = velocity;
             }
             else
             {
@@ -402,38 +406,54 @@ public class PlayerController2 : MonoBehaviour {
         // Roll
         else if (_roll && !m_rolling)
         {
-            m_rolling = true;
-            m_animator.ResetTrigger("StandUp");
-            m_animator.SetTrigger("Roll");
-            if(m_grounded)
-                m_soundManager.PlaySound(SoundType.Tumble);
-
-            int rollDirection;
-
-            if (m_inputStick.x > 0)
+            int rollDirection = 0;
+            if (!m_animator.GetCurrentAnimatorStateInfo(0).IsName("Wall Slide"))
             {
-                rollDirection = 1;
-            }
-            else if (m_inputStick.x < 0)
-            {
-                rollDirection = -1;
+                if (m_inputStick.x > 0)
+                {
+                    rollDirection = 1;
+                }
+                else if (m_inputStick.x < 0)
+                {
+                    rollDirection = -1;
+                }
+                else
+                {
+                    rollDirection = m_facingDirection;
+                }
             }
             else
             {
-                rollDirection = m_facingDirection;
-            }
-            
-            
-            m_body2d.velocity = new Vector2(rollDirection * m_rollForce, m_body2d.velocity.y);
-            
-            m_rollingCollider.enabled = true;
-            m_standardCollider.enabled = false;
-
-            foreach (Transform enemy in enemies.transform)
-            {
-                var enemyCollider = enemy.GetComponent<Collider2D>();
+                if (m_wallSensorR1.Sense() && m_wallSensorR2.Sense() && m_inputStick.x < 0)
+                {
+                    rollDirection = -1;
+                }
                 
-                Physics2D.IgnoreCollision(m_rollingCollider, enemyCollider, true);
+                else if (m_wallSensorL1.Sense() && m_wallSensorL2.Sense() && m_inputStick.x > 0)
+                {
+                    rollDirection = 1;
+                }
+            }
+
+            if (rollDirection != 0)
+            {
+                m_rolling = true;
+                m_animator.ResetTrigger("StandUp");
+                m_animator.SetTrigger("Roll");
+                if(m_grounded)
+                    m_soundManager.PlaySound(SoundType.Tumble);
+                
+                m_body2d.velocity = new Vector2(rollDirection * m_rollForce, m_body2d.velocity.y);
+                
+                m_rollingCollider.enabled = true;
+                m_standardCollider.enabled = false;
+
+                foreach (Transform enemy in enemies.transform)
+                {
+                    var enemyCollider = enemy.GetComponent<Collider2D>();
+                    
+                    Physics2D.IgnoreCollision(m_rollingCollider, enemyCollider, true);
+                }
             }
         }
         
