@@ -321,10 +321,10 @@ public class EnemyController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         if (!_enemyAttackRange.IsPlayerInAttackRange) yield break;
-        soundManager.PlaySound(SoundType.Swipe);
         _animator.SetTrigger(AttackAnimTrigger);
 
         yield return new WaitForSeconds(0.14f);
+        soundManager.PlaySound(SoundType.Swipe);
 
         if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" ||
             _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttackWindup" ||
