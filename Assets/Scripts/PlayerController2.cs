@@ -28,6 +28,7 @@ public class PlayerController2 : MonoBehaviour {
     private bool                m_isWallSliding = false;
     public bool                 m_blocking = false;
     private bool                m_extraJump = true;
+    private bool                m_jumped = true;
     public bool                 m_doubleJumpEnabled = false;
     public bool                 m_poweredUp = false;
     public int                  m_facingDirection = 1;
@@ -235,6 +236,7 @@ public class PlayerController2 : MonoBehaviour {
             }
 
             m_grounded = true;
+            m_jumped = false;
 
             if (m_currentFallingTime > m_fallingTime)
             {
@@ -459,17 +461,20 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         //Jump
-        else if (_jump && ((m_grounded || (m_doubleJumpEnabled && m_extraJump)) || m_currentJumpWindowTime < m_jumpWindow) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
+        else if (_jump && ((m_grounded || (m_doubleJumpEnabled && m_extraJump)) || (m_currentJumpWindowTime < m_jumpWindow && !m_jumped)) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
             if (!m_grounded && m_currentJumpWindowTime >= m_jumpWindow)
             {
                 m_extraJump = false;
             }
+
+            m_jumped = true;
+            
             m_soundManager.PlayJump(m_grounded || m_currentJumpWindowTime < m_jumpWindow);
             m_animator.SetTrigger("Jump");
             m_animator.SetBool("Grounded", m_grounded);
             m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
-            m_groundSensor.Disable(1f);
+            m_groundSensor.Disable(0.2f);
             
         }
 

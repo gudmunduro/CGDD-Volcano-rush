@@ -12,7 +12,6 @@ public class PlayerSensor : MonoBehaviour
 
     public bool Sense()
     {
-        Debug.Log("Yo");
         return !_disabled && _collision;
     }
 
