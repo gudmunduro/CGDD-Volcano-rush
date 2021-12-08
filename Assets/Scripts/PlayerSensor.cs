@@ -6,6 +6,9 @@ using UnityEngine;
 public class PlayerSensor : MonoBehaviour
 {
     private bool _collision;
+    private bool _disabled;
+    private float _disabledTime;
+    private float _currentDisabledTime;
 
     public bool Sense()
     {
@@ -25,6 +28,25 @@ public class PlayerSensor : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             _collision = false;    
+        }
+    }
+
+    public void Disable(float time)
+    {
+        _disabled = true;
+        _currentDisabledTime = 0f;
+        _disabledTime = time;
+    }
+
+
+    private void Update()
+    {
+        if (!_disabled) return;
+        _currentDisabledTime += Time.deltaTime;
+
+        if (_currentDisabledTime >= _disabledTime)
+        {
+            _disabled = false;
         }
     }
 }
