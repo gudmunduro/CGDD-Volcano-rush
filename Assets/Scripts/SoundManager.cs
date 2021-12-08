@@ -38,7 +38,10 @@ public class SoundManager : MonoBehaviour
 
     public AudioSource soloPlayer;
     private float soloVolume;
+
     public AudioSource BGPlayer;
+
+    public AudioSource heartPlayer;
 
     private void Awake()
     {
@@ -91,6 +94,13 @@ public class SoundManager : MonoBehaviour
     public bool PlayingSlide()
     {
         return soloPlayer.isPlaying && soloPlayer.clip == slideSound;
+    }
+
+    public void HeartVolume(float volume)
+    {
+        if (!heartPlayer.isPlaying)
+            heartPlayer.Play();
+        heartPlayer.volume = volume;
     }
 
     public void PlaySound(SoundType type)

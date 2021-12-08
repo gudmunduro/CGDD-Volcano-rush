@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     private TextMeshProUGUI _scoreText;
     private Overheating _playerOverheating;
     private PlayerController2 _playercontroller;
+    private AnimateObject _playerAnimate;
     
     private void Awake()
     {
@@ -56,6 +57,7 @@ public class GameManager : MonoBehaviour
 
         _playerOverheating = player.GetComponent<Overheating>();
         _playercontroller = player.GetComponent<PlayerController2>();
+        _playerAnimate = player.GetComponent<AnimateObject>();
     }
 
     private void Update()
@@ -75,6 +77,14 @@ public class GameManager : MonoBehaviour
         {
             var color = overheatEffectBackground.color;
             overheatEffectBackground.color = new Color(color.r, color.g, color.b, 0);
+        }
+
+        if (_playerAnimate.HealthPct() < 0.3)
+        {
+            if (_playerAnimate.Alive())
+                SoundManager.instance.HeartVolume(0.5f - _playerAnimate.HealthPct());
+            else
+                SoundManager.instance.heartPlayer.Stop();
         }
     }
 

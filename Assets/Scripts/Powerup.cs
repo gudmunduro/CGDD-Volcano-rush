@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
+using UnityEngine.Experimental.Rendering.Universal;
 
 public enum PowerType
 {
@@ -32,16 +34,17 @@ public class Powerup : MonoBehaviour
     
     void Start()
     {
-        //int _random = 3; //TESTING
-        int _random = (int) Random.Range(0, powerups.Length - 1);
+        int _random = 3; //TESTING
+        //int _random = (int) Random.Range(0, powerups.Length - 1);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _spriteRenderer.sprite = powerups[_random];
-        _powerup = GetType(_spriteRenderer.name);
+        _powerup = GetType(_spriteRenderer.sprite.name);
         _active = false;
 
         _powerUpUI = GameObject.Find("PowerUpHUD");
         _powerUpImage = _powerUpUI.GetComponent<Image>();
         _powerUpUI.GetComponent<Animator>().SetFloat("Duration", 1f/duration);
+        transform.parent.GetChild(1).GetComponent<Light2D>().color = GetColor(_powerup);
         
         _valueQueue = new Queue();
     }
@@ -58,7 +61,7 @@ public class Powerup : MonoBehaviour
             _powerUpImage.color = c;
 
             _player.GetComponent<PlayerController2>().m_poweredUp = false;
-            Destroy(gameObject);
+            Destroy(transform.parent.gameObject);
         }
     }
 
@@ -98,6 +101,31 @@ public class Powerup : MonoBehaviour
         }
     }
 
+    private Color HexToRGB(int hexColor)
+    {
+        float r = (float) ((hexColor & 0xff0000) >> 16);
+        float g = (float) ((hexColor & 0xff00) >> 8);
+        float b = (float) (hexColor & 0xff);
+        return new Color(r / 255f, g / 255f, b / 255f);
+    }
+
+    private Color GetColor(PowerType type)
+    {
+        switch(type)
+        {
+            case PowerType.AttackSpeed:
+                return HexToRGB(0x15983A);
+            case PowerType.HeatResistance:
+                return HexToRGB(0xC32C37);
+            case PowerType.Speed:
+                return HexToRGB(0xB55EB2);
+            case PowerType.DoubleJump:
+                return HexToRGB(0x0D82CE);
+            default:
+                return Color.white;
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.name == "Player" && !_active)
@@ -121,6 +149,7 @@ public class Powerup : MonoBehaviour
                 
                 _startTime = Time.time;
                 _player.GetComponent<PlayerController2>().m_poweredUp = true;
+                transform.parent.GetChild(1).gameObject.active = false;
                 _active = true;
             }            
         }

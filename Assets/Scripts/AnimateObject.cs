@@ -129,7 +129,9 @@ public class AnimateObject : MonoBehaviour
 
 	public void OverheatingDamage()
 	{
-		health -= 0.1f;
+		//health -= 0.1f;
+
+		DamagePlayerHealth(5);
 
 		if (!Alive() && !dead)
 		{
