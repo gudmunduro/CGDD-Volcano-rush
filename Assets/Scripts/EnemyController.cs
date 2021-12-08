@@ -463,7 +463,7 @@ public class EnemyController : MonoBehaviour
             direction = -direction;
         
         var hit = Physics2D.Raycast(transform.position, direction);
-        return hit.collider != null && hit.collider.gameObject.CompareTag("Player");
+        return hit.collider != null && (hit.collider.gameObject.CompareTag("Player") || hit.collider.CompareTag("PlayerComponent"));
     }
 
     private Direction _getDirectionPlayerIsIn()
