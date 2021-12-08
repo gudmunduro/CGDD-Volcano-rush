@@ -19,6 +19,7 @@ public class ItemDrop : MonoBehaviour
     {
         if (other.gameObject.name == "Player" && other.GetComponent<AnimateObject>().health < 100)
         {
+            SoundManager.instance.PlaySound(SoundType.Eat);
             other.GetComponent<AnimateObject>().Heal(healAmount);
             Destroy(gameObject.transform.parent.gameObject);
         }

@@ -19,12 +19,16 @@ public class AnimateObject : MonoBehaviour
     void Start()
     {
         health = maxHealth;
+		statusBar.SetMax(maxHealth);
 		
-		_animator = GetComponent<Animator>();
 		if (player)
 		{ 
-			statusBar.SetMax(maxHealth);
+			_animator = GetComponent<Animator>();
 			_playerController = GetComponent<PlayerController2>();
+		}
+		else
+		{
+			_animator = GetComponentInChildren<Animator>();
 		}
 		dead = false;
     }
@@ -32,11 +36,12 @@ public class AnimateObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-	    if(!Alive() && dead && !player)
-			Destroy(gameObject);
 
-		if (player)
-			statusBar.Set(health);
+		statusBar.Set(health);
+	    if(!Alive() && dead && !player && !_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyDead"))
+			Destroy(gameObject.transform.parent);
+
+			
 	}
 
 	public float HealthPct()
@@ -93,7 +98,7 @@ public class AnimateObject : MonoBehaviour
 
 		if(Alive())
 			_animator.Play("EnemyHit");
-		else
+		else if (!Alive() && !dead)
 		{
 			_animator.Play("EnemyDead");
 
