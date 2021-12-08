@@ -38,7 +38,10 @@ public class SoundManager : MonoBehaviour
 
     public AudioSource soloPlayer;
     private float soloVolume;
+
     public AudioSource BGPlayer;
+
+    public AudioSource heartPlayer;
 
     private void Awake()
     {
@@ -55,6 +58,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayGuard()
     {
+        StopSolo();
         soloPlayer.clip = guardSound;
         soloPlayer.volume = soloVolume;
         soloPlayer.Play();
@@ -65,7 +69,7 @@ public class SoundManager : MonoBehaviour
         if (grounded)
         {
             soloPlayer.clip = jumpSound;
-            soloPlayer.volume = soloVolume/4f;
+            soloPlayer.volume = soloVolume/2f;
         }
         else
         {
@@ -78,6 +82,7 @@ public class SoundManager : MonoBehaviour
     public void PlaySlide()
     {
         soloPlayer.clip = slideSound;
+        soloPlayer.volume = soloVolume;
         soloPlayer.Play();
     }
 
@@ -86,9 +91,16 @@ public class SoundManager : MonoBehaviour
         soloPlayer.Stop();
     }
 
-    public bool PlayingSolo()
+    public bool PlayingSlide()
     {
-        return soloPlayer.isPlaying;
+        return soloPlayer.isPlaying && soloPlayer.clip == slideSound;
+    }
+
+    public void HeartVolume(float volume)
+    {
+        if (!heartPlayer.isPlaying)
+            heartPlayer.Play();
+        heartPlayer.volume = volume;
     }
 
     public void PlaySound(SoundType type)

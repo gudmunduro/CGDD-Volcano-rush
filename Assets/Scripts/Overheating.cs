@@ -12,6 +12,7 @@ public class Overheating : MonoBehaviour
     public float heatAmount;
     public float coolAmount;
     public bool heatResistant = false;
+    private float _lastHitTime = 0f;
 
     public bool incoolzone;
     private Color barColor;
@@ -55,7 +56,11 @@ public class Overheating : MonoBehaviour
         }
         else if (!heatResistant)
         {
-            _animateObject.OverheatingDamage();
+            if (Time.time - _lastHitTime > 1)
+            {
+                _animateObject.OverheatingDamage();
+                _lastHitTime = Time.time;
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 268086620}
   m_Layer: 2
   m_Name: RollingSensor
-  m_TagString: Player
+  m_TagString: PlayerComponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -77,7 +77,7 @@ GameObject:
   - component: {fileID: 360964576}
   m_Layer: 2
   m_Name: Point Light 2D
-  m_TagString: Player
+  m_TagString: PlayerComponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -154,7 +154,7 @@ GameObject:
   - component: {fileID: 1063428556}
   m_Layer: 0
   m_Name: CoolZoneSensor
-  m_TagString: Player
+  m_TagString: PlayerComponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -202,7 +202,7 @@ GameObject:
   - component: {fileID: 387461400629458983}
   m_Layer: 0
   m_Name: WallSensor_R2
-  m_TagString: Player
+  m_TagString: PlayerComponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -428,6 +428,7 @@ MonoBehaviour:
   landingParticleSystem: {fileID: 2658418031785033327}
   m_blocking: 0
   m_doubleJumpEnabled: 0
+  m_poweredUp: 0
   m_facingDirection: 1
   m_attackSpeed: 0
   m_stepFrame: 0
@@ -519,7 +520,7 @@ GameObject:
   - component: {fileID: 2100395500949135666}
   m_Layer: 0
   m_Name: WallSensor_L2
-  m_TagString: Player
+  m_TagString: PlayerComponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -579,7 +580,7 @@ GameObject:
   - component: {fileID: 2128664664952232085}
   m_Layer: 0
   m_Name: WallSensor_L1
-  m_TagString: Player
+  m_TagString: PlayerComponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -639,7 +640,7 @@ GameObject:
   - component: {fileID: 7221441599346923224}
   m_Layer: 0
   m_Name: LandingParticles
-  m_TagString: Player
+  m_TagString: PlayerComponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5485,7 +5486,7 @@ GameObject:
   - component: {fileID: 756849608}
   m_Layer: 2
   m_Name: AttackRange
-  m_TagString: Player
+  m_TagString: PlayerComponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5632,7 +5633,7 @@ GameObject:
   - component: {fileID: 6619045377739425579}
   m_Layer: 0
   m_Name: WallSensor_R1
-  m_TagString: Player
+  m_TagString: PlayerComponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5692,7 +5693,7 @@ GameObject:
   - component: {fileID: 9113927624351916414}
   m_Layer: 0
   m_Name: GroundSensor
-  m_TagString: Player
+  m_TagString: PlayerComponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
