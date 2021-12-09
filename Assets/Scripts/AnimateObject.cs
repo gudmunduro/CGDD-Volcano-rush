@@ -8,12 +8,15 @@ public class AnimateObject : MonoBehaviour
 	public float maxHealth;
 	public float health;
 	public bool destroyOnKill;
+	private Vector3 moveposition;
 	
 	public bool dead;
 	public bool player = false;
 	private PlayerController2 _playerController;
 	private Animator _animator;
 	public StatusBar statusBar;
+	
+	public GameObject PopUpScore; 
 	
     // Start is called before the first frame update
     void Start()
@@ -38,6 +41,7 @@ public class AnimateObject : MonoBehaviour
     {
 
 		statusBar.Set(health);
+		
 	    if(!Alive() && dead && !player && !_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyDead"))
 			Destroy(gameObject.transform.parent);
 
@@ -101,6 +105,8 @@ public class AnimateObject : MonoBehaviour
 		else if (!Alive() && !dead)
 		{
 			_animator.Play("EnemyDead");
+			moveposition = new Vector3(1.7f,-0.2f,0);
+			Instantiate(PopUpScore, transform.position+moveposition, transform.rotation);
 
 			if (Isplayer)
 			{
