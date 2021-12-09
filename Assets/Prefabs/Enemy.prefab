@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 143509954409012798}
   - component: {fileID: 4336886330439687166}
   - component: {fileID: 2252598385122962386}
-  m_Layer: 7
+  m_Layer: 2
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -321,7 +321,7 @@ GameObject:
   - component: {fileID: 1874051185622046666}
   - component: {fileID: 6248425973180133379}
   - component: {fileID: 5526480481860168359}
-  m_Layer: 7
+  m_Layer: 2
   m_Name: Overheat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -455,7 +455,7 @@ GameObject:
   - component: {fileID: 7293963899924370700}
   - component: {fileID: 2922679351050332690}
   - component: {fileID: 2405065301486761080}
-  m_Layer: 7
+  m_Layer: 2
   m_Name: Overheat.txt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -763,7 +763,7 @@ GameObject:
   - component: {fileID: 4404228924368291744}
   - component: {fileID: 6641525782428703116}
   - component: {fileID: 6956065148875677901}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -806,6 +806,7 @@ MonoBehaviour:
   itemDropPrefab: {fileID: 7357148476857602677, guid: 7e41a27fb173a4accbda0755be6acda5, type: 3}
   upgradeDropPrefab: {fileID: 6010603995006689582, guid: 687f40a3b259a512c9832fc55984a034, type: 3}
   globalEnemyController: {fileID: 0}
+  enemyVisualisor: {fileID: 5364750287207506405}
 --- !u!114 &4404228924368291744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -872,7 +873,7 @@ GameObject:
   - component: {fileID: 8879578528531664838}
   - component: {fileID: 8879578528531664836}
   - component: {fileID: 8879578528531664839}
-  m_Layer: 7
+  m_Layer: 2
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -947,7 +948,7 @@ GameObject:
   - component: {fileID: 8879578529130459713}
   - component: {fileID: 8879578529130459719}
   - component: {fileID: 8879578529130459718}
-  m_Layer: 7
+  m_Layer: 2
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1022,7 +1023,7 @@ GameObject:
   - component: {fileID: 8879578529907316882}
   - component: {fileID: 8879578529907316880}
   - component: {fileID: 8879578529907316883}
-  m_Layer: 7
+  m_Layer: 2
   m_Name: Health bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
