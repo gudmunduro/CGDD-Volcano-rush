@@ -23,6 +23,10 @@ public class PlayerController2 : MonoBehaviour {
     private PlayerSensor        m_wallSensorR2;
     private PlayerSensor        m_wallSensorL1;
     private PlayerSensor        m_wallSensorL2;
+    private PlayerSensor        m_tightSpotSensorL2;
+    private PlayerSensor        m_tightSpotSensorR2;
+    private PlayerSensor        m_tightSpotSensorL1;
+    private PlayerSensor        m_tightSpotSensorR1;
     private bool                m_grounded = false;
     private bool                m_rolling = false;
     private bool                m_isWallSliding = false;
@@ -68,6 +72,7 @@ public class PlayerController2 : MonoBehaviour {
     private bool                _mouseAttack;
     private bool                _block;
     private bool                _mouseBlock;
+    private bool                _forceRoll;
 
     public bool IsTouchingGround => m_groundSensor.Sense();
 
@@ -147,6 +152,10 @@ public class PlayerController2 : MonoBehaviour {
         m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<PlayerSensor>();
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<PlayerSensor>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<PlayerSensor>();
+        m_tightSpotSensorL1 = transform.Find("TightSpotSensor_L1").GetComponent<PlayerSensor>();
+        m_tightSpotSensorR1 = transform.Find("TightSpotSensor_R1").GetComponent<PlayerSensor>();
+        m_tightSpotSensorL2 = transform.Find("TightSpotSensor_L2").GetComponent<PlayerSensor>();
+        m_tightSpotSensorR2 = transform.Find("TightSpotSensor_R2").GetComponent<PlayerSensor>();
     }
 
     public bool IsRolling()
@@ -196,6 +205,11 @@ public class PlayerController2 : MonoBehaviour {
             m_extraJump = true;
             m_standardCollider.sharedMaterial = null;
             m_currentJumpWindowTime = 0;
+        }
+
+        if (((m_tightSpotSensorL2.Sense() && m_tightSpotSensorL1.Sense()) || m_tightSpotSensorR2.Sense() && m_tightSpotSensorR1.Sense()) && !m_grounded && !m_rolling)
+        {
+            _forceRoll = true;
         }
         
         // Increase timer that checks roll duration
@@ -433,7 +447,7 @@ public class PlayerController2 : MonoBehaviour {
         }
 
         // Roll
-        else if (_roll && !m_rolling)
+        else if ((_roll || _forceRoll) && !m_rolling)
         {
             int rollDirection = 0;
             if (!m_animator.GetCurrentAnimatorStateInfo(0).IsName("Wall Slide"))
@@ -486,6 +500,8 @@ public class PlayerController2 : MonoBehaviour {
                     Physics2D.IgnoreCollision(m_rollingCollider, enemyCollider, true);
                 }
             }
+
+            _forceRoll = false;
         }
         
         //Jump
