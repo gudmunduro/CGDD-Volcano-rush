@@ -10,9 +10,11 @@ public class StartScript : MonoBehaviour
 {
     public GameObject leaderboardCanvas;
     public GameObject startCanvas;
-
-    public GameObject startFirstSelectedButton, leaderboardFirstSelectedButton, leaderboardClosedSelectedButton;
-
+    public GameObject startScreen;
+    public GameObject controlsCanvas;
+    
+    public GameObject startFirstSelectedButton, leaderboardFirstSelectedButton, leaderboardClosedSelectedButton, controlsFirstSelectedButton, controlsClosedSelectedButton;
+    
     public void Start()
     {
         EventSystem.current.SetSelectedGameObject(null);
@@ -43,5 +45,22 @@ public class StartScript : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(leaderboardClosedSelectedButton);
     }
-    
+
+    public void OpenControls()
+    {
+        controlsCanvas.SetActive(true);
+        startScreen.SetActive(false);
+
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(controlsFirstSelectedButton);
+    }
+
+    public void CloseControls()
+    {
+        startScreen.SetActive(true);
+        controlsCanvas.SetActive(false);
+        
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(controlsClosedSelectedButton);
+    }
 }

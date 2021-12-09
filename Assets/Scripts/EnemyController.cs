@@ -156,16 +156,17 @@ public class EnemyController : MonoBehaviour
         {
             float dropThreshold = GameObject.Find("Player").GetComponent<AnimateObject>().HealthPct();
             GameObject.Find("Player").GetComponentInChildren<PlayerAttackRange>().KillRemove(gameObject);
+            Vector3 enemyOffset = new Vector3(0, 1f, 0);
             // Any drop
             if (UnityEngine.Random.Range(0f, 1f) > dropThreshold)
             {
                 // Health drop
                 if (UnityEngine.Random.Range(0f, 1f) > .2f)
-                    Instantiate(itemDropPrefab, transform.position, Quaternion.identity, items.transform);
+                    Instantiate(itemDropPrefab, transform.position - enemyOffset, Quaternion.identity, items.transform);
 
                 // Upgrade drop
                 else
-                    Instantiate(upgradeDropPrefab, transform.position, Quaternion.identity, items.transform);
+                    Instantiate(upgradeDropPrefab, transform.position - enemyOffset, Quaternion.identity, items.transform);
             }
         }
     }

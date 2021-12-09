@@ -76,13 +76,15 @@ public class AnimateObject : MonoBehaviour
 		Invoke(nameof(PlayerDied), 2);
 	}
 
-	public void DamagePlayerHealth(float damage)
+	public void DamagePlayerHealth(float damage, bool playAnimation = true)
 	{
 		health -= damage;
 
 		if (Alive())
 		{
-			_animator.SetTrigger("Hurt");
+			if (playAnimation)
+				_animator.SetTrigger("Hurt");
+			
 			_playerController.PlayGrunt();
 		}
 		else if (!Alive() && !dead)
@@ -120,14 +122,6 @@ public class AnimateObject : MonoBehaviour
 		}
 	}
 
-	public void Kill()
-	{
-		health = 0;
-		
-		
-		
-	}
-	
 	public void Attack(float damage)
 	{
 		if (player)
@@ -147,7 +141,7 @@ public class AnimateObject : MonoBehaviour
 	{
 		//health -= 0.1f;
 
-		DamagePlayerHealth(5);
+		DamagePlayerHealth(5, false);
 
 		if (!Alive() && !dead)
 		{
