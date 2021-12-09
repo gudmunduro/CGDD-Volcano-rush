@@ -83,12 +83,19 @@ public class LeaderboardUI : MonoBehaviour
         _currentPage -= 1;
         _clearTableEntries();
         
+        if (!onlineLeaderboard.IsPageLoaded(_currentPage))
+        {
+            StartCoroutine(onlineLeaderboard.LoadLeaderboard(_currentPage));
+        }
+        
         _updateCurrentPage();
     }
 
     public void BackToStart()
     {
         onlineLeaderboard.ClearCache();
+        _currentPage = 0;
+        _updateCurrentPage();
         startScript.CloseLeaderBoard();
     }
 
