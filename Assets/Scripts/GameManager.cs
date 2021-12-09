@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,7 +21,10 @@ public class GameManager : MonoBehaviour
     public Image overheatEffectBackground;
     public OnlineLeaderboard onlineLeaderboard;
     public int enemiesKilled = 0;
-
+    
+    public GameObject firstSelectedYouDied;
+    public GameObject firstSelectedYouWin;
+    
     private float _timer = 0;
     private int _score = 0;
     private int _deaths = 0;
@@ -92,6 +96,9 @@ public class GameManager : MonoBehaviour
     {
         youDiedScreen.SetActive(true);
         Time.timeScale = 0;
+        
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(firstSelectedYouDied);
     }
 
     private String DisplayTime(float timeToDisplay)
@@ -113,7 +120,7 @@ public class GameManager : MonoBehaviour
     private int CalculateScore()
     {
         _score = 100 * enemiesKilled  - 400 * _deaths;
-        _score += Math.Max((300 - Mathf.FloorToInt(_timer)) * 20, 0);
+        _score += Math.Max((480 - Mathf.FloorToInt(_timer)) * 20, 0);
         
         return Math.Max(_score, 0);
     }
@@ -133,6 +140,10 @@ public class GameManager : MonoBehaviour
         _scoreText.text = "Score: " + CalculateScore();
         
         Time.timeScale = 0;
+        
+                
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(firstSelectedYouWin);
     }
     
     public void RestartGame()

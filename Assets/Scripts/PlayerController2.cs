@@ -28,6 +28,7 @@ public class PlayerController2 : MonoBehaviour {
     private bool                m_isWallSliding = false;
     public bool                 m_blocking = false;
     private bool                m_extraJump = true;
+    private bool                m_jumped = true;
     public bool                 m_doubleJumpEnabled = false;
     public bool                 m_poweredUp = false;
     public int                  m_facingDirection = 1;
@@ -44,6 +45,7 @@ public class PlayerController2 : MonoBehaviour {
     private SoundManager        m_soundManager;
     public float                m_attackSpeed;
     public bool                 m_stepFrame = false;
+    private bool                m_stepped = false;
     public Camera               m_camera;
     
     private AnimateObject       m_animateObject;
@@ -234,6 +236,7 @@ public class PlayerController2 : MonoBehaviour {
             }
 
             m_grounded = true;
+            m_jumped = false;
 
             if (m_currentFallingTime > m_fallingTime)
             {
@@ -458,12 +461,15 @@ public class PlayerController2 : MonoBehaviour {
         }
         
         //Jump
-        else if (_jump && ((m_grounded || (m_doubleJumpEnabled && m_extraJump)) || m_currentJumpWindowTime < m_jumpWindow) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
+        else if (_jump && ((m_grounded || (m_doubleJumpEnabled && m_extraJump)) || (m_currentJumpWindowTime < m_jumpWindow && !m_jumped)) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
             if (!m_grounded && m_currentJumpWindowTime >= m_jumpWindow)
             {
                 m_extraJump = false;
             }
+
+            m_jumped = true;
+            
             m_soundManager.PlayJump(m_grounded || m_currentJumpWindowTime < m_jumpWindow);
             m_animator.SetTrigger("Jump");
             m_animator.SetBool("Grounded", m_grounded);
@@ -478,8 +484,15 @@ public class PlayerController2 : MonoBehaviour {
             // Reset timer
             m_delayToIdle = 0.05f;
             m_animator.SetInteger("AnimState", 1);
-            if ((m_stepFrame && m_soundManager.PlayPos(SoundType.Step) > 0.02f)&& (m_grounded && !m_rolling))
+            m_animator.SetFloat("RunSpeed", Mathf.Abs(m_inputStick.x));
+            if ((m_stepFrame && !m_stepped) && (m_grounded && !m_rolling))
+            {
                 m_soundManager.PlaySound(SoundType.Step);
+                m_stepped = true;
+            }
+            if (!m_stepFrame)
+                m_stepped = false;
+                
         }
 
         //Idle

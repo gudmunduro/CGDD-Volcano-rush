@@ -168,7 +168,6 @@ public class EnemyController : MonoBehaviour
             }
 
             _enemyState = EnemyState.Dying;
-            //_setAnimationState(EnemyAnimationState.Die);
             return;
         }
 
@@ -222,7 +221,7 @@ public class EnemyController : MonoBehaviour
             }
             case EnemyState.Attacking:
             {
-                if ((!_enemyVision.IsPlayerInVision || !_isPlayerInReach()) && !IsPlayerJumping)
+                if (!_enemyVision.IsPlayerInVision && !IsPlayerJumping)
                 {
                     if (_enemyAttackState == EnemyAttackState.Attacking)
                     {
@@ -325,16 +324,16 @@ public class EnemyController : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        //if (_enemyState == EnemyState.Dying);
-          //  yield break;
+        if (_enemyState == EnemyState.Dying)
+            yield break;
 
         if (!_enemyAttackRange.IsPlayerInAttackRange) yield break;
         _animator.SetTrigger(AttackAnimTrigger);
 
         yield return new WaitForSeconds(0.14f);
 
-        //if (_enemyState == EnemyState.Dying);
-        //    yield break;
+        if (_enemyState == EnemyState.Dying)
+            yield break;
             
         soundManager.PlaySound(SoundType.Swipe);
 
@@ -390,13 +389,15 @@ public class EnemyController : MonoBehaviour
                 }
                 else
                 {
+                    var playerDirection = _getDirectionPlayerIsIn(); 
+                    
                     _setAnimationState(EnemyAnimationState.Walk);
-                    _move = _getDirectionPlayerIsIn() switch
+                    _move = playerDirection switch
                     {
                         Direction.Left => -(int)runMultiplier,
                         Direction.Right => (int)runMultiplier
                     };
-                    _setEnemyDirection(_getDirectionPlayerIsIn());
+                    _setEnemyDirection(playerDirection);
                 }
 
                 break;
@@ -454,29 +455,21 @@ public class EnemyController : MonoBehaviour
     {
         foreach (var enemy in _enemyVision.EnemiesInVision)
         {
+            if (enemy == null) continue;
+            
             enemy.GetComponent<EnemyController>().SendMessageToEnemy(message, content);
         }
     }
 
     private bool _isPlayerInReach()
     {
-        //var playerDirection = _getDirectionPlayerIsIn();
-        
-        /*if (CurrentWalkingDirection == Direction.Left)
-            playerDirection = _swapDirection(playerDirection);
-        
-        
+        var playerDirection = _getDirectionPlayerIsIn();
+
         var direction = playerDirection == Direction.Left
             ? (Vector2)transform.TransformDirection(Vector2.left)
-            : (Vector2)transform.TransformDirection(Vector2.right);*/
-
-        var playerCenterPosition = GameManager.instance.player.transform.position + new Vector3(0, 0.8f, 0);
-        var direction =
-            transform.TransformDirection(
-                Vector3.Normalize(playerCenterPosition - transform.position));
-
+            : (Vector2)transform.TransformDirection(Vector2.right);
         
-        var hit = Physics2D.Raycast(transform.position, direction);
+        var hit = Physics2D.Raycast(transform.position - new Vector3(0, 0.8f, 0), direction);
         return hit.collider != null && (hit.collider.gameObject.CompareTag("Player") || hit.collider.CompareTag("PlayerComponent"));
     }
 
@@ -499,20 +492,21 @@ public class EnemyController : MonoBehaviour
 
     private void _setAnimationState(EnemyAnimationState state)
     {
-        if (state == _currentAnimationState) return;
-
-        switch (state)
+        var stateName = state switch
         {
-            case EnemyAnimationState.Walk:
-                _animator.SetTrigger(WalkAnimTrigger);
-                break;
-            case EnemyAnimationState.Idle:
-                _animator.SetTrigger(IdleAnimTrigger);
-                break;
+            EnemyAnimationState.Walk => "Walk",
+            EnemyAnimationState.Idle => "Idle"
+        };
+        var trigger = state switch
+        {
+            EnemyAnimationState.Walk => WalkAnimTrigger,
+            EnemyAnimationState.Idle => IdleAnimTrigger
+        };
+
+        if (!_animator.GetCurrentAnimatorStateInfo(0).IsName(stateName))
+        {
+            _animator.SetTrigger(trigger);
         }
-
-
-        _currentAnimationState = state;
     }
 
     private Direction _swapDirection(Direction direction)
