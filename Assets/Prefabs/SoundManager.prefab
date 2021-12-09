@@ -81,6 +81,12 @@ MonoBehaviour:
   tumbleSounds:
   - {fileID: 8300000, guid: 291605f1cb8874326939c0ecf41a956b, type: 3}
   - {fileID: 8300000, guid: 7ea199a2065748535a6c8bf94cf5094e, type: 3}
+  - {fileID: 8300000, guid: 2b66903198ea0054493929b21925e3b2, type: 3}
+  - {fileID: 8300000, guid: 2bd9a5376b10e633cbe3bdc8c2f58a55, type: 3}
+  - {fileID: 8300000, guid: 62fe8b2f6732891b7a7c1e4e8e5b7a3f, type: 3}
+  tumbleAirSounds:
+  - {fileID: 8300000, guid: f209c36e8dce52579b8425de163cdc01, type: 3}
+  - {fileID: 8300000, guid: fb492721509fb6841b165073bba7da94, type: 3}
   stepSounds:
   - {fileID: 8300000, guid: 98aadd2ea03a58b17b929bbdeae7286b, type: 3}
   - {fileID: 8300000, guid: 5130409bcca7faf8f9a0d4d96906f983, type: 3}
