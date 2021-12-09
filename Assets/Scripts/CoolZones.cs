@@ -23,12 +23,13 @@ public class CoolZones : MonoBehaviour
         if (other.gameObject.name == "CoolZoneSensor")
         {
             FindObjectOfType<Overheating>().incoolzone = true;
-
+            
             if (transform.position.y < _playercontroller.playerYposition)
             {
                 _playercontroller.ChangePosition(transform.position.x, transform.position.y);
 
-
+                SoundManager.instance.PlayCheckpoint();
+                
                 _light.intensity = 3;
 
             }
