@@ -161,13 +161,13 @@ public class GameManager : MonoBehaviour
     public IEnumerator ReloadCheckpoint()
     {
         foreach (Transform child in enemies.transform) {
-            GameObject.Destroy(child.gameObject);
+            Destroy(child.gameObject);
         }
 
         yield return new WaitForSeconds(0);
 
         foreach (Transform child in items.transform) {
-            GameObject.Destroy(child.gameObject);
+            Destroy(child.gameObject);
         }
 
         foreach(Transform child in enemyspawners.transform){
