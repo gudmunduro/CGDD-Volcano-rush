@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour
 
         if (_playerAnimate.HealthPct() < 0.3)
         {
-            if (_playerAnimate.Alive())
+            if (_playerAnimate.Alive() && Time.timeScale > 0)
                 SoundManager.instance.HeartVolume(0.5f - _playerAnimate.HealthPct());
             else
                 SoundManager.instance.heartPlayer.Stop();
@@ -136,7 +136,6 @@ public class GameManager : MonoBehaviour
     public void YouWin()
     {
         StartCoroutine(onlineLeaderboard.SubmitEntry("Player", CalculateScore(), _displayTimeShort(_timer)));
-        StartCoroutine(SoundManager.instance.FadeOutBGM());
         SoundManager.instance.PlayComplete();
         youWinScreen.SetActive(true);
 
@@ -154,7 +153,6 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        //SoundManager.instance.RestartBGM();
         Time.timeScale = 1;
     }
     
