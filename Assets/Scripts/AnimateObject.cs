@@ -35,6 +35,7 @@ public class AnimateObject : MonoBehaviour
 		else
 		{
 			_animator = GetComponentInChildren<Animator>();
+			BarVisibility(0);
 		}
 		dead = false;
     }
@@ -49,6 +50,13 @@ public class AnimateObject : MonoBehaviour
 			Destroy(gameObject.transform.parent);
 
 			
+	}
+
+	public void BarVisibility(float alpha)
+	{
+		Color _temp = statusBar.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().color;
+		_temp.a = alpha;
+		statusBar.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().color = _temp;
 	}
 
 	public float HealthPct()
