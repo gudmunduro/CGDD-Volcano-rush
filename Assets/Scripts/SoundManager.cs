@@ -35,7 +35,6 @@ public class SoundManager : MonoBehaviour
     public AudioClip completeSound;
     public AudioClip powerUpSound;
     public AudioClip powerDownSound;
-    public AudioClip checkpointSound;
 
     public AudioSource swipePlayer;
     public AudioSource hitPlayer;
@@ -45,6 +44,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource stepPlayer;
     public AudioSource eatPlayer;
     public AudioSource powerPlayer;
+    public AudioSource checkpointPlayer;
 
     public AudioSource soloPlayer;
     private float soloVolume;
@@ -136,9 +136,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayCheckpoint()
     {
-        soloPlayer.clip = checkpointSound;
-        soloPlayer.volume = soloVolume;
-        soloPlayer.Play();
+        checkpointPlayer.Play();
     }
 
     public IEnumerator FadeOutBGM()
