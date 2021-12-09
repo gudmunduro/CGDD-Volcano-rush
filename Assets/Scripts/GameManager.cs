@@ -137,7 +137,6 @@ public class GameManager : MonoBehaviour
     
     public void YouWin()
     {
-        StartCoroutine(onlineLeaderboard.SubmitEntry("Player", CalculateScore(), _displayTimeShort(_timer)));
         SoundManager.instance.PlayComplete();
         youWinScreen.SetActive(true);
 
@@ -150,6 +149,12 @@ public class GameManager : MonoBehaviour
                 
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(firstSelectedYouWin);
+    }
+
+    public void SubmitScore()
+    {
+        string name = GameObject.Find("LeaderboardName").GetComponent<TMP_InputField>().text;
+        StartCoroutine(onlineLeaderboard.SubmitEntry(name, CalculateScore(), _displayTimeShort(_timer)));
     }
     
     public void RestartGame()
