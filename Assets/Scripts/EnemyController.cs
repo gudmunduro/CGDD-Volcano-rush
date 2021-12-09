@@ -107,6 +107,13 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    public int EnemyPoints => EnemyDifficultyLevel switch
+    {
+        EnemyDifficultyLevel.Easy => 50,
+        EnemyDifficultyLevel.Normal => 100,
+        EnemyDifficultyLevel.Hard => 150
+    };
+
     public Direction CurrentWalkingDirection => _enemyState switch
     {
         EnemyState.PatrolLeft => Direction.Left,
@@ -555,7 +562,7 @@ public class EnemyController : MonoBehaviour
     
     private float _healthMultiplierForDifficultyLevel() => EnemyDifficultyLevel switch
     {
-        EnemyDifficultyLevel.Easy => 0.4f,
+        EnemyDifficultyLevel.Easy => 0.6f,
         EnemyDifficultyLevel.Normal => 1.0f,
         EnemyDifficultyLevel.Hard => 2.5f
     };

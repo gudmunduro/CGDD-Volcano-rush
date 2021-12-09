@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class AnimateObject : MonoBehaviour
@@ -13,6 +14,7 @@ public class AnimateObject : MonoBehaviour
 	public bool dead;
 	public bool player = false;
 	private PlayerController2 _playerController;
+	private EnemyController _enemyController;
 	private Animator _animator;
 	public StatusBar statusBar;
 	
@@ -35,6 +37,7 @@ public class AnimateObject : MonoBehaviour
 		else
 		{
 			_animator = GetComponentInChildren<Animator>();
+			_enemyController = GetComponent<EnemyController>();
 			BarVisibility(0);
 		}
 		dead = false;
@@ -121,11 +124,14 @@ public class AnimateObject : MonoBehaviour
 		{
 			_animator.Play("EnemyDead");
 			moveposition = new Vector3(1.7f,-0.2f,0);
-			Instantiate(PopUpScore, transform.position+moveposition, transform.rotation);
+			var popupScore = Instantiate(PopUpScore, transform.position+moveposition, transform.rotation);
 
 			if (Isplayer)
 			{
-				GameManager.instance.enemiesKilled++;
+				GameManager.instance.enemiesKilled += 1;
+				GameManager.instance.enemiesKilledPoints += _enemyController.EnemyPoints;
+
+				popupScore.GetComponentInChildren<TextMeshProUGUI>().text = _enemyController.EnemyPoints.ToString();
 			}
 		}
 	}
