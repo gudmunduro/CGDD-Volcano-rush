@@ -280,7 +280,7 @@ public class PlayerController2 : MonoBehaviour {
             Debug.Log(m_inputStick.x);
         }
 
-        if (Mathf.Abs(m_inputStick.x) < 0.5f)
+        if (Mathf.Abs(m_inputStick.x) < 0.7f)
         {
             m_inputStick.x = 0;
         }
