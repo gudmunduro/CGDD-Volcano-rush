@@ -274,12 +274,7 @@ public class PlayerController2 : MonoBehaviour {
                               m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2") ||
                               m_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack3") ||
                               m_animator.GetCurrentAnimatorStateInfo(0).IsName("Wall Slide");
-
-        if (Mathf.Abs(m_inputStick.x) > 0)
-        {
-            Debug.Log(m_inputStick.x);
-        }
-
+        
         if (Mathf.Abs(m_inputStick.x) < 0.7f)
         {
             m_inputStick.x = 0;
