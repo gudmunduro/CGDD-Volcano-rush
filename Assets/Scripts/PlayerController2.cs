@@ -44,6 +44,9 @@ public class PlayerController2 : MonoBehaviour {
     private float               m_animationRollCancelTime = 8.0f / 28.0f;
     private float               m_fallingTime = 1f;
     private float               m_currentFallingTime = 0f;
+    private float               m_timeInTightSpot;
+    private float               m_tightSpotRollForceMultiplierTime;
+    private float               m_tightSpotRollForceMultiplier = 2.0f;
     private CapsuleCollider2D   m_standardCollider;
     private CircleCollider2D    m_rollingCollider;
     private SoundManager        m_soundManager;
@@ -209,7 +212,18 @@ public class PlayerController2 : MonoBehaviour {
 
         if (((m_tightSpotSensorL2.Sense() && m_tightSpotSensorL1.Sense()) || m_tightSpotSensorR2.Sense() && m_tightSpotSensorR1.Sense()) && !m_grounded && !m_rolling)
         {
+            m_timeInTightSpot += Time.deltaTime;
+        }
+        else
+        {
+            m_timeInTightSpot = 0;
+        }
+
+        if (m_timeInTightSpot > 0.05)
+        {
             _forceRoll = true;
+            m_tightSpotRollForceMultiplierTime = 0.5f;
+            m_timeInTightSpot = 0;
         }
         
         // Increase timer that checks roll duration
@@ -243,6 +257,7 @@ public class PlayerController2 : MonoBehaviour {
                 m_rolling = false;
                 m_rollingCollider.enabled = false;
                 m_standardCollider.enabled = true;
+                m_tightSpotRollForceMultiplierTime = 0;
 
                 foreach (Transform enemy in enemies.transform)
                 {
@@ -487,8 +502,16 @@ public class PlayerController2 : MonoBehaviour {
                     m_soundManager.PlaySound(SoundType.Tumble);
                 else
                     m_soundManager.PlaySound(SoundType.TumbleAir);
+
+                var multiplier = 1.0f;
+                if (m_tightSpotRollForceMultiplierTime > 0)
+                {
+                    multiplier = m_tightSpotRollForceMultiplier;
+
+                    m_tightSpotRollForceMultiplierTime -= Time.deltaTime;
+                }
                 
-                m_body2d.velocity = new Vector2(rollDirection * m_rollForce, m_body2d.velocity.y);
+                m_body2d.velocity = new Vector2(rollDirection * m_rollForce * multiplier, m_body2d.velocity.y);
                 
                 m_rollingCollider.enabled = true;
                 m_standardCollider.enabled = false;
@@ -499,9 +522,9 @@ public class PlayerController2 : MonoBehaviour {
                     
                     Physics2D.IgnoreCollision(m_rollingCollider, enemyCollider, true);
                 }
+                
+                _forceRoll = false;
             }
-
-            _forceRoll = false;
         }
         
         //Jump
