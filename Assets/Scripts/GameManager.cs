@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public GameObject youDiedScreen;
     public GameObject youWinScreen;
+    public GameObject pauseGameScreen;
     public GameObject player;
     public GameObject enemies;
     public GameObject items;
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour
     
     public GameObject firstSelectedYouDied;
     public GameObject firstSelectedYouWin;
+    public GameObject firstSelectedPauseGame;
     
     private float _timer = 0;
     private int _score = 0;
@@ -34,10 +36,11 @@ public class GameManager : MonoBehaviour
     private Overheating _playerOverheating;
     private PlayerController2 _playercontroller;
     private AnimateObject _playerAnimate;
-    
+
     private void Awake()
     {
         instance = this;
+
         //Time.timeScale = 0.5f;
     }
 
@@ -170,6 +173,7 @@ public class GameManager : MonoBehaviour
 
         _deaths += 1;
         youDiedScreen.SetActive(false);
+        pauseGameScreen.SetActive(false);
         Time.timeScale = 1;
         _playercontroller.Respawn();
         enemies.GetComponent<GlobalEnemyController>().enemiesAttackingPlayer = 0;
@@ -178,5 +182,31 @@ public class GameManager : MonoBehaviour
     public void OnReloadClick()
     {
         StartCoroutine(ReloadCheckpoint());
+    }
+
+    public void UnPauseGame()
+    {
+        pauseGameScreen.SetActive(false);
+        
+        Time.timeScale = 1;
+        
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(firstSelectedPauseGame);
+    }
+    
+    public void PauseGame()
+    {
+        if (pauseGameScreen.activeSelf)
+        {
+            UnPauseGame();
+            return;
+        }
+
+        pauseGameScreen.SetActive(true);
+        
+        Time.timeScale = 0;
+        
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(firstSelectedPauseGame);
     }
 }

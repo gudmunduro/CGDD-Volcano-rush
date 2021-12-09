@@ -107,6 +107,9 @@ public class PlayerController2 : MonoBehaviour {
         // Block
         m_controls.Gameplay.MouseBlock.performed += ctx => _mouseBlock = true;
         m_controls.Gameplay.MouseBlock.canceled += ctx => _mouseBlock = false;
+
+        m_controls.Gameplay.Pause.performed += ctx => GameManager.instance.PauseGame();
+
     }
 
     private void OnEnable()
@@ -164,6 +167,13 @@ public class PlayerController2 : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
+        if (GameManager.instance.youDiedScreen.activeSelf 
+            || GameManager.instance.youWinScreen.activeSelf 
+            || GameManager.instance.pauseGameScreen.activeSelf)
+        {
+            return;
+        }
+        
         if (!m_animateObject.Alive())
         {
             m_currentFallingTime = 0;
