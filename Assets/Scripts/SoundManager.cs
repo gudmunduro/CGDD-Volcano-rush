@@ -43,8 +43,11 @@ public class SoundManager : MonoBehaviour
     private float soloVolume;
 
     public AudioSource BGPlayer;
+    public AudioSource agroPlayer;
 
     public AudioSource heartPlayer;
+
+    public bool fading = false;
 
     private void Awake()
     {
@@ -104,6 +107,23 @@ public class SoundManager : MonoBehaviour
         if (!heartPlayer.isPlaying)
             heartPlayer.Play();
         heartPlayer.volume = volume;
+    }
+
+    public IEnumerator FadeAgro(float endValue, float duration)
+    {
+        fading = true;
+        float time = 0;
+        float startValue = agroPlayer.volume;
+
+        while (time < duration)
+        {
+            agroPlayer.volume = Mathf.Lerp(startValue, endValue, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        fading = false;
+        agroPlayer.volume = endValue;
     }
 
     public void PlaySound(SoundType type)
