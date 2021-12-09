@@ -10,12 +10,14 @@ public class CoolZones : MonoBehaviour
     private PlayerController2 _playercontroller;
     private Light2D _light;
     private float _fadeSpeed = 1f;
+    private ParticleSystem _particleSystem;
     
     // Start is called before the first frame update
     void Start()
     {
         _playercontroller = GameManager.instance.player.GetComponent<PlayerController2>();
         _light = transform.GetChild(0).GetComponent<Light2D>();
+        _particleSystem = GetComponent<ParticleSystem>();
     }
     
     private void OnTriggerEnter2D(Collider2D other)
@@ -29,6 +31,8 @@ public class CoolZones : MonoBehaviour
                 _playercontroller.ChangePosition(transform.position.x, transform.position.y);
 
                 SoundManager.instance.PlayCheckpoint();
+
+                StartCoroutine(particleSpawner());
                 
                 _light.intensity = 3;
 
@@ -44,6 +48,17 @@ public class CoolZones : MonoBehaviour
         }
     }
 
+    IEnumerator particleSpawner()
+    {
+        var count = 0;
+        while (count < 10)
+        {
+            yield return new WaitForSeconds(0.05f);
+            _particleSystem.Emit(3);
+            count++;
+        }
+    }
+    
     private void Update()
     {
         if (_light.intensity > 1)
