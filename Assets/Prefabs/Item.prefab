@@ -127,7 +127,6 @@ MonoBehaviour:
   healAmount: 5
   foods:
   - {fileID: 21300000, guid: 0b9e159b363a1ff4f8982693963e393d, type: 3}
-  - {fileID: 21300000, guid: c728868677dfad541b6543a1f2aec055, type: 3}
   - {fileID: 21300048, guid: 142ff8784e552734f9d6a895491d0ae8, type: 3}
   - {fileID: 21300000, guid: b0851162516b6244f9ab7679cdb66512, type: 3}
   - {fileID: 21300000, guid: 8570c189a28e22145ac611fc417acd64, type: 3}
@@ -137,6 +136,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 481361217e20600488dc50b0c21f0378, type: 3}
   - {fileID: 21300042, guid: 142ff8784e552734f9d6a895491d0ae8, type: 3}
   - {fileID: 21300024, guid: 142ff8784e552734f9d6a895491d0ae8, type: 3}
+  - {fileID: 21300000, guid: 489912c6941fa9b48bf20fb07eb6d7a5, type: 3}
+  - {fileID: 21300080, guid: 142ff8784e552734f9d6a895491d0ae8, type: 3}
 --- !u!95 &7201134520863844039
 Animator:
   serializedVersion: 3
