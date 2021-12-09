@@ -1770,6 +1770,7 @@ MonoBehaviour:
   leaderboardEntryPrefab: {fileID: 4607245116437486162, guid: cb25d2a9205446b4da67974a9a7e9b41, type: 3}
   leaderboardContainer: {fileID: 1820026361}
   startScript: {fileID: 1738189462}
+  currentPageText: {fileID: 374456986}
 --- !u!1 &842672669
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using static System.Linq.Enumerable;
 
@@ -13,6 +14,7 @@ public class LeaderboardUI : MonoBehaviour
     public Transform leaderboardEntryPrefab;
     public GameObject leaderboardContainer;
     public StartScript startScript;
+    public TextMeshProUGUI currentPageText;
     
     private bool _isTableFilled = false;
     private int _currentPage = 0;
@@ -25,9 +27,9 @@ public class LeaderboardUI : MonoBehaviour
     
     void Update()
     {
-        if (!_isTableFilled && onlineLeaderboard.IsPageLoaded(0))
+        if (!_isTableFilled && onlineLeaderboard.IsPageLoaded(_currentPage))
         {
-            _addEntriesToScene(onlineLeaderboard.LeaderboardPages[0]);
+            _addEntriesToScene(onlineLeaderboard.LeaderboardPages[_currentPage]);
             _isTableFilled = true;
         }
     }
@@ -61,7 +63,7 @@ public class LeaderboardUI : MonoBehaviour
 
     public void NextPage()
     {
-        if (_currentPage >= onlineLeaderboard.TabCount-1) return;
+        if (_currentPage >= onlineLeaderboard.PageCount-1) return;
         
         _currentPage += 1;
         _clearTableEntries();
@@ -70,6 +72,8 @@ public class LeaderboardUI : MonoBehaviour
         {
             StartCoroutine(onlineLeaderboard.LoadLeaderboard(_currentPage));
         }
+        
+        _updateCurrentPage();
     }
 
     public void PreviousPage()
@@ -78,11 +82,18 @@ public class LeaderboardUI : MonoBehaviour
 
         _currentPage -= 1;
         _clearTableEntries();
+        
+        _updateCurrentPage();
     }
 
     public void BackToStart()
     {
         onlineLeaderboard.ClearCache();
         startScript.CloseLeaderBoard();
+    }
+
+    private void _updateCurrentPage()
+    {
+        currentPageText.text = (_currentPage+1).ToString();
     }
 }
