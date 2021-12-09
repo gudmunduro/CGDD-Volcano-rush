@@ -81,6 +81,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Arrow Display"",
+                    ""type"": ""Button"",
+                    ""id"": ""8922f746-c85a-4592-8368-6394a38e1b74"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -369,6 +377,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6b6f0c42-e3b7-4fbb-803a-84bde118304b"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Arrow Display"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7beccee1-7a15-4f06-b320-f3d1b025666c"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Arrow Display"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -385,6 +415,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Gameplay_AttackMouse = m_Gameplay.FindAction("AttackMouse", throwIfNotFound: true);
         m_Gameplay_MouseBlock = m_Gameplay.FindAction("MouseBlock", throwIfNotFound: true);
         m_Gameplay_Pause = m_Gameplay.FindAction("Pause", throwIfNotFound: true);
+        m_Gameplay_ArrowDisplay = m_Gameplay.FindAction("Arrow Display", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -442,6 +473,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Gameplay_AttackMouse;
     private readonly InputAction m_Gameplay_MouseBlock;
     private readonly InputAction m_Gameplay_Pause;
+    private readonly InputAction m_Gameplay_ArrowDisplay;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -454,6 +486,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @AttackMouse => m_Wrapper.m_Gameplay_AttackMouse;
         public InputAction @MouseBlock => m_Wrapper.m_Gameplay_MouseBlock;
         public InputAction @Pause => m_Wrapper.m_Gameplay_Pause;
+        public InputAction @ArrowDisplay => m_Wrapper.m_Gameplay_ArrowDisplay;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -487,6 +520,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Pause.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPause;
+                @ArrowDisplay.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnArrowDisplay;
+                @ArrowDisplay.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnArrowDisplay;
+                @ArrowDisplay.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnArrowDisplay;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -515,6 +551,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @ArrowDisplay.started += instance.OnArrowDisplay;
+                @ArrowDisplay.performed += instance.OnArrowDisplay;
+                @ArrowDisplay.canceled += instance.OnArrowDisplay;
             }
         }
     }
@@ -529,5 +568,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnAttackMouse(InputAction.CallbackContext context);
         void OnMouseBlock(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnArrowDisplay(InputAction.CallbackContext context);
     }
 }

@@ -110,6 +110,9 @@ public class PlayerController2 : MonoBehaviour {
 
         m_controls.Gameplay.Pause.performed += ctx => GameManager.instance.PauseGame();
 
+        m_controls.Gameplay.ArrowDisplay.performed += ctx => GameManager.instance.keyIsPressed = true;
+        m_controls.Gameplay.ArrowDisplay.canceled += ctx => GameManager.instance.keyIsPressed = false;
+
     }
 
     private void OnEnable()
