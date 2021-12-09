@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
     public Image overheatEffectBackground;
     public OnlineLeaderboard onlineLeaderboard;
     public int enemiesKilled = 0;
+    public int enemiesKilledPoints = 0;
     
     public GameObject firstSelectedYouDied;
     public GameObject firstSelectedYouWin;
@@ -124,7 +126,7 @@ public class GameManager : MonoBehaviour
 
     private int CalculateScore()
     {
-        _score = 100 * enemiesKilled  - 400 * _deaths;
+        _score = enemiesKilledPoints  - 400 * _deaths;
         _score += Math.Max((480 - Mathf.FloorToInt(_timer)) * 20, 0);
         
         return Math.Max(_score, 0);
@@ -132,7 +134,7 @@ public class GameManager : MonoBehaviour
 
     private int _calculateLiveScore()
     {
-        return Math.Max(100 * enemiesKilled - 400 * _deaths, 0);
+        return Math.Max(enemiesKilledPoints - 400 * _deaths, 0);
     }
     
     public void YouWin()
