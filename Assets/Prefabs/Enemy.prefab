@@ -806,6 +806,7 @@ MonoBehaviour:
   itemDropPrefab: {fileID: 7357148476857602677, guid: 7e41a27fb173a4accbda0755be6acda5, type: 3}
   upgradeDropPrefab: {fileID: 6010603995006689582, guid: 687f40a3b259a512c9832fc55984a034, type: 3}
   globalEnemyController: {fileID: 0}
+  enemyVisualisor: {fileID: 5364750287207506405}
 --- !u!114 &4404228924368291744
 MonoBehaviour:
   m_ObjectHideFlags: 0

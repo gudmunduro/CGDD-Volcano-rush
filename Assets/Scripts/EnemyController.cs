@@ -325,16 +325,16 @@ public class EnemyController : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        if (_enemyState == EnemyState.Dying);
-            yield break;
+        //if (_enemyState == EnemyState.Dying);
+          //  yield break;
 
         if (!_enemyAttackRange.IsPlayerInAttackRange) yield break;
         _animator.SetTrigger(AttackAnimTrigger);
 
         yield return new WaitForSeconds(0.14f);
 
-        if (_enemyState == EnemyState.Dying);
-            yield break;
+        //if (_enemyState == EnemyState.Dying);
+        //    yield break;
             
         soundManager.PlaySound(SoundType.Swipe);
 
@@ -384,6 +384,7 @@ public class EnemyController : MonoBehaviour
 
                 if (IsPlayerJumping && distanceToPlayerX < 1.0f)
                 {
+                    Debug.Log("Test");
                     _setAnimationState(EnemyAnimationState.Idle);
                     _move = 0;
                 }
