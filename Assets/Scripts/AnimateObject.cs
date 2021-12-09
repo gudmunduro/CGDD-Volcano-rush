@@ -101,6 +101,8 @@ public class AnimateObject : MonoBehaviour
 
 	public void DamageEnemyHealth(float damage, bool Isplayer=false)
 	{
+		if (!Alive()) return;
+		
 		health -= damage;
 
 		if(Alive())
