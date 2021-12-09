@@ -56,7 +56,6 @@ public class SoundManager : MonoBehaviour
     {
         instance = this;
         soloVolume = soloPlayer.volume;
-        BGVolume = BGPlayer.volume;
     }
 
     public void PlayDeath()
@@ -101,6 +100,9 @@ public class SoundManager : MonoBehaviour
         soloPlayer.clip = completeSound;
         soloPlayer.volume = soloVolume;
         soloPlayer.Play();
+
+        StartCoroutine(FadeOutBGM());
+        HeartVolume(0);
     }
 
     public void StopSolo()
@@ -133,12 +135,6 @@ public class SoundManager : MonoBehaviour
         }
         BGPlayer.volume = 0f;
         BGPlayer.Stop();
-    }
-
-    public void RestartBGM()
-    {
-        BGPlayer.volume = BGVolume;
-        BGPlayer.Play();
     }
 
     public IEnumerator FadeAgro(float endValue, float duration)
