@@ -34,19 +34,19 @@ public class ArrowShooter : MonoBehaviour
     {
         if (initialDelay > 0)
         {
-            _lastArrowShotTime = Time.realtimeSinceStartup + initialDelay;   
+            _lastArrowShotTime = Time.fixedTime + initialDelay;   
         }
         transform.eulerAngles = _shooterRotation();
         
         _createArrow();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        if (_lastArrowShotTime + arrowFiringRate < Time.realtimeSinceStartup)
+        if (_lastArrowShotTime + arrowFiringRate < Time.fixedTime)
         {
             StartCoroutine(_shootArrow());
-            _lastArrowShotTime = Time.realtimeSinceStartup;
+            _lastArrowShotTime = Time.fixedTime;
         }
     }
 

@@ -107,6 +107,9 @@ public class PlayerController2 : MonoBehaviour {
         // Block
         m_controls.Gameplay.MouseBlock.performed += ctx => _mouseBlock = true;
         m_controls.Gameplay.MouseBlock.canceled += ctx => _mouseBlock = false;
+
+        m_controls.Gameplay.Pause.performed += ctx => GameManager.instance.PauseGame();
+
     }
 
     private void OnEnable()
@@ -164,6 +167,13 @@ public class PlayerController2 : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
+        if (GameManager.instance.youDiedScreen.activeSelf 
+            || GameManager.instance.youWinScreen.activeSelf 
+            || GameManager.instance.pauseGameScreen.activeSelf)
+        {
+            return;
+        }
+        
         if (!m_animateObject.Alive())
         {
             m_currentFallingTime = 0;
@@ -325,6 +335,14 @@ public class PlayerController2 : MonoBehaviour {
                 if (m_soundManager.PlayingSlide())
                     m_soundManager.StopSolo();
             }
+        }
+        if (_playerAttackRange.AreEnemiesInAttackRange && !m_soundManager.fading)
+        {
+            StartCoroutine(m_soundManager.FadeAgro(0.5f, 1f));
+        }
+        else if (!m_soundManager.fading)
+        {
+            StartCoroutine(m_soundManager.FadeAgro(0f, .5f));
         }
             
         
