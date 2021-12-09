@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     public GameObject firstSelectedYouDied;
     public GameObject firstSelectedYouWin;
     public GameObject firstSelectedPauseGame;
+
+    public bool keyIsPressed;
     
     private float _timer = 0;
     private int _score = 0;
