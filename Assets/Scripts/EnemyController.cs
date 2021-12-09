@@ -33,6 +33,13 @@ public enum EnemyMessage
     SetDirection
 }
 
+public enum EnemyDifficultyLevel
+{
+    Easy,
+    Normal,
+    Hard
+}
+
 public class EnemyController : MonoBehaviour
 {
     public int maxEnemiesAttackingPlayer = 2;
@@ -52,6 +59,7 @@ public class EnemyController : MonoBehaviour
     private EnemyAttackRange _enemyAttackRange;
     private GroundFrontSensor _groundFrontSensor;
     private WallSensor _wallSensor;
+    private EnemyDifficultyLevel _enemyDifficultyLevelValue;
     private float _platformStartX = float.NegativeInfinity;
     private float _platformEndX = float.PositiveInfinity;
     private EnemyState _enemyStateValue;
@@ -84,6 +92,18 @@ public class EnemyController : MonoBehaviour
             {
                 _enemyStateValue = value;
             }
+        }
+    }
+
+    public EnemyDifficultyLevel EnemyDifficultyLevel
+    {
+        get => _enemyDifficultyLevelValue;
+        set
+        {
+            _enemyDifficultyLevelValue = value;
+            
+            _enemyAnimateObject.maxHealth *= _healthMultiplierForDifficultyLevel();
+            _enemyAnimateObject.health *= _healthMultiplierForDifficultyLevel();
         }
     }
 
@@ -161,7 +181,6 @@ public class EnemyController : MonoBehaviour
         _playerAnimateObject = GameManager.instance.player.GetComponent<AnimateObject>();
         soundManager = SoundManager.instance;
         items = GameObject.Find("Items");
-
 
         Physics2D.IgnoreCollision(GameManager.instance.player.GetComponent<CapsuleCollider2D>(), _collider, true);
     }
@@ -356,7 +375,7 @@ public class EnemyController : MonoBehaviour
         {
             if (!ValidBlock())
             {
-                player.GetComponent<AnimateObject>().Attack(damage);
+                player.GetComponent<AnimateObject>().Attack(damage * _damageMultiplierForDifficultyLevel());
             }
             else
             {
@@ -520,12 +539,17 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private Direction _swapDirection(Direction direction)
+    private float _damageMultiplierForDifficultyLevel() => EnemyDifficultyLevel switch
     {
-        return direction switch
-        {
-            Direction.Left => Direction.Right,
-            Direction.Right => Direction.Left
-        };
-    }
+        EnemyDifficultyLevel.Easy => 0.6f,
+        EnemyDifficultyLevel.Normal => 1.0f,
+        EnemyDifficultyLevel.Hard => 2.0f
+    };
+    
+    private float _healthMultiplierForDifficultyLevel() => EnemyDifficultyLevel switch
+    {
+        EnemyDifficultyLevel.Easy => 0.4f,
+        EnemyDifficultyLevel.Normal => 1.0f,
+        EnemyDifficultyLevel.Hard => 2.5f
+    };
 }
