@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ItemDrop : MonoBehaviour
 {
     public float healAmount;
+    public GameObject particles;
     public Sprite[] foods;
     private SpriteRenderer _spriteRenderer;
 
@@ -23,5 +26,10 @@ public class ItemDrop : MonoBehaviour
             other.GetComponent<AnimateObject>().Heal(healAmount);
             Destroy(gameObject.transform.parent.gameObject);
         }
+    }
+
+    private void OnDestroy()
+    {
+        Instantiate(particles, transform.position, transform.rotation);
     }
 }
