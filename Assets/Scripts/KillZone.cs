@@ -16,6 +16,12 @@ public class KillZone : MonoBehaviour
         else if (other.CompareTag("Player"))
         {
             animateObject.DamagePlayerHealth(100000);
+            
+            var body = other.GetComponent<Rigidbody2D>();
+
+            body.gravityScale = 0.3f;
+            body.velocity = new Vector2(0f, -1f);
+
         }
     }
 }
