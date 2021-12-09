@@ -19,8 +19,8 @@ public class KillZone : MonoBehaviour
             
             var body = other.GetComponent<Rigidbody2D>();
 
-            body.gravityScale = 0.3f;
-            body.velocity = new Vector2(0f, -1f);
+            body.gravityScale = 0.1f;
+            body.velocity = new Vector2(0f, -0.5f);
 
         }
     }
