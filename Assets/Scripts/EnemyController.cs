@@ -154,14 +154,15 @@ public class EnemyController : MonoBehaviour
 
         if (!isQuitting)
         {
-            float dropThreshold = GameObject.Find("Player").GetComponent<AnimateObject>().HealthPct();
-            GameObject.Find("Player").GetComponentInChildren<PlayerAttackRange>().KillRemove(gameObject);
+            // float dropThreshold = GameObject.Find("Player").GetComponent<AnimateObject>().HealthPct();
+            if (GameObject.Find("Player") != null)
+                GameObject.Find("Player").GetComponentInChildren<PlayerAttackRange>().KillRemove(gameObject);
             Vector3 enemyOffset = new Vector3(0, 1f, 0);
             // Any drop
-            if (UnityEngine.Random.Range(0f, 1f) > dropThreshold)
+            if (UnityEngine.Random.Range(0f, 1f) < .10f)
             {
                 // Health drop
-                if (UnityEngine.Random.Range(0f, 1f) > .2f)
+                if (UnityEngine.Random.Range(0f, 1f) < .7f)
                     Instantiate(itemDropPrefab, transform.position - enemyOffset, Quaternion.identity, items.transform);
 
                 // Upgrade drop
@@ -278,7 +279,11 @@ public class EnemyController : MonoBehaviour
                 _setAnimationState(EnemyAnimationState.Idle);
                 break;
             }
+            
         }
+
+        // Fade bar when close to player
+        _enemyAnimateObject.BarVisibility(Mathf.Max(0, 5 - Vector2.Distance(_playerAnimateObject.transform.position, transform.position))/5);
     }
 
     void FixedUpdate()

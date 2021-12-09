@@ -44,6 +44,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource stepPlayer;
     public AudioSource eatPlayer;
     public AudioSource powerPlayer;
+    public AudioSource checkpointPlayer;
 
     public AudioSource soloPlayer;
     private float soloVolume;
@@ -131,6 +132,11 @@ public class SoundManager : MonoBehaviour
         if (!heartPlayer.isPlaying)
             heartPlayer.Play();
         heartPlayer.volume = volume;
+    }
+
+    public void PlayCheckpoint()
+    {
+        checkpointPlayer.Play();
     }
 
     public IEnumerator FadeOutBGM()
