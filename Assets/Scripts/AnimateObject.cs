@@ -14,8 +14,9 @@ public class AnimateObject : MonoBehaviour
 	private PlayerController2 _playerController;
 	private Animator _animator;
 	public StatusBar statusBar;
-	
-    // Start is called before the first frame update
+	private static readonly int HitTriggerId = Animator.StringToHash("Hit");
+
+	// Start is called before the first frame update
     void Start()
     {
         health = maxHealth;
@@ -97,7 +98,7 @@ public class AnimateObject : MonoBehaviour
 		health -= damage;
 
 		if(Alive())
-			_animator.Play("EnemyHit");
+			_animator.SetTrigger(HitTriggerId);
 		else if (!Alive() && !dead)
 		{
 			_animator.Play("EnemyDead");

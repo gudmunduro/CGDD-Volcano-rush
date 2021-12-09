@@ -24,7 +24,7 @@ public class EnemySpawner : MonoBehaviour
         {
             for (var i = 0; i < enemyCount; i++)
             {
-                var enemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity, spawnPoint);
+                var enemy = Instantiate(enemyPrefab, transform.position + new Vector3(0, 1f, 0), Quaternion.identity, spawnPoint);
                 enemy.GetComponent<EnemyController>().globalEnemyController = _globalEnemyController;
             }
 

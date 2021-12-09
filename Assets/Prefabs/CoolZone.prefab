@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 246709692}
   - component: {fileID: 246709693}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 516425892169742161}
   - component: {fileID: 2735831306300428457}
   - component: {fileID: 408557510685601829}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: CoolZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
