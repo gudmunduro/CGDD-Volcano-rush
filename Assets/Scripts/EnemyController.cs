@@ -415,6 +415,7 @@ public class EnemyController : MonoBehaviour
 
                 if (IsPlayerJumping && distanceToPlayerX < 1.0f)
                 {
+                    Debug.Log("Test");
                     _setAnimationState(EnemyAnimationState.Idle);
                     _move = 0;
                 }

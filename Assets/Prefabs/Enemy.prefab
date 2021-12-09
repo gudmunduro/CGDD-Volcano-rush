@@ -58,7 +58,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 7
   m_TargetDisplay: 0
 --- !u!114 &4336886330439687166
 MonoBehaviour:
@@ -886,6 +886,7 @@ MonoBehaviour:
   dead: 0
   player: 0
   statusBar: {fileID: 8879578529907316883}
+  PopUpScore: {fileID: 5524828215972266898, guid: 8a3b2e054feadae43b96d6a26a136638, type: 3}
 --- !u!70 &6641525782428703116
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
