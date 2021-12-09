@@ -468,6 +468,8 @@ public class PlayerController2 : MonoBehaviour {
                 m_animator.SetTrigger("Roll");
                 if(m_grounded)
                     m_soundManager.PlaySound(SoundType.Tumble);
+                else
+                    m_soundManager.PlaySound(SoundType.TumbleAir);
                 
                 m_body2d.velocity = new Vector2(rollDirection * m_rollForce, m_body2d.velocity.y);
                 

@@ -9,6 +9,7 @@ public enum SoundType
     Grunt,
     Bone,
     Tumble,
+    TumbleAir,
     Step,
     Eat,
 }
@@ -22,6 +23,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip[] gruntSounds;
     public AudioClip[] boneSounds;
     public AudioClip[] tumbleSounds;
+    public AudioClip[] tumbleAirSounds;
     public AudioClip[] stepSounds;
     public AudioClip[] eatSounds;
 
@@ -178,6 +180,10 @@ public class SoundManager : MonoBehaviour
                 break;
             case SoundType.Tumble:
                 clips = tumbleSounds;
+                player = tumblePlayer;
+                break;
+            case SoundType.TumbleAir:
+                clips = tumbleAirSounds;
                 player = tumblePlayer;
                 break;
             case SoundType.Step:
