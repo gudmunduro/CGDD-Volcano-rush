@@ -155,7 +155,8 @@ public class EnemyController : MonoBehaviour
         if (!isQuitting)
         {
             // float dropThreshold = GameObject.Find("Player").GetComponent<AnimateObject>().HealthPct();
-            GameObject.Find("Player").GetComponentInChildren<PlayerAttackRange>().KillRemove(gameObject);
+            if (GameObject.Find("Player") != null)
+                GameObject.Find("Player").GetComponentInChildren<PlayerAttackRange>().KillRemove(gameObject);
             Vector3 enemyOffset = new Vector3(0, 1f, 0);
             // Any drop
             if (UnityEngine.Random.Range(0f, 1f) < .10f)

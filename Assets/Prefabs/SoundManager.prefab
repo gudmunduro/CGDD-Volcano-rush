@@ -122,6 +122,7 @@ MonoBehaviour:
   completeSound: {fileID: 8300000, guid: 3463073b6755b5f37b34c4bcf9c8b8a8, type: 3}
   powerUpSound: {fileID: 8300000, guid: 4980d40b6c459c948a1324e7349a6f96, type: 3}
   powerDownSound: {fileID: 8300000, guid: b48e7740c6756cbc788e8f0f71c83cb0, type: 3}
+  checkpointSound: {fileID: 8300000, guid: 8f60b165fa0d209f49c77cf1767fab0c, type: 3}
   swipePlayer: {fileID: 5927798998347849918}
   hitPlayer: {fileID: 5927798998347849917}
   gruntPlayer: {fileID: 5927798998347849916}

@@ -35,6 +35,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip completeSound;
     public AudioClip powerUpSound;
     public AudioClip powerDownSound;
+    public AudioClip checkpointSound;
 
     public AudioSource swipePlayer;
     public AudioSource hitPlayer;
@@ -131,6 +132,13 @@ public class SoundManager : MonoBehaviour
         if (!heartPlayer.isPlaying)
             heartPlayer.Play();
         heartPlayer.volume = volume;
+    }
+
+    public void PlayCheckpoint()
+    {
+        soloPlayer.clip = checkpointSound;
+        soloPlayer.volume = soloVolume;
+        soloPlayer.Play();
     }
 
     public IEnumerator FadeOutBGM()
