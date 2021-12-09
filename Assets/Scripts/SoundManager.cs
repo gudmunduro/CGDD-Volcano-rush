@@ -33,6 +33,8 @@ public class SoundManager : MonoBehaviour
     public AudioClip jumpSound2;
     public AudioClip slideSound;
     public AudioClip completeSound;
+    public AudioClip powerUpSound;
+    public AudioClip powerDownSound;
 
     public AudioSource swipePlayer;
     public AudioSource hitPlayer;
@@ -41,6 +43,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource tumblePlayer;
     public AudioSource stepPlayer;
     public AudioSource eatPlayer;
+    public AudioSource powerPlayer;
 
     public AudioSource soloPlayer;
     private float soloVolume;
@@ -95,6 +98,12 @@ public class SoundManager : MonoBehaviour
         soloPlayer.clip = slideSound;
         soloPlayer.volume = soloVolume;
         soloPlayer.Play();
+    }
+
+    public void PlayPower(bool up)
+    {
+        powerPlayer.clip = up ? powerUpSound : powerDownSound;
+        powerPlayer.Play();
     }
 
     public void PlayComplete()
