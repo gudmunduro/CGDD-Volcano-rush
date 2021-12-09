@@ -34,8 +34,8 @@ public class Powerup : MonoBehaviour
     
     void Start()
     {
-        int _random = 3; //TESTING
-        //int _random = (int) Random.Range(0, powerups.Length - 1);
+        //int _random = 3; //TESTING
+        int _random = (int) Random.Range(0, powerups.Length - 1);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _spriteRenderer.sprite = powerups[_random];
         _powerup = GetType(_spriteRenderer.sprite.name);
