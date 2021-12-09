@@ -112,6 +112,7 @@ MonoBehaviour:
   jumpSound: {fileID: 8300000, guid: 22f188c25ac67dce29fe168d4cb889e5, type: 3}
   jumpSound2: {fileID: 8300000, guid: edd2d91b7168404febb78a344f4de8c1, type: 3}
   slideSound: {fileID: 8300000, guid: 36ecbf57f51d741dfbfd34b4eeaafe22, type: 3}
+  completeSound: {fileID: 8300000, guid: 3463073b6755b5f37b34c4bcf9c8b8a8, type: 3}
   swipePlayer: {fileID: 5927798998347849918}
   hitPlayer: {fileID: 5927798998347849917}
   gruntPlayer: {fileID: 5927798998347849916}
@@ -123,6 +124,7 @@ MonoBehaviour:
   BGPlayer: {fileID: 7316848681928747299}
   agroPlayer: {fileID: 5395016427901598441}
   heartPlayer: {fileID: 7961384966401887593}
+  fading: 0
 --- !u!82 &5927798998347849918
 AudioSource:
   m_ObjectHideFlags: 0
