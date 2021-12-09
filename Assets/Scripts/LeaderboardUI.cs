@@ -7,7 +7,7 @@ using static System.Linq.Enumerable;
 
 public class LeaderboardUI : MonoBehaviour
 {
-    private const float EntryHeight = 61.20001f;
+    private const float EntryHeight = 40f;
     
     public OnlineLeaderboard onlineLeaderboard;
     public Transform leaderboardEntryPrefab;
@@ -53,7 +53,7 @@ public class LeaderboardUI : MonoBehaviour
     {
         foreach (Transform entry in leaderboardContainer.transform)
         {
-            Destroy(entry);
+            Destroy(entry.gameObject);
         }
 
         _isTableFilled = false;

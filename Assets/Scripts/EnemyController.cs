@@ -54,7 +54,7 @@ public class EnemyController : MonoBehaviour
     private WallSensor _wallSensor;
     private float _platformStartX = float.NegativeInfinity;
     private float _platformEndX = float.PositiveInfinity;
-    private EnemyState _enemyState;
+    private EnemyState _enemyStateValue;
     private EnemyAttackState _enemyAttackState;
     private int _move = 0;
     private Animator _animator;
@@ -67,12 +67,25 @@ public class EnemyController : MonoBehaviour
     private EnemyAnimationState _currentAnimationState;
     private SoundManager soundManager;
     private bool isQuitting;
+    private EnemiesFollowingRange _enemiesFollowingRange;
 
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackWindupAnimTrigger = Animator.StringToHash("AttackWindup");
     private static readonly int AttackAnimTrigger = Animator.StringToHash("Attack");
     private static readonly int WalkAnimTrigger = Animator.StringToHash("Walk");
     private static readonly int IdleAnimTrigger = Animator.StringToHash("Idle");
+
+    private EnemyState _enemyState
+    {
+        get => _enemyStateValue;
+        set
+        {
+            if (_enemyState != EnemyState.Dying)
+            {
+                _enemyStateValue = value;
+            }
+        }
+    }
 
     public Direction CurrentWalkingDirection => _enemyState switch
     {
@@ -143,6 +156,7 @@ public class EnemyController : MonoBehaviour
         _enemyAttackRange = GetComponentInChildren<EnemyAttackRange>();
         _groundFrontSensor = GetComponentInChildren<GroundFrontSensor>();
         _wallSensor = GetComponentInChildren<WallSensor>();
+        _enemiesFollowingRange = GetComponentInChildren<EnemiesFollowingRange>();
         _playerAnimateObject = GameManager.instance.player.GetComponent<AnimateObject>();
         soundManager = SoundManager.instance;
         items = GameObject.Find("Items");
@@ -282,17 +296,17 @@ public class EnemyController : MonoBehaviour
             {
                 case Direction.Left when float.IsNegativeInfinity(_platformStartX):
                     _platformStartX = transform.position.x;
-                    _sendMessageToAllEnemiesInVision(EnemyMessage.FoundPlatformStart, _platformStartX);
+                    _sendMessageToAllEnemiesInFollowingRange(EnemyMessage.FoundPlatformStart, _platformStartX);
                     break;
                 case Direction.Right when float.IsPositiveInfinity(_platformEndX):
                     _platformEndX = transform.position.x;
-                    _sendMessageToAllEnemiesInVision(EnemyMessage.FoundPlatformEnd, _platformEndX);
+                    _sendMessageToAllEnemiesInFollowingRange(EnemyMessage.FoundPlatformEnd, _platformEndX);
                     break;
             }
 
             _setPatrolDirection(direction == Direction.Left ? Direction.Right : Direction.Left);
             _lastDirectionSwitchTime = Time.realtimeSinceStartup;
-            _sendMessageToAllEnemiesInVision(EnemyMessage.SetDirection, _getDirectionForState(_enemyState));
+            _sendMessageToAllEnemiesInFollowingRange(EnemyMessage.SetDirection, _getDirectionForState(_enemyState));
         }
 
         // Switch to the direction that makes more sense if enemies are colliding with each other
@@ -324,16 +338,12 @@ public class EnemyController : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        if (_enemyState == EnemyState.Dying)
-            yield break;
-
-        if (!_enemyAttackRange.IsPlayerInAttackRange) yield break;
+        if (_enemyState == EnemyState.Dying || !_enemyAttackRange.IsPlayerInAttackRange) yield break;
         _animator.SetTrigger(AttackAnimTrigger);
 
         yield return new WaitForSeconds(0.14f);
 
-        if (_enemyState == EnemyState.Dying)
-            yield break;
+        if (!_enemyAttackRange.IsPlayerInAttackRange || _enemyState == EnemyState.Dying) yield break;
             
         soundManager.PlaySound(SoundType.Swipe);
 
@@ -353,6 +363,8 @@ public class EnemyController : MonoBehaviour
                 player.GetComponent<PlayerController2>().PlayBlockAnimation();
             }
         }
+        
+        _setAnimationState(EnemyAnimationState.Idle);
     }
 
     public bool ValidBlock()
@@ -417,10 +429,6 @@ public class EnemyController : MonoBehaviour
 
                     _currentTimeAttack = 0;
                 }
-                else if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyIdle"))
-                {
-                    _setAnimationState(EnemyAnimationState.Idle);
-                }
 
                 break;
             }
@@ -450,9 +458,9 @@ public class EnemyController : MonoBehaviour
         _setEnemyDirection(_getDirectionForState(_enemyState));
     }
 
-    private void _sendMessageToAllEnemiesInVision(EnemyMessage message, object content)
+    private void _sendMessageToAllEnemiesInFollowingRange(EnemyMessage message, object content)
     {
-        foreach (var enemy in _enemyVision.EnemiesInVision)
+        foreach (var enemy in _enemiesFollowingRange.EnemiesInRange)
         {
             if (enemy == null) continue;
             
@@ -491,6 +499,8 @@ public class EnemyController : MonoBehaviour
 
     private void _setAnimationState(EnemyAnimationState state)
     {
+        if (_enemyState == EnemyState.Dying) return;
+        
         var stateName = state switch
         {
             EnemyAnimationState.Walk => "Walk",
