@@ -30,6 +30,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip jumpSound2;
     public AudioClip slideSound;
+    public AudioClip completeSound;
 
     public AudioSource swipePlayer;
     public AudioSource hitPlayer;
@@ -43,13 +44,19 @@ public class SoundManager : MonoBehaviour
     private float soloVolume;
 
     public AudioSource BGPlayer;
+    private float BGVolume;
+
+    public AudioSource agroPlayer;
 
     public AudioSource heartPlayer;
+
+    public bool fading = false;
 
     private void Awake()
     {
         instance = this;
         soloVolume = soloPlayer.volume;
+        BGVolume = BGPlayer.volume;
     }
 
     public void PlayDeath()
@@ -89,6 +96,13 @@ public class SoundManager : MonoBehaviour
         soloPlayer.Play();
     }
 
+    public void PlayComplete()
+    {
+        soloPlayer.clip = completeSound;
+        soloPlayer.volume = soloVolume;
+        soloPlayer.Play();
+    }
+
     public void StopSolo()
     {
         soloPlayer.Stop();
@@ -104,6 +118,44 @@ public class SoundManager : MonoBehaviour
         if (!heartPlayer.isPlaying)
             heartPlayer.Play();
         heartPlayer.volume = volume;
+    }
+
+    public IEnumerator FadeOutBGM()
+    {
+        float time = 0;
+        float startValue = BGPlayer.volume;
+
+        while (time < 1)
+        {
+            BGPlayer.volume = Mathf.Lerp(startValue, 0f, time);
+            time += 0.005f;
+            yield return null;
+        }
+        BGPlayer.volume = 0f;
+        BGPlayer.Stop();
+    }
+
+    public void RestartBGM()
+    {
+        BGPlayer.volume = BGVolume;
+        BGPlayer.Play();
+    }
+
+    public IEnumerator FadeAgro(float endValue, float duration)
+    {
+        fading = true;
+        float time = 0;
+        float startValue = agroPlayer.volume;
+
+        while (time < duration)
+        {
+            agroPlayer.volume = Mathf.Lerp(startValue, endValue, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        fading = false;
+        agroPlayer.volume = endValue;
     }
 
     public void PlaySound(SoundType type)

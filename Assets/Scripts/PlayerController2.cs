@@ -336,6 +336,14 @@ public class PlayerController2 : MonoBehaviour {
                     m_soundManager.StopSolo();
             }
         }
+        if (_playerAttackRange.AreEnemiesInAttackRange && !m_soundManager.fading)
+        {
+            StartCoroutine(m_soundManager.FadeAgro(0.5f, 1f));
+        }
+        else if (!m_soundManager.fading)
+        {
+            StartCoroutine(m_soundManager.FadeAgro(0f, .5f));
+        }
             
         
         //Attack

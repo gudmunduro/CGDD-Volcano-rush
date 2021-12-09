@@ -46,6 +46,11 @@ public class PlayerAttackRange : MonoBehaviour
         }
     }
 
+    public void KillRemove(GameObject enemy)
+    {
+        EnemiesInAttackRange.Remove(enemy);
+    }
+
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Enemy") && EnemiesInAttackRange.Contains(other.gameObject))

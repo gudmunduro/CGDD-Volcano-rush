@@ -26,12 +26,12 @@ public class OnlineLeaderboard : MonoBehaviour
 {
     private const string BaseUrl = "https://volcanoleaderboard.gudmunduro.com";
     public Dictionary<int, List<LeaderboardEntry>> LeaderboardPages { get; private set; }
-    public int TabCount { get; private set; }
+    public int PageCount { get; private set; }
 
     private void Awake()
     {
         LeaderboardPages = new Dictionary<int, List<LeaderboardEntry>>();
-        TabCount = 1;
+        PageCount = 1;
     }
 
     public IEnumerator SubmitEntry(string name, long score, string time)
@@ -82,7 +82,7 @@ public class OnlineLeaderboard : MonoBehaviour
 
             if (count.All(char.IsDigit))
             {
-                TabCount = int.Parse(count);
+                PageCount = int.Parse(count);
             }
         }
     }

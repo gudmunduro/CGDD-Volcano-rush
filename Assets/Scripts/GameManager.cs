@@ -136,6 +136,8 @@ public class GameManager : MonoBehaviour
     public void YouWin()
     {
         StartCoroutine(onlineLeaderboard.SubmitEntry("Player", CalculateScore(), _displayTimeShort(_timer)));
+        StartCoroutine(SoundManager.instance.FadeOutBGM());
+        SoundManager.instance.PlayComplete();
         youWinScreen.SetActive(true);
 
         _enemiesKilledText.text = "Enemies Killed: " + enemiesKilled;
@@ -152,6 +154,7 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SoundManager.instance.RestartBGM();
         Time.timeScale = 1;
     }
     
