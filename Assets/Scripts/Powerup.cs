@@ -61,6 +61,7 @@ public class Powerup : MonoBehaviour
             _powerUpImage.color = c;
 
             _player.GetComponent<PlayerController2>().m_poweredUp = false;
+            SoundManager.instance.PlayPower(false);
             Destroy(transform.parent.gameObject);
         }
     }
@@ -150,6 +151,7 @@ public class Powerup : MonoBehaviour
                 _startTime = Time.time;
                 _player.GetComponent<PlayerController2>().m_poweredUp = true;
                 transform.parent.GetChild(1).gameObject.active = false;
+                SoundManager.instance.PlayPower(true);
                 _active = true;
             }            
         }

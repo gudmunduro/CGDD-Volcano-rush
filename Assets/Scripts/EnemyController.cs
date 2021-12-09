@@ -59,7 +59,7 @@ public class EnemyController : MonoBehaviour
     private EnemyAttackRange _enemyAttackRange;
     private GroundFrontSensor _groundFrontSensor;
     private WallSensor _wallSensor;
-    private EnemyDifficultyLevel _enemyDifficultyLevelValue;
+    private EnemyDifficultyLevel _enemyDifficultyLevelValue = EnemyDifficultyLevel.Normal;
     private float _platformStartX = float.NegativeInfinity;
     private float _platformEndX = float.PositiveInfinity;
     private EnemyState _enemyStateValue;
@@ -156,16 +156,17 @@ public class EnemyController : MonoBehaviour
         {
             float dropThreshold = GameObject.Find("Player").GetComponent<AnimateObject>().HealthPct();
             GameObject.Find("Player").GetComponentInChildren<PlayerAttackRange>().KillRemove(gameObject);
+            Vector3 enemyOffset = new Vector3(0, 1f, 0);
             // Any drop
             if (UnityEngine.Random.Range(0f, 1f) > dropThreshold)
             {
                 // Health drop
                 if (UnityEngine.Random.Range(0f, 1f) > .2f)
-                    Instantiate(itemDropPrefab, transform.position, Quaternion.identity, items.transform);
+                    Instantiate(itemDropPrefab, transform.position - enemyOffset, Quaternion.identity, items.transform);
 
                 // Upgrade drop
                 else
-                    Instantiate(upgradeDropPrefab, transform.position, Quaternion.identity, items.transform);
+                    Instantiate(upgradeDropPrefab, transform.position - enemyOffset, Quaternion.identity, items.transform);
             }
         }
     }
@@ -181,6 +182,8 @@ public class EnemyController : MonoBehaviour
         _playerAnimateObject = GameManager.instance.player.GetComponent<AnimateObject>();
         soundManager = SoundManager.instance;
         items = GameObject.Find("Items");
+        enemyVisualisor.transform.localScale = _scaleForDifficulty();
+        enemyVisualisor.transform.position += new Vector3(0, _enemyPositionOffsetForDifficulty(), 0);
 
         Physics2D.IgnoreCollision(GameManager.instance.player.GetComponent<CapsuleCollider2D>(), _collider, true);
     }
@@ -415,7 +418,6 @@ public class EnemyController : MonoBehaviour
 
                 if (IsPlayerJumping && distanceToPlayerX < 1.0f)
                 {
-                    Debug.Log("Test");
                     _setAnimationState(EnemyAnimationState.Idle);
                     _move = 0;
                 }
@@ -551,5 +553,19 @@ public class EnemyController : MonoBehaviour
         EnemyDifficultyLevel.Easy => 0.4f,
         EnemyDifficultyLevel.Normal => 1.0f,
         EnemyDifficultyLevel.Hard => 2.5f
+    };
+
+    private Vector3 _scaleForDifficulty() => EnemyDifficultyLevel switch
+    {
+        EnemyDifficultyLevel.Easy => new Vector3(1.6f, 1.6f, 1),
+        EnemyDifficultyLevel.Normal => new Vector3(1.8f, 1.8f, 1),
+        EnemyDifficultyLevel.Hard => new Vector3(2.4f, 2.4f, 1)
+    };
+
+    private float _enemyPositionOffsetForDifficulty() => EnemyDifficultyLevel switch
+    {
+        EnemyDifficultyLevel.Easy => -0.13f,
+        EnemyDifficultyLevel.Normal => -0.07f,
+        EnemyDifficultyLevel.Hard => 0.1f
     };
 }
