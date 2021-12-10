@@ -30,7 +30,12 @@ public class Arrow : MonoBehaviour
                 playerAnimateObject.DamagePlayerHealth(20.0f);
             }
         }
-
+        else 
+        {
+            float playerDistance = Vector2.Distance(GameObject.Find("Player").transform.position, transform.position);
+            if (playerDistance < 10)
+                SoundManager.instance.PlaySound(SoundType.ArrowImpact);
+        }
         Destroy(gameObject);
     }
 
