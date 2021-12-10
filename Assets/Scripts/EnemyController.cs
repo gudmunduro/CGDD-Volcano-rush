@@ -286,7 +286,6 @@ public class EnemyController : MonoBehaviour
                 _setAnimationState(EnemyAnimationState.Idle);
                 break;
             }
-            
         }
 
         // Fade bar when close to player
@@ -432,6 +431,14 @@ public class EnemyController : MonoBehaviour
                 {
                     _setAnimationState(EnemyAnimationState.Idle);
                     _move = 0;
+                }
+                else if (!_groundFrontSensor.IsGroundInFront)
+                {
+                    _setAnimationState(EnemyAnimationState.Idle);
+                    _move = 0;
+                    
+                    var playerDirection = _getDirectionPlayerIsIn();
+                    _setEnemyDirection(playerDirection);
                 }
                 else
                 {
