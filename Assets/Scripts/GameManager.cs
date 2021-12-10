@@ -158,9 +158,11 @@ public class GameManager : MonoBehaviour
 
     public void SubmitScore()
     {
+        var name = GameObject.Find("LeaderboardName").GetComponent<TMP_InputField>().text;
+        if (name == "") return;
+        
         if (submitted == 0)
         {
-            string name = GameObject.Find("LeaderboardName").GetComponent<TMP_InputField>().text;
             //GameObject.Find("LeaderboardName").SetActive(false);
             GameObject.Find("Submitted").GetComponent<TextMeshProUGUI>().text = "Score submitted!";
             StartCoroutine(onlineLeaderboard.SubmitEntry(name, CalculateScore(), _displayTimeShort(_timer)));

@@ -91,6 +91,30 @@ public class LeaderboardUI : MonoBehaviour
         _updateCurrentPage();
     }
 
+    public void SortByName()
+    {
+        onlineLeaderboard.SetSort(SortBy.Name);
+        _clearTableEntries();
+        StartCoroutine(onlineLeaderboard.LoadLeaderboard(_currentPage));
+        _updateCurrentPage();
+    }
+
+    public void SortByTime()
+    {
+        onlineLeaderboard.SetSort(SortBy.Time);
+        _clearTableEntries();
+        StartCoroutine(onlineLeaderboard.LoadLeaderboard(_currentPage));
+        _updateCurrentPage();
+    }
+
+    public void SortByScore()
+    {
+        onlineLeaderboard.SetSort(SortBy.Score);
+        _clearTableEntries();
+        StartCoroutine(onlineLeaderboard.LoadLeaderboard(_currentPage));
+        _updateCurrentPage();
+    }
+
     public void BackToStart()
     {
         onlineLeaderboard.ClearCache();
