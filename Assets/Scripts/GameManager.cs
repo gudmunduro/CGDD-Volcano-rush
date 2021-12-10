@@ -18,10 +18,14 @@ public class GameManager : MonoBehaviour
     public GameObject enemies;
     public GameObject items;
     public GameObject enemyspawners;
+    public GameObject itemDropPrefab;
+    public GameObject powerupPrefab;
     public TextMeshProUGUI liveTimerText;
     public TextMeshProUGUI liveScoreText;
     public Image overheatEffectBackground;
     public OnlineLeaderboard onlineLeaderboard;
+    public List<Vector3> defaultPowerupPositions;
+    public List<Vector3> defaultItemDropPositions;
     public int enemiesKilled = 0;
     public int enemiesKilledPoints = 0;
     
@@ -72,6 +76,8 @@ public class GameManager : MonoBehaviour
         _playerAnimate = player.GetComponent<AnimateObject>();
 
         submitted = 0;
+        
+        CreateDefaultPickups();
     }
 
     private void Update()
@@ -195,6 +201,7 @@ public class GameManager : MonoBehaviour
         foreach (Transform child in items.transform) {
             Destroy(child.gameObject);
         }
+        CreateDefaultPickups();
 
         foreach(Transform child in enemyspawners.transform){
             child.GetComponent<EnemySpawner>().enemiesSpawned = false;
@@ -237,5 +244,18 @@ public class GameManager : MonoBehaviour
         
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(firstSelectedPauseGame);
+    }
+
+    public void CreateDefaultPickups()
+    {
+        foreach (var position in defaultPowerupPositions)
+        {
+            Instantiate(powerupPrefab, position, Quaternion.identity, items.transform);
+        }
+        
+        foreach (var position in defaultItemDropPositions)
+        {
+            Instantiate(itemDropPrefab, position, Quaternion.identity, items.transform);
+        }
     }
 }
