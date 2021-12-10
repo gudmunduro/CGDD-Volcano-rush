@@ -127,10 +127,11 @@ public class AnimateObject : MonoBehaviour
 		{
 			_animator.Play("EnemyDead");
 			moveposition = new Vector3(1.7f,-0.2f,0);
-			var popupScore = Instantiate(PopUpScore, transform.position+moveposition, transform.rotation);
 
 			if (Isplayer)
 			{
+				var popupScore = Instantiate(PopUpScore, transform.position+moveposition, transform.rotation);
+				
 				GameManager.instance.enemiesKilled += 1;
 				GameManager.instance.enemiesKilledPoints += _enemyController.EnemyPoints;
 
