@@ -34,7 +34,7 @@ public class PlayerController2 : MonoBehaviour {
     private bool                m_extraJump = true;
     private bool                m_jumped = true;
     public bool                 m_doubleJumpEnabled = false;
-    public bool                 m_poweredUp = false;
+    public Powerup              m_powerUp = null;
     public int                  m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
@@ -638,6 +638,12 @@ public class PlayerController2 : MonoBehaviour {
     public void Respawn()
     {
         m_animateObject.Respawn();
+        if (m_powerUp != null)
+        {
+            m_powerUp.CleanUp(false);
+            m_powerUp = null;
+        }
+        //ameObject.Find("PowerUpHUD").GetComponent<UnityEngine.UI.Image>().color = null;
         m_overheating.overheat = 0;
         gameObject.transform.position = new Vector3(playerXposition, playerYposition, 0);
         m_body2d.gravityScale = 2;

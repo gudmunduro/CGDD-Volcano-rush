@@ -54,16 +54,21 @@ public class Powerup : MonoBehaviour
     {
         if (_active && Time.time - _startTime > duration)
         {
-            UpdateAll(_powerup, _player, false);
-            
-            Color c = _powerUpImage.color;
-            c.a = 0;
-            _powerUpImage.color = c;
-
-            _player.GetComponent<PlayerController2>().m_poweredUp = false;
-            SoundManager.instance.PlayPower(false);
-            Destroy(transform.parent.gameObject);
+            CleanUp(true);
         }
+    }
+
+    public void CleanUp(bool playSound)
+    {
+        UpdateAll(_powerup, _player, false);
+            
+        _powerUpImage.sprite = null;
+        _powerUpUI.GetComponent<Animator>().Play("PowerUpStart");
+
+        if (playSound)
+            SoundManager.instance.PlayPower(false);
+
+        Destroy(transform.parent.gameObject);
     }
 
     private void UpdateAll(PowerType type, GameObject player, bool update)
@@ -132,24 +137,19 @@ public class Powerup : MonoBehaviour
         if (other.gameObject.name == "Player" && !_active)
         {
             _player = other.gameObject;
-            if (!_player.GetComponent<PlayerController2>().m_poweredUp)
+            if (_player.GetComponent<PlayerController2>().m_powerUp == null)
             {
                 _powerup = GetType(_spriteRenderer.sprite.name);
                 _powerUpUI.GetComponent<Animator>().Play("PowerUpFade");
                 UpdateAll(_powerup, _player, true);
                 GetComponent<BoxCollider2D>().enabled = false;
-                // TODO: pin icon to canvas and have it time out using the update method, finally destroying it
 
                 _spriteRenderer.enabled = false;
-                
-                Color c = _powerUpImage.color;
-                c.a = 1;
-                _powerUpImage.color = c;
                 
                 _powerUpImage.sprite = _spriteRenderer.sprite;
                 
                 _startTime = Time.time;
-                _player.GetComponent<PlayerController2>().m_poweredUp = true;
+                _player.GetComponent<PlayerController2>().m_powerUp = this;
                 transform.parent.GetChild(1).gameObject.active = false;
                 SoundManager.instance.PlayPower(true);
                 _active = true;
