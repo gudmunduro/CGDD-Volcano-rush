@@ -118,8 +118,11 @@ public class AnimateObject : MonoBehaviour
 		
 		health -= damage;
 
-		if(Alive())
+		if (Alive())
+		{
 			_animator.SetTrigger(HitTriggerId);
+			_enemyController.OnEnemyHit();
+		}
 		else if (!Alive() && !dead)
 		{
 			_animator.Play("EnemyDead");
