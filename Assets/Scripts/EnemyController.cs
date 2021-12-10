@@ -166,7 +166,7 @@ public class EnemyController : MonoBehaviour
                 GameObject.Find("Player").GetComponentInChildren<PlayerAttackRange>().KillRemove(gameObject);
             Vector3 enemyOffset = new Vector3(0, 1f, 0);
             // Any drop
-            if (UnityEngine.Random.Range(0f, 1f) < .10f)
+            if (UnityEngine.Random.Range(0f, 1f) < .30f)
             {
                 // Health drop
                 if (UnityEngine.Random.Range(0f, 1f) < .7f)
