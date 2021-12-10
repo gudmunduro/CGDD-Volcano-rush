@@ -78,6 +78,7 @@ public class EnemyController : MonoBehaviour
     private bool isQuitting;
     private EnemiesFollowingRange _enemiesFollowingRange;
     private float _enemyHitTime;
+    private bool _isFirstAttackOnPlayer;
 
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackWindupAnimTrigger = Animator.StringToHash("AttackWindup");
@@ -379,7 +380,7 @@ public class EnemyController : MonoBehaviour
     {
         _animator.SetTrigger(AttackWindupAnimTrigger);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(_isFirstAttackOnPlayer ? 0.5f : 0.1f);
         
         if (_enemyState == EnemyState.Dying || !_enemyAttackRange.IsPlayerInAttackRange ||
             _enemyHitTime + attackAfterHitTime > Time.time) yield break;
@@ -410,6 +411,7 @@ public class EnemyController : MonoBehaviour
         }
         
         _setAnimationState(EnemyAnimationState.Idle);
+        _isFirstAttackOnPlayer = false;
     }
 
     public bool ValidBlock()
@@ -432,6 +434,7 @@ public class EnemyController : MonoBehaviour
                 {
                     _enemyAttackState = EnemyAttackState.Attacking;
                     globalEnemyController.enemiesAttackingPlayer += 1;
+                    _isFirstAttackOnPlayer = true;
                     break;
                 }
 
