@@ -47,6 +47,7 @@ public class EnemyController : MonoBehaviour
     public float runMultiplier;
     public float damage = 2;
     public float attackRate = 1f;
+    public float attackAfterHitTime = 0.1f;
     public Transform itemDropPrefab;
     public Transform upgradeDropPrefab;
     public GlobalEnemyController globalEnemyController;
@@ -76,6 +77,7 @@ public class EnemyController : MonoBehaviour
     private SoundManager soundManager;
     private bool isQuitting;
     private EnemiesFollowingRange _enemiesFollowingRange;
+    private float _enemyHitTime;
 
     private static readonly int AnimatorStateKey = Animator.StringToHash("State");
     private static readonly int AttackWindupAnimTrigger = Animator.StringToHash("AttackWindup");
@@ -129,9 +131,6 @@ public class EnemyController : MonoBehaviour
     private float DistanceToPlatformRight => !float.IsPositiveInfinity(_platformStartX)
         ? Math.Abs(transform.position.x - _platformEndX)
         : float.PositiveInfinity;
-
-    private float DistanceToPlayerInVision =>
-        Vector2.Distance(_enemyVision.PlayerInVision.transform.position, transform.position);
 
     private bool IsPlayerJumping => !GameManager.instance.player.GetComponent<PlayerController2>().IsTouchingGround;
 
@@ -224,7 +223,7 @@ public class EnemyController : MonoBehaviour
                 return;
             }
 
-            _touchGroundTime = Time.realtimeSinceStartup;
+            _touchGroundTime = Time.time;
             _ground = _groundSensor.Ground;
 
             _startDefaultWalk();
@@ -236,7 +235,7 @@ public class EnemyController : MonoBehaviour
             _platformStartX = float.NegativeInfinity;
             _platformEndX = float.PositiveInfinity;
 
-            _touchGroundTime = Time.realtimeSinceStartup;
+            _touchGroundTime = Time.time;
             _ground = _groundSensor.Ground;
         }
 
@@ -314,17 +313,22 @@ public class EnemyController : MonoBehaviour
                 break;
             case EnemyMessage.SetDirection:
                 _setPatrolDirection((Direction)content);
-                _lastDirectionSwitchTime = Time.realtimeSinceStartup;
+                _lastDirectionSwitchTime = Time.time;
                 break;
         }
+    }
+
+    public void OnEnemyHit()
+    {
+        _enemyHitTime = Time.time;
     }
 
     private void _patrolUpdate(Direction direction)
     {
         if ((!_groundFrontSensor.IsGroundInFront || _enemyAttackRange.IsWallInAttackRange ||
              _wallSensor.IsWallInFront) &&
-            _lastDirectionSwitchTime + 0.5f < Time.realtimeSinceStartup
-            && _touchGroundTime + 0.2f < Time.realtimeSinceStartup)
+            _lastDirectionSwitchTime + 0.5f < Time.time
+            && _touchGroundTime + 0.2f < Time.time)
         {
             switch (direction)
             {
@@ -339,7 +343,7 @@ public class EnemyController : MonoBehaviour
             }
 
             _setPatrolDirection(direction == Direction.Left ? Direction.Right : Direction.Left);
-            _lastDirectionSwitchTime = Time.realtimeSinceStartup;
+            _lastDirectionSwitchTime = Time.time;
             _sendMessageToAllEnemiesInFollowingRange(EnemyMessage.SetDirection, _getDirectionForState(_enemyState));
         }
 
@@ -371,13 +375,15 @@ public class EnemyController : MonoBehaviour
         _animator.SetTrigger(AttackWindupAnimTrigger);
 
         yield return new WaitForSeconds(0.5f);
-
-        if (_enemyState == EnemyState.Dying || !_enemyAttackRange.IsPlayerInAttackRange) yield break;
+        
+        if (_enemyState == EnemyState.Dying || !_enemyAttackRange.IsPlayerInAttackRange ||
+            _enemyHitTime + attackAfterHitTime > Time.time) yield break;
         _animator.SetTrigger(AttackAnimTrigger);
 
         yield return new WaitForSeconds(0.14f);
 
-        if (!_enemyAttackRange.IsPlayerInAttackRange || _enemyState == EnemyState.Dying) yield break;
+        if (!_enemyAttackRange.IsPlayerInAttackRange || _enemyState == EnemyState.Dying ||
+            _enemyHitTime + attackAfterHitTime > Time.time) yield break;
             
         soundManager.PlaySound(SoundType.Swipe);
 
@@ -463,7 +469,7 @@ public class EnemyController : MonoBehaviour
                     globalEnemyController.enemiesAttackingPlayer -= 1;
                     break;
                 }
-
+                
                 if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttack") &&
                     _currentTimeAttack >= attackRate)
                 {
