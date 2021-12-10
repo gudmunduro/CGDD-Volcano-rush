@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     public GameObject firstSelectedPauseGame;
 
     public bool keyIsPressed;
+    private int submitted;
     
     private float _timer = 0;
     private int _score = 0;
@@ -45,7 +46,7 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
 
-        //Time.timeScale = 0.5f;
+        Time.timeScale = 1f;
     }
 
     private void Start()
@@ -69,6 +70,8 @@ public class GameManager : MonoBehaviour
         _playerOverheating = player.GetComponent<Overheating>();
         _playercontroller = player.GetComponent<PlayerController2>();
         _playerAnimate = player.GetComponent<AnimateObject>();
+
+        submitted = 0;
     }
 
     private void Update()
@@ -155,14 +158,28 @@ public class GameManager : MonoBehaviour
 
     public void SubmitScore()
     {
-        string name = GameObject.Find("LeaderboardName").GetComponent<TMP_InputField>().text;
-        StartCoroutine(onlineLeaderboard.SubmitEntry(name, CalculateScore(), _displayTimeShort(_timer)));
+        if (submitted == 0)
+        {
+            string name = GameObject.Find("LeaderboardName").GetComponent<TMP_InputField>().text;
+            //GameObject.Find("LeaderboardName").SetActive(false);
+            GameObject.Find("Submitted").GetComponent<TextMeshProUGUI>().text = "Score submitted!";
+            StartCoroutine(onlineLeaderboard.SubmitEntry(name, CalculateScore(), _displayTimeShort(_timer)));
+        }
+        else
+            GameObject.Find("Submitted").GetComponent<TextMeshProUGUI>().text = SoundManager.instance.StupidText(submitted);
+
+        submitted++;
     }
     
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         Time.timeScale = 1;
+    }
+
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("Start");
     }
     
     public IEnumerator ReloadCheckpoint()

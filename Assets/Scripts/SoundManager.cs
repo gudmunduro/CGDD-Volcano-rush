@@ -187,6 +187,87 @@ public class SoundManager : MonoBehaviour
         agroPlayer.volume = endValue;
     }
 
+    public string StupidText(int submitted)
+    {
+        string _texty = "";
+        switch (submitted)
+        {
+            case 1:
+                _texty = "You have already submitted!";
+                break;
+            case 2:
+                _texty = "You don't have to worry, it's saved!";
+                break;
+            case 3:
+                _texty = "I'm 100% sure, just stop pressing submit!";
+                break;
+            case 4:
+                _texty = "What did I just say!?";
+                break;
+            case 5:
+                _texty = "Are you serious!?";
+                break;
+            case 6:
+                _texty = "Do you really think you're making sure of anything at this point!?";
+                break;
+            case 7:
+                _texty = "Hey, like I've said, your score has been saved to our servers! Relax!";
+                break;
+            case 8:
+                _texty = "This is getting ridiculous, just go do something else!";
+                break;
+            case 9:
+                _texty = "Like TRYING TO GET A BETTER SCORE!!!";
+                break;
+            case 10:
+                _texty = "Or not, just keep pressing submit since you're sooo interested in what I have to say!";
+                break;
+            case 11:
+                _texty = "The poor developer who had to add all of this mind numming filler text, and for what!?";
+                break;
+            case 12:
+                _texty = "Just for you get something out of it!? You're actually starting to annoy me!";
+                break;
+            case 13:
+                _texty = "That's it, I'm done!";
+                break;
+            case 14:
+                _texty = "No, now I'm actually done!";
+                break;
+            case 50:
+                _texty = "MORE FUNNIES BEYOND THIS POINT!";
+                break;
+            case 53:
+                _texty = "Haha, made you look twice!";
+                break;
+            case 54:
+                _texty = "No but seriously, you should go do something else!";
+                break;
+            case 1000:
+                _texty = "Ok, stop! STOP!!!";
+                break;
+            case 1001:
+                _texty = "You've actually reached 1000, great job!";
+                break;
+            case 1002:
+                _texty = "I'm proud of you, but I'll have to return you to the main menu now!";
+                break;
+            case 1003:
+                _texty = "It's not wise to venture further past this point!";
+                break;
+            case 1004:
+                _texty = "Until next time!";
+                break;
+            case 1005:
+                GameManager.instance.MainMenu();
+                break;
+            default:
+                _texty = "NO MORE FUNNIES BEYOND THIS POINT!";
+                break;
+        }
+        return _texty;
+    }
+
     public void PlaySound(SoundType type)
     {
         AudioClip[] clips;
