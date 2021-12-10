@@ -22,16 +22,43 @@ public class LeaderboardEntry
     [JsonProperty("time")] public string Time { get; set; }
 }
 
+public enum SortBy
+{
+    Name,
+    Time,
+    Score,
+}
+
 public class OnlineLeaderboard : MonoBehaviour
 {
     private const string BaseUrl = "https://volcanoleaderboard.gudmunduro.com";
     public Dictionary<int, List<LeaderboardEntry>> LeaderboardPages { get; private set; }
     public int PageCount { get; private set; }
+    private int _sortBy;
 
     private void Awake()
     {
         LeaderboardPages = new Dictionary<int, List<LeaderboardEntry>>();
         PageCount = 1;
+        _sortBy = 0;
+    }
+
+    public void SetSort(SortBy type)
+    {
+        switch (type)
+        {
+            case SortBy.Name:
+                _sortBy = 2;
+                break;
+            case SortBy.Time:
+                _sortBy = 1;
+                break;
+            default:
+                _sortBy = 0;
+                break;
+        }
+
+        ClearCache();
     }
 
     public IEnumerator SubmitEntry(string name, long score, string time)
@@ -55,7 +82,7 @@ public class OnlineLeaderboard : MonoBehaviour
 
     public IEnumerator LoadLeaderboard(int page)
     {
-        var request = UnityWebRequest.Get($"{BaseUrl}/leaderboard/entries?page={page}");
+        var request = UnityWebRequest.Get($"{BaseUrl}/leaderboard/entries?page={page}&order-by={_sortBy}");
         request.SetRequestHeader("Accept", "application/json");
 
         yield return request.SendWebRequest();
