@@ -65,7 +65,7 @@ public class EnemyController : MonoBehaviour
     private float _platformEndX = float.PositiveInfinity;
     private EnemyState _enemyStateValue;
     private EnemyAttackState _enemyAttackState;
-    private int _move = 0;
+    private float _move = 0;
     private Animator _animator;
     private Collider2D _collider;
     private float _currentTimeAttack;
@@ -458,8 +458,8 @@ public class EnemyController : MonoBehaviour
                     _setAnimationState(EnemyAnimationState.Walk);
                     _move = playerDirection switch
                     {
-                        Direction.Left => -(int)runMultiplier,
-                        Direction.Right => (int)runMultiplier
+                        Direction.Left => -runMultiplier,
+                        Direction.Right => runMultiplier
                     };
                     _setEnemyDirection(playerDirection);
                 }
