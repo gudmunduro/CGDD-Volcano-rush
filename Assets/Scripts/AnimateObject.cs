@@ -16,6 +16,10 @@ public class AnimateObject : MonoBehaviour
 	private PlayerController2 _playerController;
 	private EnemyController _enemyController;
 	private Animator _animator;
+	private SpriteRenderer _renderer;
+
+	private float _fadeRate = 1f;
+	
 	public StatusBar statusBar;
 	
 	public GameObject PopUpScore; 
@@ -32,6 +36,7 @@ public class AnimateObject : MonoBehaviour
 		if (player)
 		{ 
 			_animator = GetComponent<Animator>();
+			_renderer = GetComponent<SpriteRenderer>();
 			_playerController = GetComponent<PlayerController2>();
 		}
 		else
@@ -52,8 +57,22 @@ public class AnimateObject : MonoBehaviour
 	    if(!Alive() && dead && !player && !_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyDead"))
 			Destroy(gameObject.transform.parent);
 
-			
-	}
+	    if (player && _renderer.color.b < 1)
+	    {
+		    var color = _renderer.color;
+		    
+		    color.b += _fadeRate * Time.deltaTime;
+		    color.g += _fadeRate * Time.deltaTime;
+
+		    if (color.b > 1)
+		    {
+			    color.b = 1;
+			    color.g = 1;
+		    }
+		    
+		    _renderer.color = color;
+	    }
+    }
 
 	public void BarVisibility(float alpha)
 	{
@@ -87,14 +106,25 @@ public class AnimateObject : MonoBehaviour
 		Invoke(nameof(PlayerDied), 2);
 	}
 
-	public void DamagePlayerHealth(float damage, bool playAnimation = true)
+	public void DamagePlayerHealth(float damage, bool overheating = false)
 	{
 		health -= damage;
 
 		if (Alive())
 		{
-			if (playAnimation)
+			if (!overheating)
 				_animator.SetTrigger("Hurt");
+
+			else
+			{
+				var color = _renderer.color;
+
+				color.r = 1;
+				color.g = 0.2f;
+				color.b = 0.2f;
+
+				_renderer.color = color;
+			}
 			
 			_playerController.PlayGrunt();
 		}
@@ -159,7 +189,7 @@ public class AnimateObject : MonoBehaviour
 	{
 		//health -= 0.1f;
 
-		DamagePlayerHealth(5, false);
+		DamagePlayerHealth(5, true);
 
 		if (!Alive() && !dead)
 		{
