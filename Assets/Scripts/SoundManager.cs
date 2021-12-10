@@ -12,6 +12,8 @@ public enum SoundType
     TumbleAir,
     Step,
     Eat,
+    ArrowShoot,
+    ArrowImpact,
 }
 
 public class SoundManager : MonoBehaviour
@@ -26,6 +28,8 @@ public class SoundManager : MonoBehaviour
     public AudioClip[] tumbleAirSounds;
     public AudioClip[] stepSounds;
     public AudioClip[] eatSounds;
+    public AudioClip[] arrowShootSounds;
+    public AudioClip[] arrowImpactSounds;
 
     public AudioClip deathSound;
     public AudioClip guardSound;
@@ -45,6 +49,8 @@ public class SoundManager : MonoBehaviour
     public AudioSource eatPlayer;
     public AudioSource powerPlayer;
     public AudioSource checkpointPlayer;
+    public AudioSource arrowShootPlayer;
+    public AudioSource arrowImpactPlayer;
 
     public AudioSource soloPlayer;
     private float soloVolume;
@@ -120,6 +126,16 @@ public class SoundManager : MonoBehaviour
     public void StopSolo()
     {
         soloPlayer.Stop();
+    }
+
+    public void ArrowShootVolume(float volume)
+    {
+        arrowShootPlayer.volume = volume;
+    }
+
+    public void ArrowImpactVolume(float volume)
+    {
+        arrowImpactPlayer.volume = volume;
     }
 
     public bool PlayingSlide()
@@ -208,6 +224,14 @@ public class SoundManager : MonoBehaviour
             case SoundType.Eat:
                 clips = eatSounds;
                 player = eatPlayer;
+                break;
+            case SoundType.ArrowShoot:
+                clips = arrowShootSounds;
+                player = arrowShootPlayer;
+                break;
+            case SoundType.ArrowImpact:
+                clips = arrowImpactSounds;
+                player = arrowImpactPlayer;
                 break;
             default:
                 clips = swipeSounds;

@@ -53,6 +53,11 @@ public class ArrowShooter : MonoBehaviour
     private IEnumerator _shootArrow()
     {
         if (_loadedArrow == null) _createArrow();
+
+
+        float playerDistance = Vector2.Distance(GameObject.Find("Player").transform.position, _loadedArrow.transform.position);
+        if (playerDistance < 10)
+            SoundManager.instance.PlaySound(SoundType.ArrowShoot);
         
         var rigidBody = _loadedArrow.GetComponent<Rigidbody2D>();
         rigidBody.velocity = shootDirection switch

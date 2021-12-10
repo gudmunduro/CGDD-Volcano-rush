@@ -288,7 +288,12 @@ public class EnemyController : MonoBehaviour
         }
 
         // Fade bar when close to player
-        _enemyAnimateObject.BarVisibility(Mathf.Max(0, 5 - Vector2.Distance(_playerAnimateObject.transform.position, transform.position))/5);
+        Vector2 _vectorToPlayer;
+        _vectorToPlayer.x = transform.position.x - _playerAnimateObject.transform.position.x;
+        _vectorToPlayer.y = Mathf.Pow((transform.position.y - _playerAnimateObject.transform.position.y - 1.5f), 2);
+        float _distToPlayer = _vectorToPlayer.magnitude;
+        float _distAlpha = (10f - _distToPlayer) / 5;
+        _enemyAnimateObject.BarVisibility(Mathf.Max(0, _distAlpha > 1 ? 1 : _distAlpha));
     }
 
     void FixedUpdate()
