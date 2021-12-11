@@ -255,7 +255,8 @@ public class GameManager : MonoBehaviour
         
         foreach (var position in defaultItemDropPositions)
         {
-            Instantiate(itemDropPrefab, position, Quaternion.identity, items.transform);
+            var itemDrop = Instantiate(itemDropPrefab, position, Quaternion.identity, items.transform);
+            itemDrop.GetComponentInChildren<ItemDrop>().healAmount = 40;
         }
     }
 }
