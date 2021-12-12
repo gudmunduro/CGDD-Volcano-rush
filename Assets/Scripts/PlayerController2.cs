@@ -527,6 +527,29 @@ public class PlayerController2 : MonoBehaviour {
             }
         }
         
+        // Switch directions while rolling
+        else if (_roll && m_rolling && !m_animator.GetCurrentAnimatorStateInfo(0).IsName("Wall Slide"))
+        {
+            var rollDirection = 0;
+            if (m_inputStick.x > 0)
+            {
+                rollDirection = 1;
+            }
+            else if (m_inputStick.x < 0)
+            {
+                rollDirection = -1;
+            }
+            else
+            {
+                rollDirection = m_facingDirection;
+            }
+
+            if (Math.Sign(rollDirection) != Math.Sign(m_body2d.velocity.x) && Math.Sign(m_body2d.velocity.x) != 0)
+            {
+                m_body2d.velocity = new Vector2(rollDirection * m_rollForce, m_body2d.velocity.y);
+            }
+        }
+        
         //Jump
         else if (_jump && ((m_grounded || (m_doubleJumpEnabled && m_extraJump)) || (m_currentJumpWindowTime < m_jumpWindow && !m_jumped)) && (m_rolling && m_animationRollCancelTime < m_rollCurrentTime || !m_rolling))
         {
