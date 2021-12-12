@@ -224,6 +224,7 @@ public class GameManager : MonoBehaviour
     {
         pauseGameScreen.SetActive(false);
         
+        SoundManager.instance.gameObject.SetActive(true);
         Time.timeScale = 1;
         
         EventSystem.current.SetSelectedGameObject(null);
@@ -240,6 +241,7 @@ public class GameManager : MonoBehaviour
 
         pauseGameScreen.SetActive(true);
         
+        SoundManager.instance.gameObject.SetActive(false);
         Time.timeScale = 0;
         
         EventSystem.current.SetSelectedGameObject(null);
