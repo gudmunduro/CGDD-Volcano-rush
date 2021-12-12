@@ -17,8 +17,6 @@ public class StartScript : MonoBehaviour
     
     public void Start()
     {
-        Screen.SetResolution(1280, 720, false);
-        
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(startFirstSelectedButton);
     }
