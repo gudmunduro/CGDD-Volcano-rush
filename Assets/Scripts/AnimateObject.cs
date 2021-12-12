@@ -91,9 +91,11 @@ public class AnimateObject : MonoBehaviour
 		return health > 0;
 	}
 
-	private void PlayerDied()
+	IEnumerator PlayerDied()
 	{
-		GameManager.instance.YouDied();
+		yield return new WaitForSeconds(2f);
+		if (Alive() && dead)
+			GameManager.instance.YouDied();
 	}
 
 	private void PlayerDeath()
@@ -102,8 +104,8 @@ public class AnimateObject : MonoBehaviour
 		_animator.SetBool("noBlood", false);
 		_animator.SetBool("WallSlide", false);
 		_animator.SetTrigger("Death");
-		_playerController.PlayDeath();
-		Invoke(nameof(PlayerDied), 2);
+		SoundManager.instance.PlayDeath();
+		StartCoroutine(PlayerDied());
 	}
 
 	public void DamagePlayerHealth(float damage, bool overheating = false)
