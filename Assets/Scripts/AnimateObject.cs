@@ -94,7 +94,7 @@ public class AnimateObject : MonoBehaviour
 	IEnumerator PlayerDied()
 	{
 		yield return new WaitForSeconds(2f);
-		if (Alive() && dead)
+		if (!Alive() && dead)
 			GameManager.instance.YouDied();
 	}
 
