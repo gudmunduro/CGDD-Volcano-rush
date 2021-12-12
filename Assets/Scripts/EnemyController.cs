@@ -104,7 +104,7 @@ public class EnemyController : MonoBehaviour
         set
         {
             _enemyDifficultyLevelValue = value;
-            
+
             _enemyAnimateObject.maxHealth *= _healthMultiplierForDifficultyLevel();
             _enemyAnimateObject.health *= _healthMultiplierForDifficultyLevel();
         }
@@ -174,7 +174,8 @@ public class EnemyController : MonoBehaviour
 
                 // Upgrade drop
                 else
-                    Instantiate(upgradeDropPrefab, transform.position - enemyOffset, Quaternion.identity, items.transform);
+                    Instantiate(upgradeDropPrefab, transform.position - enemyOffset, Quaternion.identity,
+                        items.transform);
             }
         }
     }
@@ -381,7 +382,7 @@ public class EnemyController : MonoBehaviour
         _animator.SetTrigger(AttackWindupAnimTrigger);
 
         yield return new WaitForSeconds(_isFirstAttackOnPlayer ? 0.5f : 0.1f);
-        
+
         if (_enemyState == EnemyState.Dying || !_enemyAttackRange.IsPlayerInAttackRange ||
             _enemyHitTime + attackAfterHitTime > Time.time) yield break;
         _animator.SetTrigger(AttackAnimTrigger);
@@ -390,7 +391,7 @@ public class EnemyController : MonoBehaviour
 
         if (!_enemyAttackRange.IsPlayerInAttackRange || _enemyState == EnemyState.Dying ||
             _enemyHitTime + attackAfterHitTime > Time.time) yield break;
-            
+
         soundManager.PlaySound(SoundType.Swipe);
 
         if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "EnemyAttack" ||
@@ -409,7 +410,7 @@ public class EnemyController : MonoBehaviour
                 player.GetComponent<PlayerController2>().PlayBlockAnimation();
             }
         }
-        
+
         _setAnimationState(EnemyAnimationState.Idle);
         _isFirstAttackOnPlayer = false;
     }
@@ -450,14 +451,14 @@ public class EnemyController : MonoBehaviour
                 {
                     _setAnimationState(EnemyAnimationState.Idle);
                     _move = 0;
-                    
+
                     var playerDirection = _getDirectionPlayerIsIn();
                     _setEnemyDirection(playerDirection);
                 }
                 else
                 {
-                    var playerDirection = _getDirectionPlayerIsIn(); 
-                    
+                    var playerDirection = _getDirectionPlayerIsIn();
+
                     _setAnimationState(EnemyAnimationState.Walk);
                     _move = playerDirection switch
                     {
@@ -477,7 +478,7 @@ public class EnemyController : MonoBehaviour
                     globalEnemyController.enemiesAttackingPlayer -= 1;
                     break;
                 }
-                
+
                 if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyAttack") &&
                     _currentTimeAttack >= attackRate)
                 {
@@ -519,7 +520,7 @@ public class EnemyController : MonoBehaviour
         foreach (var enemy in _enemiesFollowingRange.EnemiesInRange)
         {
             if (enemy == null) continue;
-            
+
             enemy.GetComponent<EnemyController>().SendMessageToEnemy(message, content);
         }
     }
@@ -531,9 +532,10 @@ public class EnemyController : MonoBehaviour
         var direction = playerDirection == Direction.Left
             ? (Vector2)transform.TransformDirection(Vector2.left)
             : (Vector2)transform.TransformDirection(Vector2.right);
-        
+
         var hit = Physics2D.Raycast(transform.position - new Vector3(0, 0.8f, 0), direction);
-        return hit.collider != null && (hit.collider.gameObject.CompareTag("Player") || hit.collider.CompareTag("PlayerComponent"));
+        return hit.collider != null &&
+               (hit.collider.gameObject.CompareTag("Player") || hit.collider.CompareTag("PlayerComponent"));
     }
 
     private Direction _getDirectionPlayerIsIn()
@@ -555,8 +557,9 @@ public class EnemyController : MonoBehaviour
 
     private void _setAnimationState(EnemyAnimationState state)
     {
-        if (_enemyState == EnemyState.Dying) return;
-        
+        if (_enemyState == EnemyState.Dying || _animator.GetCurrentAnimatorStateInfo(0).IsName("EnemyDead") ||
+            _animator.GetNextAnimatorStateInfo(0).IsName("EnemyDead")) return;
+
         var stateName = state switch
         {
             EnemyAnimationState.Walk => "Walk",
@@ -580,7 +583,7 @@ public class EnemyController : MonoBehaviour
         EnemyDifficultyLevel.Normal => 1.0f,
         EnemyDifficultyLevel.Hard => 2.0f
     };
-    
+
     private float _healthMultiplierForDifficultyLevel() => EnemyDifficultyLevel switch
     {
         EnemyDifficultyLevel.Easy => 0.6f,
