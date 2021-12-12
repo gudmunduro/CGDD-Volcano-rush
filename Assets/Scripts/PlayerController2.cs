@@ -591,11 +591,6 @@ public class PlayerController2 : MonoBehaviour {
         m_soundManager.PlaySound(SoundType.Grunt);
     }
 
-    public void PlayDeath()
-    {
-        m_soundManager.PlayDeath();
-    }
-
     public void PlayBlockAnimation()
     {
         m_animator.SetTrigger("Block");
