@@ -530,7 +530,7 @@ public class PlayerController2 : MonoBehaviour {
         // Switch directions while rolling
         else if (_roll && m_rolling && !m_animator.GetCurrentAnimatorStateInfo(0).IsName("Wall Slide"))
         {
-            var rollDirection = 0;
+            int rollDirection;
             if (m_inputStick.x > 0)
             {
                 rollDirection = 1;
@@ -546,7 +546,7 @@ public class PlayerController2 : MonoBehaviour {
 
             if (Math.Sign(rollDirection) != Math.Sign(m_body2d.velocity.x) && Math.Sign(m_body2d.velocity.x) != 0)
             {
-                m_body2d.velocity = new Vector2(rollDirection * m_rollForce, m_body2d.velocity.y);
+                m_body2d.velocity = new Vector2(-m_body2d.velocity.x, m_body2d.velocity.y);
             }
         }
         
