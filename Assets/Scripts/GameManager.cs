@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour
 
     private int CalculateScore()
     {
-        _score = enemiesKilledPoints  - 400 * _deaths;
+        _score = enemiesKilledPoints;
         _score += Math.Max((480 - Mathf.FloorToInt(_timer)) * 20, 0);
         
         return Math.Max(_score, 0);
@@ -143,7 +143,7 @@ public class GameManager : MonoBehaviour
 
     private int _calculateLiveScore()
     {
-        return Math.Max(enemiesKilledPoints - 400 * _deaths, 0);
+        return enemiesKilledPoints;
     }
     
     public void YouWin()
@@ -208,11 +208,13 @@ public class GameManager : MonoBehaviour
         }
 
         _deaths += 1;
+        _timer += 10;
         youDiedScreen.SetActive(false);
         pauseGameScreen.SetActive(false);
-        Time.timeScale = 1;
         _playercontroller.Respawn();
         enemies.GetComponent<GlobalEnemyController>().enemiesAttackingPlayer = 0;
+        
+        Time.timeScale = 1;
     }
 
     public void OnReloadClick()
