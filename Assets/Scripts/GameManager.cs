@@ -213,6 +213,7 @@ public class GameManager : MonoBehaviour
         pauseGameScreen.SetActive(false);
         _playercontroller.Respawn();
         enemies.GetComponent<GlobalEnemyController>().enemiesAttackingPlayer = 0;
+        SoundManager.instance.gameObject.SetActive(true);
         
         Time.timeScale = 1;
     }
